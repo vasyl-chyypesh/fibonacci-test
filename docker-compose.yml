@@ -1,0 +1,28 @@
+version: "3.9"
+
+services:
+  app:
+    build: .
+    container_name: fib_app
+    restart: unless-stopped
+    environment:
+      - PORT=3000
+      - REDIS_URL=redis
+      - REDIS_PORT=6379
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    networks:
+      - fib_network
+  redis:
+    container_name: fib_redis
+    image: redis:7.0.4-alpine
+    expose:
+      - 6379
+    networks:
+      - fib_network
+
+networks:
+  fib_network:
+    driver: bridge
