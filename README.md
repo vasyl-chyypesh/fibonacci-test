@@ -15,4 +15,6 @@ POST data with number:
 
 ```curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input```
 
+GET data by tickerId:
+
 ```curl http://localhost:3000/output/1```
