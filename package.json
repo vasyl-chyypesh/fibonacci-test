@@ -5,10 +5,11 @@
   "main": "dist/app/index.js",
   "scripts": {
     "lint": "eslint . --ext .ts",
+    "lint:dockerfile": "docker run --rm -i hadolint/hadolint < Dockerfile",
     "build": "rm -rf dist && tsc",
     "start": "node dist/app/index.js",
     "test": "jest",
-    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.ts'"
+    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.ts' --coverageReporters='text-summary'"
   },
   "repository": {
     "type": "git",
