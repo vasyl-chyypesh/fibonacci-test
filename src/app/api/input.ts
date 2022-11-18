@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
-import addJobToQueue from '../queue/addJobToQueue';
-import {Ticket} from '../service/ticket';
-import redisClient from '../storage/redisService';
-import {RequestStorage} from '../service/requestStorage';
-import {QueueEnum} from '../types/QueueEnum';
+import { Request, Response, NextFunction } from "express";
+import addJobToQueue from "../queue/addJobToQueue";
+import { Ticket } from "../service/ticket";
+import redisClient from "../storage/redisService";
+import { RequestStorage } from "../service/requestStorage";
+import { QueueEnum } from "../types/QueueEnum";
 
 const ticket = new Ticket(redisClient);
 const requestStorage = new RequestStorage(redisClient);
@@ -15,8 +15,10 @@ const input = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).send(`Not valid input data: ${inputNumber}`);
     }
 
-    if (inputNumber < 1 || inputNumber > 1000000) {
-      return res.status(400).send(`Not valid input data: ${inputNumber} (should be in range 1..1000000)`);
+    if (inputNumber < 1 || inputNumber >= Number.MAX_SAFE_INTEGER) {
+      return res
+        .status(400)
+        .send(`Not valid input data: ${inputNumber} (should be in range 1..${Number.MAX_SAFE_INTEGER})`);
     }
 
     const ticketId = await ticket.getTicket();
@@ -26,6 +28,6 @@ const input = async (req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     next(err);
   }
-}
+};
 
 export default input;

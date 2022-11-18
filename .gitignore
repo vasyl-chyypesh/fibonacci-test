@@ -108,3 +108,6 @@ dist
 
 # IDE jetbrains
 .idea
+
+# GitGuardian ggshield cache
+.cache_ggshield
