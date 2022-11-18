@@ -105,3 +105,6 @@ dist
 
 # OSX folder file
 .DS_Store
+
+# IDE jetbrains
+.idea
