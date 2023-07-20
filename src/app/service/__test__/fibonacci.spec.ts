@@ -1,4 +1,4 @@
-import {Fibonacci} from '../fibonacci';
+import { Fibonacci } from '../fibonacci';
 
 describe('Fibonacci', () => {
   test('getValueFor should return 1 for 1', () => {
