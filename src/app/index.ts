@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import serverWrapper from './server';
 
 const catchErrors = (expressServer: typeof serverWrapper) => {
@@ -7,7 +8,7 @@ const catchErrors = (expressServer: typeof serverWrapper) => {
     expressServer.stop();
   });
 
-  process.on('uncaughtException', ex => {
+  process.on('uncaughtException', (ex) => {
     console.error('Unhandled Exception:', ex);
 
     expressServer.stop();
@@ -26,7 +27,8 @@ const catchErrors = (expressServer: typeof serverWrapper) => {
   });
 };
 
-serverWrapper.start()
+serverWrapper
+  .start()
   .then(catchErrors)
   .catch((err) => {
     console.error('Server start error: ', err);

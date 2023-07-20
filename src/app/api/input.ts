@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from "express";
-import addJobToQueue from "../queue/addJobToQueue";
-import { Ticket } from "../service/ticket";
-import redisClient from "../storage/redisService";
-import { RequestStorage } from "../service/requestStorage";
-import { QueueEnum } from "../types/QueueEnum";
+import { Request, Response, NextFunction } from 'express';
+import addJobToQueue from '../queue/addJobToQueue';
+import { Ticket } from '../service/ticket';
+import redisClient from '../storage/redisService';
+import { RequestStorage } from '../service/requestStorage';
+import { QueueEnum } from '../types/QueueEnum';
 
 const ticket = new Ticket(redisClient);
 const requestStorage = new RequestStorage(redisClient);

@@ -8,7 +8,7 @@ this is test project for fibonacci numbers
 ### run project in docker
 ```docker-compose build```
 
-```docker-compose up```
+```docker-compose up --build```
 
 ### test via curl
 POST data with number:

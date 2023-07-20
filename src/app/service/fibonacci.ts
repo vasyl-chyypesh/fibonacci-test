@@ -8,7 +8,7 @@ export class Fibonacci {
 
   getValueFor(inputNumber: number): number {
     if (!inputNumber || inputNumber < 0) {
-      throw new Error(`Invalid input number: ${inputNumber}`)
+      throw new Error(`Invalid input number: ${inputNumber}`);
     }
 
     if (inputNumber < this.list.length) {

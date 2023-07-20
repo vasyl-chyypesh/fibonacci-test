@@ -24,8 +24,8 @@ const start = async (queueName: string, messageHandler: (msg: Message, cb: any) 
         return resolve(consumer);
       });
     });
-  })
-}
+  });
+};
 
 const stop = async () => {
   if (!consumer.isRunning()) {
@@ -37,10 +37,10 @@ const stop = async () => {
       if (err) {
         return reject(err);
       }
-      return resolve(consumer)
-    })
+      return resolve(consumer);
+    });
   });
-}
+};
 
 const jobConsumer = { start, stop };
 

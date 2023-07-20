@@ -1,11 +1,13 @@
+import { IStorageClient } from './iStorageClient';
+
 export class RequestStorage {
   private storageClient;
 
-  constructor(storageClient: any) {
+  constructor(storageClient: IStorageClient) {
     this.storageClient = storageClient;
   }
 
-  private getStorageId (ticketId: number) {
+  private getStorageId(ticketId: number) {
     return `fib_request_${ticketId}`;
   }
 
@@ -18,7 +20,7 @@ export class RequestStorage {
   }
 
   updateRequestWithField(ticketId: number, field: string, value: any) {
-      return this.storageClient.executeIsolated(async (isolatedClient: any) => {
+    return this.storageClient.executeIsolated(async (isolatedClient: any) => {
       const prevValue = await isolatedClient.get(this.getStorageId(ticketId));
       const prevReq = JSON.parse(prevValue);
       const updatedData = Object.assign(prevReq, { [field]: value });

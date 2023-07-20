@@ -2,7 +2,7 @@ import http from 'http';
 import app from './app';
 import redisClient from './storage/redisService';
 import jobConsumer from './queue/jobConsumer';
-import {QueueEnum} from './types/QueueEnum';
+import { QueueEnum } from './types/QueueEnum';
 import jobHandler from './queue/jobHandler';
 
 const port = parseInt(process.env.PORT || '3000', 10);
@@ -20,7 +20,7 @@ const promisifyListen = (serverInstance: http.Server, options: any) => {
 };
 
 const storeConnections = (server: http.Server) => {
-  server.on('connection', conn => {
+  server.on('connection', (conn) => {
     const key = `${conn.remoteAddress}:${conn.remotePort}`;
     connections[key] = conn;
 
@@ -44,6 +44,7 @@ const serverWrapper = {
     await jobConsumer.start(QueueEnum.Fibonacci, jobHandler);
     await promisifyListen(server, { port });
 
+    // eslint-disable-next-line no-console
     console.log(`️[server]: Server is running at http://localhost:${port}`);
 
     storeConnections(server);
@@ -58,7 +59,7 @@ const serverWrapper = {
     await redisClient.disconnect();
 
     process.exit();
-  }
-}
+  },
+};
 
 export default serverWrapper;

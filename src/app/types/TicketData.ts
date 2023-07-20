@@ -1,5 +1,5 @@
 export type TicketData = {
-  inputNumber: number,
-  ticketId: number,
-  result?: number,
-}
+  inputNumber: number;
+  ticketId: number;
+  result?: number;
+};

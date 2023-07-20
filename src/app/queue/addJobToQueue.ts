@@ -22,7 +22,7 @@ const getProducer = async (queueName: string): Promise<Producer> => {
       return resolve(producer);
     });
   });
-}
+};
 
 const addJobToQueue = async (queueName: string, data: any) => {
   const producer = await getProducer(queueName);
@@ -38,6 +38,6 @@ const addJobToQueue = async (queueName: string, data: any) => {
       return resolve(message.getId());
     });
   });
-}
+};
 
 export default addJobToQueue;

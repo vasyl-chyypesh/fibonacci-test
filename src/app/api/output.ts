@@ -1,7 +1,7 @@
-import {NextFunction, Request, Response} from 'express';
-import {RequestStorage} from '../service/requestStorage';
+import { NextFunction, Request, Response } from 'express';
+import { RequestStorage } from '../service/requestStorage';
 import redisClient from '../storage/redisService';
-import {TicketData} from '../types/TicketData';
+import { TicketData } from '../types/TicketData';
 
 const requestStorage = new RequestStorage(redisClient);
 
@@ -26,6 +26,6 @@ const output = async (req: Request, res: Response, next: NextFunction) => {
   } catch (err) {
     next(err);
   }
-}
+};
 
 export default output;

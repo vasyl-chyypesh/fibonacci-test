@@ -38,6 +38,6 @@ const getQueue = (queueName: string): Promise<QueueManager> => {
       });
     });
   });
-}
+};
 
 export default getQueue;
