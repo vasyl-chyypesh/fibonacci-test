@@ -7,19 +7,33 @@ services:
     restart: unless-stopped
     environment:
       - PORT=3000
-      - REDIS_URL=redis
-      - REDIS_PORT=6379
+      - REDIS_URL=redis:6379
+      - RABBIT_URL=amqp://rabbitmq:5672
     ports:
-      - "3000:3000"
+      - 3000:3000
     depends_on:
       - redis
+      - rabbitmq
     networks:
       - fib_network
+
   redis:
     container_name: fib_redis
-    image: redis:7.0.4-alpine
+    image: redis:7.0.12-alpine
     expose:
       - 6379
+    networks:
+      - fib_network
+  
+  rabbitmq:
+    container_name: fib_rabbitmq
+    image: rabbitmq:3.12.2-alpine
+    expose:
+      - 5672
+      - 15672
+    ports:
+      - 5672:5672
+      - 15672:15672
     networks:
       - fib_network
 

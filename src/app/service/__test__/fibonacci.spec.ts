@@ -6,7 +6,7 @@ describe('Fibonacci', () => {
 
     const result = fibonacci.getValueFor(1);
 
-    expect(result).toBe(1);
+    expect(result).toBe(1n);
   });
 
   test('getValueFor should return 13 for 7', () => {
@@ -14,7 +14,7 @@ describe('Fibonacci', () => {
 
     const result = fibonacci.getValueFor(7);
 
-    expect(result).toBe(13);
+    expect(result).toBe(13n);
   });
 
   test('getValueFor should throw error', () => {

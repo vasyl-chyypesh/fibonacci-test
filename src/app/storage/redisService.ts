@@ -1,8 +1,22 @@
-import { createClient } from 'redis';
+import { IStorageService } from '../service/IStorageService';
+import { RedisClient } from './redisClient';
 
-const redisClient = createClient({ url: `redis://${process.env.REDIS_URL}:6379` });
+export class RedisService implements IStorageService {
+  private readonly redisClient: any;
 
-// eslint-disable-next-line no-console
-redisClient.on('error', (err) => console.error('Redis client error', err));
+  constructor(redisClient: RedisClient) {
+    this.redisClient = redisClient;
+  }
 
-export default redisClient;
+  set(key: string, value: string): Promise<string> {
+    return this.redisClient.set(key, value);
+  }
+
+  get(key: string): Promise<string> {
+    return this.redisClient.get(key);
+  }
+
+  executeIsolated(func: (client: any) => Promise<void>): void {
+    return this.redisClient.executeIsolated(func);
+  }
+}

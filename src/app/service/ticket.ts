@@ -1,12 +1,22 @@
+import { IStorageService } from './IStorageService';
+
 export class Ticket {
   private storageClient;
   private readonly storageName = 'ticket';
 
-  constructor(storageClient: any) {
+  constructor(storageClient: IStorageService) {
     this.storageClient = storageClient;
   }
 
   async getTicket(): Promise<number> {
-    return this.storageClient.INCR(this.storageName);
+    let newValue = 1;
+    await this.storageClient.executeIsolated(async (isolatedClient: any) => {
+      const prevValue = await isolatedClient.get(this.storageName);
+      if (prevValue) {
+        newValue = parseInt(prevValue, 10) + 1;
+      }
+      await isolatedClient.set(this.storageName, newValue.toString());
+    });
+    return newValue;
   }
 }

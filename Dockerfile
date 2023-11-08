@@ -1,5 +1,5 @@
 #builder image
-FROM node:18.16.1-alpine AS builder
+FROM node:20.9.0-alpine AS builder
 WORKDIR /usr/src/app
 COPY package.json ./
 COPY tsconfig.json ./
@@ -8,7 +8,7 @@ COPY ./src ./src
 RUN npm run build
 
 #final image
-FROM node:18.16.1-alpine
+FROM node:20.9.0-alpine
 WORKDIR /usr/src/app
 RUN chown node:node .
 COPY package.json ./

@@ -1,9 +1,9 @@
 import http from 'http';
 import app from './app';
-import redisClient from './storage/redisService';
-import jobConsumer from './queue/jobConsumer';
+import { getRedisClient } from './storage/redisClient';
 import { QueueEnum } from './types/QueueEnum';
 import jobHandler from './queue/jobHandler';
+import { QueueHandler } from './queue/queueHandler';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 
@@ -40,8 +40,10 @@ const releaseConnections = () => {
 
 const serverWrapper = {
   async start() {
-    await redisClient.connect();
-    await jobConsumer.start(QueueEnum.Fibonacci, jobHandler);
+    await getRedisClient();
+    const queueHandler = new QueueHandler(process.env.RABBIT_URL as string);
+    queueHandler.attachJobHandlerToQueue(QueueEnum.Fibonacci, jobHandler);
+
     await promisifyListen(server, { port });
 
     // eslint-disable-next-line no-console
@@ -54,9 +56,7 @@ const serverWrapper = {
 
   async stop() {
     releaseConnections();
-
-    await jobConsumer.stop();
-    await redisClient.disconnect();
+    await (await getRedisClient()).disconnect();
 
     process.exit();
   },

@@ -1,9 +1,9 @@
-import { IStorageClient } from './iStorageClient';
+import { IStorageService } from './IStorageService';
 
 export class RequestStorage {
   private storageClient;
 
-  constructor(storageClient: IStorageClient) {
+  constructor(storageClient: IStorageService) {
     this.storageClient = storageClient;
   }
 

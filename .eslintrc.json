@@ -1,6 +1,9 @@
 {
     "root": true,
     "parser": "@typescript-eslint/parser",
+    "parserOptions": { 
+      "project": "./tsconfig.json"
+    },
     "plugins": [
       "@typescript-eslint"
     ],
@@ -9,6 +12,13 @@
       "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-      "no-console": "error"
+      "no-console": "error",
+      "@typescript-eslint/no-explicit-any": "warn"
+    },
+  "overrides": [
+    {
+      "extends": ["plugin:@typescript-eslint/disable-type-checked"],
+      "files": ["./src/**/*.spec.ts"]
     }
-  }
+  ]
+}
