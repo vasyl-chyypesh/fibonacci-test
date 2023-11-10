@@ -5,6 +5,6 @@ export class Logger {
   }
 
   public static error(...args: any[]) {
-    console.error(`[${new Date().toISOString()}] Error: `, ...args);
+    console.error(`[${new Date().toISOString()}] Error:`, ...args);
   }
 }

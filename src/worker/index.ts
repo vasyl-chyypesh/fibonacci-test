@@ -12,7 +12,7 @@ const startConsume = async () => {
 
 startConsume()
   .then(() => {
-    Logger.log('Started consuming: ', QueueEnum.Fibonacci);
+    Logger.log('Started consuming:', QueueEnum.Fibonacci);
   })
   .catch((err) => {
     Logger.log('Error on starting consuming');

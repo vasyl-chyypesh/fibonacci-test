@@ -1,20 +1,22 @@
-# fibonacci-test
+# Fibonacci fun project
 
-this is test project for fibonacci numbers
+This is test project for fibonacci numbers.
 
-### requirements
+### Requirements
 - docker ([download](https://docs.docker.com/get-docker/))
 
-### run project in docker
+### Run project in docker
 ```docker-compose build```
 
 ```docker-compose up --build```
 
-### test via curl
+### Test via curl
 POST data with number:
 
 ```curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input```
 
-GET data by tickerId:
+It will send response with ticket id in body: `{ "ticket": 1 }`
+
+GET data by ticket id:
 
 ```curl http://localhost:3000/output/1```

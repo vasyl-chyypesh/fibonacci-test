@@ -7,12 +7,12 @@ import { Logger } from '../app/utils/logger';
 const fibonacci = new Fibonacci();
 
 const jobHandler = async (msg: ConsumeMessage) => {
-  Logger.log('jobHandler retrieved: ', msg.content.toString());
+  Logger.log('jobHandler retrieved:', msg.content.toString());
   const { ticketId, inputNumber } = JSON.parse(msg.content.toString()) as TicketData;
 
-  Logger.log('jobHandler is starting calculate Fibonacci for: ', inputNumber);
+  Logger.log('jobHandler is starting calculate Fibonacci for:', inputNumber);
   const result = await fibonacci.getValueFor(inputNumber);
-  Logger.log('jobHandler finished calculate Fibonacci for: ', inputNumber);
+  Logger.log('jobHandler finished calculate Fibonacci for:', inputNumber);
 
   const requestStorage = await getRequestStorageInstance();
   await requestStorage.updateRequestWithField(ticketId, 'result', result.toString());
