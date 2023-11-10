@@ -1,4 +1,4 @@
-import { IStorageService } from './IStorageService';
+import { IStorageService } from '../service/IStorageService';
 
 export class RequestStorage {
   private storageClient;

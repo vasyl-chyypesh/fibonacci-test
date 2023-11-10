@@ -1,6 +1,6 @@
 import { RequestStorage } from './requestStorage';
-import { getRedisClient } from '../storage/redisClient';
-import { RedisService } from '../storage/redisService';
+import { getRedisClient } from './redisClient';
+import { RedisService } from './redisService';
 
 let _requestStorage: RequestStorage;
 

@@ -1,9 +1,7 @@
 import http from 'http';
 import app from './app';
-import { getRedisClient } from './storage/redisClient';
-import { QueueEnum } from './types/QueueEnum';
-import jobHandler from './queue/jobHandler';
-import { QueueHandler } from './queue/queueHandler';
+import { getRedisClient, disconnectClient } from './storage/redisClient';
+import { Logger } from './utils/logger';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 
@@ -41,13 +39,10 @@ const releaseConnections = () => {
 const serverWrapper = {
   async start() {
     await getRedisClient();
-    const queueHandler = new QueueHandler(process.env.RABBIT_URL as string);
-    queueHandler.attachJobHandlerToQueue(QueueEnum.Fibonacci, jobHandler);
 
     await promisifyListen(server, { port });
 
-    // eslint-disable-next-line no-console
-    console.log(`️[server]: Server is running at http://localhost:${port}`);
+    Logger.log(`️Server is running at PORT: ${port}`);
 
     storeConnections(server);
 
@@ -56,7 +51,9 @@ const serverWrapper = {
 
   async stop() {
     releaseConnections();
-    await (await getRedisClient()).disconnect();
+    await disconnectClient();
+
+    Logger.log('Connections are closed. Process is exiting');
 
     process.exit();
   },

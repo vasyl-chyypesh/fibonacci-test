@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { TicketData } from '../types/TicketData';
-import getRequestStorageInstance from '../service/getRequestStorageInstance';
+import getRequestStorageInstance from '../storage/getRequestStorageInstance';
 
 const output = async (req: Request, res: Response, next: NextFunction) => {
   try {

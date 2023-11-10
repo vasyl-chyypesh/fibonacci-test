@@ -3,7 +3,7 @@ import { Ticket } from '../service/ticket';
 import { QueueEnum } from '../types/QueueEnum';
 import { RedisService } from '../storage/redisService';
 import { getRedisClient } from '../storage/redisClient';
-import getRequestStorageInstance from '../service/getRequestStorageInstance';
+import getRequestStorageInstance from '../storage/getRequestStorageInstance';
 import { QueueHandler } from '../queue/queueHandler';
 
 let _ticket: Ticket;
