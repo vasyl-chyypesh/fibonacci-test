@@ -11,6 +11,25 @@ services:
       - RABBIT_URL=amqp://rabbitmq:5672
     ports:
       - 3000:3000
+    volumes:
+      - ./wait-for-service.sh:/usr/src/app/wait-for-service.sh/
+    command: sh -c "sh ./wait-for-service.sh rabbitmq 5672 && node dist/app/index.js"
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - fib_network
+
+  worker:
+    build: .
+    container_name: fib_worker
+    restart: unless-stopped
+    environment:
+      - REDIS_URL=redis:6379
+      - RABBIT_URL=amqp://rabbitmq:5672
+    volumes:
+      - ./wait-for-service.sh:/usr/src/app/wait-for-service.sh/
+    command: sh -c "sh ./wait-for-service.sh rabbitmq 5672 && node dist/worker/index.js"
     depends_on:
       - redis
       - rabbitmq
@@ -19,7 +38,7 @@ services:
 
   redis:
     container_name: fib_redis
-    image: redis:7.0.12-alpine
+    image: redis:7.2.3-alpine
     expose:
       - 6379
     networks:
@@ -27,7 +46,7 @@ services:
   
   rabbitmq:
     container_name: fib_rabbitmq
-    image: rabbitmq:3.12.2-alpine
+    image: rabbitmq:3.12.8-alpine
     expose:
       - 5672
       - 15672
