@@ -20,3 +20,5 @@ It will send response with ticket id in body: `{ "ticket": 1 }`
 GET data by ticket id:
 
 ```curl http://localhost:3000/output/1```
+
+It will send response with result data in body: `{ "ticket": 1, "result": "13" }`

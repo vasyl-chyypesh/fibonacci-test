@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "test project for fibonacci numbers",
   "main": "dist/app/index.js",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
     "prepare": "husky install",
     "scan:secrets": "ggshield secret scan path -y -r .",
