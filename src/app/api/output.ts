@@ -15,12 +15,12 @@ const output = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(404).json({ message: `Not found data for ticket: ${ticket}` });
     }
 
-    const { result } = JSON.parse(reqData) as TicketData;
+    const { result, inputNumber } = JSON.parse(reqData) as TicketData;
     if (!result) {
       return res.status(404).json({ message: `Not found result for ticket: ${ticket}` });
     }
 
-    res.status(200).json({ ticket, fibonacci: result });
+    res.status(200).json({ ticket, inputNumber, fibonacci: result });
   } catch (err) {
     next(err);
   }

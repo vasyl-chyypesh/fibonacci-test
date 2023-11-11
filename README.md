@@ -21,4 +21,4 @@ GET data by ticket id:
 
 ```curl http://localhost:3000/output/1```
 
-It will send response with result data in body: `{ "ticket": 1, "result": "13" }`
+It will send response with result data in body: `{ "ticket": 1, "inputNumber": 7, "result": "13" }`
