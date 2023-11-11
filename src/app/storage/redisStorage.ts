@@ -1,7 +1,7 @@
-import { IStorageService } from '../service/IStorageService';
+import { IStorage } from '../types/IStorage';
 import { RedisClient } from './redisClient';
 
-export class RedisService implements IStorageService {
+export class RedisStorage implements IStorage {
   private readonly redisClient: any;
 
   constructor(redisClient: RedisClient) {

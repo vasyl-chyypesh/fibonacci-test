@@ -13,7 +13,7 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 
 router.post('/input', input);
 
-router.get('/output/:id', output);
+router.get('/output/:ticket', output);
 
 router.use((req, res) => {
   res.status(404).json({ message: 'PAGE NOT FOUND' });

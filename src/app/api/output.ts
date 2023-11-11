@@ -1,26 +1,26 @@
 import { NextFunction, Request, Response } from 'express';
 import { TicketData } from '../types/TicketData';
-import getRequestStorageInstance from '../storage/getRequestStorageInstance';
+import getRequestServiceInstance from '../service/getRequestServiceInstance';
 
 const output = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const ticketId = parseInt(req.params.id, 10);
-    if (!Number.isInteger(ticketId) || ticketId < 1) {
-      return res.status(400).json({ message: `Not valid ticketId: ${ticketId}` });
+    const ticket = parseInt(req.params.ticket, 10);
+    if (!Number.isInteger(ticket) || ticket < 1) {
+      return res.status(400).json({ message: `Not valid ticket: ${ticket}` });
     }
 
-    const requestStorage = await getRequestStorageInstance();
-    const reqData = await requestStorage.getRequest(ticketId);
+    const requestStorage = await getRequestServiceInstance();
+    const reqData = await requestStorage.getRequest(ticket);
     if (!reqData) {
-      return res.status(404).json({ message: `Not found data for ticket: ${ticketId}` });
+      return res.status(404).json({ message: `Not found data for ticket: ${ticket}` });
     }
 
     const { result } = JSON.parse(reqData) as TicketData;
     if (!result) {
-      return res.status(404).json({ message: `Not found result for ticket: ${ticketId}` });
+      return res.status(404).json({ message: `Not found result for ticket: ${ticket}` });
     }
 
-    res.status(200).json({ fibonacci: result });
+    res.status(200).json({ ticket, fibonacci: result });
   } catch (err) {
     next(err);
   }

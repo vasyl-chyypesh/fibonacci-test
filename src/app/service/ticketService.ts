@@ -1,16 +1,16 @@
-import { IStorageService } from './IStorageService';
+import { IStorage } from '../types/IStorage';
 
-export class Ticket {
-  private storageClient;
+export class TicketService {
+  private storageService;
   private readonly storageName = 'ticket';
 
-  constructor(storageClient: IStorageService) {
-    this.storageClient = storageClient;
+  constructor(storageService: IStorage) {
+    this.storageService = storageService;
   }
 
   async getTicket(): Promise<number> {
     let newValue = 1;
-    await this.storageClient.executeIsolated(async (isolatedClient: any) => {
+    await this.storageService.executeIsolated(async (isolatedClient: any) => {
       const prevValue = await isolatedClient.get(this.storageName);
       if (prevValue) {
         newValue = parseInt(prevValue, 10) + 1;

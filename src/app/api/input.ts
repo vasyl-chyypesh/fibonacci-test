@@ -1,21 +1,8 @@
 import { Request, Response, NextFunction } from 'express';
-import { Ticket } from '../service/ticket';
 import { QueueEnum } from '../types/QueueEnum';
-import { RedisService } from '../storage/redisService';
-import { getRedisClient } from '../storage/redisClient';
-import getRequestStorageInstance from '../storage/getRequestStorageInstance';
 import { QueueHandler } from '../queue/queueHandler';
-
-let _ticket: Ticket;
-
-const getTicketInstance = async (): Promise<Ticket> => {
-  if (!_ticket) {
-    const redisClient = await getRedisClient();
-    const redisService = new RedisService(redisClient);
-    _ticket = new Ticket(redisService);
-  }
-  return _ticket;
-};
+import getRequestServiceInstance from '../service/getRequestServiceInstance';
+import getTicketServiceInstance from '../service/getTicketServiceInstance';
 
 const queueHandler = new QueueHandler(process.env.RABBIT_URL as string);
 
@@ -32,12 +19,15 @@ const input = async (req: Request, res: Response, next: NextFunction) => {
         .json({ message: `Not valid input data: ${inputNumber} (should be in range 1..${Number.MAX_SAFE_INTEGER})` });
     }
 
-    const ticket = await getTicketInstance();
-    const ticketId = await ticket.getTicket();
-    const requestStorage = await getRequestStorageInstance();
-    await requestStorage.addRequest(ticketId, inputNumber);
-    await queueHandler.addJobToQueue(QueueEnum.Fibonacci, { ticketId, inputNumber });
-    res.status(200).json({ ticket: ticketId });
+    const ticketService = await getTicketServiceInstance();
+    const ticket = await ticketService.getTicket();
+
+    const requestService = await getRequestServiceInstance();
+    await requestService.addRequest(ticket, inputNumber);
+
+    await queueHandler.addJobToQueue(QueueEnum.Fibonacci, { ticket, inputNumber });
+
+    res.status(200).json({ ticket });
   } catch (err) {
     next(err);
   }

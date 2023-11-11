@@ -1,5 +1,5 @@
 export type TicketData = {
   inputNumber: number;
-  ticketId: number;
+  ticket: number;
   result?: string; // bigint into string
 };
