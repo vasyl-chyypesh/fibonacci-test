@@ -2,7 +2,7 @@ import { ConsumeMessage } from 'amqplib';
 import { Fibonacci } from './fibonacci';
 import { Logger } from '../app/utils/logger';
 import { TicketData } from '../app/types/TicketData';
-import getRequestServiceInstance from '../app/service/getRequestServiceInstance';
+import { ServiceFactory, ClassName, RequestService } from '../app/service/serviceFactory';
 
 const fibonacci = new Fibonacci();
 
@@ -14,7 +14,7 @@ const jobHandler = async (msg: ConsumeMessage) => {
   const result = await fibonacci.getValueFor(inputNumber);
   Logger.log('jobHandler finished calculate Fibonacci for:', inputNumber);
 
-  const requestService = await getRequestServiceInstance();
+  const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
   await requestService.updateRequestWithField(ticket, 'result', result.toString());
 };
 

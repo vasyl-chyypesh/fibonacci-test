@@ -1,8 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { QueueEnum } from '../types/QueueEnum';
 import { QueueHandler } from '../queue/queueHandler';
-import getRequestServiceInstance from '../service/getRequestServiceInstance';
-import getTicketServiceInstance from '../service/getTicketServiceInstance';
+import { ServiceFactory, ClassName, TicketService, RequestService } from '../service/serviceFactory';
 
 const queueHandler = new QueueHandler(process.env.RABBIT_URL as string);
 
@@ -19,10 +18,10 @@ const input = async (req: Request, res: Response, next: NextFunction) => {
         .json({ message: `Not valid input data: ${inputNumber} (should be in range 1..${Number.MAX_SAFE_INTEGER})` });
     }
 
-    const ticketService = await getTicketServiceInstance();
+    const ticketService = await ServiceFactory.getInstanceOfClass<TicketService>(ClassName.TicketService);
     const ticket = await ticketService.getTicket();
 
-    const requestService = await getRequestServiceInstance();
+    const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
     await requestService.addRequest(ticket, inputNumber);
 
     await queueHandler.addJobToQueue(QueueEnum.Fibonacci, { ticket, inputNumber });

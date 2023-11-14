@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { TicketData } from '../types/TicketData';
-import getRequestServiceInstance from '../service/getRequestServiceInstance';
+import { ServiceFactory, ClassName, RequestService } from '../service/serviceFactory';
 
 const output = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -9,8 +9,8 @@ const output = async (req: Request, res: Response, next: NextFunction) => {
       return res.status(400).json({ message: `Not valid ticket: ${ticket}` });
     }
 
-    const requestStorage = await getRequestServiceInstance();
-    const reqData = await requestStorage.getRequest(ticket);
+    const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
+    const reqData = await requestService.getRequest(ticket);
     if (!reqData) {
       return res.status(404).json({ message: `Not found data for ticket: ${ticket}` });
     }
