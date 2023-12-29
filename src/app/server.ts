@@ -1,6 +1,6 @@
 import http from 'http';
 import app from './app';
-import { getRedisClient, disconnectClient } from './storage/redisClient';
+import { disconnectClient } from './storage/redisClient';
 import { Logger } from './utils/logger';
 
 const port = parseInt(process.env.PORT || '3000', 10);
@@ -38,8 +38,6 @@ const releaseConnections = () => {
 
 const serverWrapper = {
   async start() {
-    await getRedisClient();
-
     await promisifyListen(server, { port });
 
     Logger.log(`️Server is running at PORT: ${port}`);
