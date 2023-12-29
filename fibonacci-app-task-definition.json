@@ -1,5 +1,5 @@
 {
-  "taskDefinitionArn": "arn:aws:ecs:eu-north-1:618432681228:task-definition/fibonacci-app-task-definition:1",
+  "taskRoleArn": "arn:aws:iam::618432681228:role/ecsTaskExecutionRole",
   "containerDefinitions": [
       {
           "name": "fibonacci-app",
@@ -72,8 +72,8 @@
   "requiresCompatibilities": [
       "FARGATE"
   ],
-  "cpu": "1024",
-  "memory": "2048",
+  "cpu": "512",
+  "memory": "1024",
   "runtimePlatform": {
       "cpuArchitecture": "X86_64",
       "operatingSystemFamily": "LINUX"
