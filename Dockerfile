@@ -1,20 +1,20 @@
 #builder image
-FROM node:20.10.0-alpine AS builder
-WORKDIR /usr/src/app
-COPY package.json ./
+FROM node:20.11.0-alpine AS builder
+WORKDIR /usr/app
+COPY package*.json ./
 COPY tsconfig.json ./
 RUN npm install
 COPY ./src ./src
 RUN npm run build
 
 #final image
-FROM node:20.10.0-alpine
-WORKDIR /usr/src/app
+FROM node:20.11.0-alpine
+WORKDIR /usr/app
 RUN chown node:node .
-COPY package.json ./
+COPY package*.json ./
 COPY tsconfig.json ./
-RUN npm install
-COPY --from=builder /usr/src/app/dist ./dist
+RUN npm install --production
+COPY --from=builder /usr/app/dist ./dist
 
 USER node
 EXPOSE 3000
