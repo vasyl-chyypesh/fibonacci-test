@@ -4,7 +4,9 @@ import { RequestService } from './requestService';
 import { TicketService } from './ticketService';
 
 export class ServiceFactory {
-  public static async getInstanceOfClass<T>(className: ClassName): Promise<T> {
+  public static async getInstanceOfClass<T extends TicketService | RequestService | RedisStorage>(
+    className: ClassName,
+  ): Promise<T> {
     switch (className) {
       case ClassName.TicketService: {
         const redisStorage = await ServiceFactory.getInstanceOfClass<RedisStorage>(ClassName.RedisStorage);
