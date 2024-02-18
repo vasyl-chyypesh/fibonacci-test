@@ -4,8 +4,9 @@
   "description": "test project for fibonacci numbers",
   "main": "dist/app/index.js",
   "engines": {
-    "node": ">=20.10.0"
+    "node": ">=21.6.2"
   },
+  "type": "module",
   "scripts": {
     "prepare": "husky || true",
     "scan:secrets": "ggshield secret scan path -y -r .",
@@ -15,8 +16,8 @@
     "lint:dockerfile": "docker run --rm -i hadolint/hadolint < Dockerfile",
     "build": "rm -rf dist && tsc",
     "start": "node dist/app/index.js",
-    "test": "jest",
-    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.ts' --coverageReporters='text-summary'"
+    "test": "node --import tsx --test 'src/**/*.test.ts'",
+    "test:coverage": "node --import tsx --test --experimental-test-coverage 'src/**/*.test.ts'"
   },
   "repository": {
     "type": "git",
@@ -38,15 +39,13 @@
     "@commitlint/config-conventional": "^18.6.1",
     "@types/amqplib": "^0.10.4",
     "@types/express": "^4.17.21",
-    "@types/jest": "^29.5.12",
-    "@types/node": "^20.11.17",
+    "@types/node": "^20.11.19",
     "@typescript-eslint/eslint-plugin": "^7.0.1",
     "@typescript-eslint/parser": "^7.0.1",
     "eslint": "^8.56.0",
     "husky": "^9.0.11",
-    "jest": "^29.7.0",
     "prettier": "^3.2.5",
-    "ts-jest": "^29.1.2",
+    "tsx": "^4.7.1",
     "typescript": "^5.3.3"
   }
 }

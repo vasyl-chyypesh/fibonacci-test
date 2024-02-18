@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
-import { QueueEnum } from '../types/QueueEnum';
-import { QueueHandler } from '../queue/queueHandler';
-import { ServiceFactory, ClassName, TicketService, RequestService } from '../service/serviceFactory';
+import { QueueEnum } from '../types/QueueEnum.js';
+import { QueueHandler } from '../queue/queueHandler.js';
+import { ServiceFactory, ClassName, TicketService, RequestService } from '../service/serviceFactory.js';
 
 const queueHandler = new QueueHandler(process.env.RABBIT_URL as string);
 

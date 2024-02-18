@@ -1,5 +1,5 @@
 import { createClient, RedisClientType } from 'redis';
-import { Logger } from '../utils/logger';
+import { Logger } from '../utils/logger.js';
 
 let redisClient: RedisClient | undefined;
 

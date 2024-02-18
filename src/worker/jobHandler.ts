@@ -1,8 +1,8 @@
 import { ConsumeMessage } from 'amqplib';
-import { Fibonacci } from './fibonacci';
-import { Logger } from '../app/utils/logger';
-import { TicketData } from '../app/types/TicketData';
-import { ServiceFactory, ClassName, RequestService } from '../app/service/serviceFactory';
+import { Fibonacci } from './fibonacci.js';
+import { Logger } from '../app/utils/logger.js';
+import { TicketData } from '../app/types/TicketData.js';
+import { ServiceFactory, ClassName, RequestService } from '../app/service/serviceFactory.js';
 
 const fibonacci = new Fibonacci();
 

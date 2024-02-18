@@ -1,7 +1,7 @@
-import { QueueHandler } from '../app/queue/queueHandler';
-import { QueueEnum } from '../app/types/QueueEnum';
-import { Logger } from '../app/utils/logger';
-import jobHandler from './jobHandler';
+import { QueueHandler } from '../app/queue/queueHandler.js';
+import { QueueEnum } from '../app/types/QueueEnum.js';
+import { Logger } from '../app/utils/logger.js';
+import jobHandler from './jobHandler.js';
 
 const startConsume = async () => {
   const queueHandler = new QueueHandler(process.env.RABBIT_URL as string);

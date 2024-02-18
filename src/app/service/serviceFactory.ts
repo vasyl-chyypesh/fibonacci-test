@@ -1,7 +1,7 @@
-import { getRedisClient } from '../storage/redisClient';
-import { RedisStorage } from '../storage/redisStorage';
-import { RequestService } from './requestService';
-import { TicketService } from './ticketService';
+import { getRedisClient } from '../storage/redisClient.js';
+import { RedisStorage } from '../storage/redisStorage.js';
+import { RequestService } from './requestService.js';
+import { TicketService } from './ticketService.js';
 
 export class ServiceFactory {
   public static async getInstanceOfClass<T extends TicketService | RequestService | RedisStorage>(

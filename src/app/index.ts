@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import serverWrapper from './server';
+import serverWrapper from './server.js';
 
 const catchErrors = (expressServer: typeof serverWrapper) => {
   process.on('unhandledRejection', (reason) => {

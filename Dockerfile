@@ -1,5 +1,6 @@
-#builder image
-FROM node:20.11.0-alpine AS builder
+# official node images: https://hub.docker.com/_/node/
+# builder image
+FROM node:21.6.2-alpine AS builder
 WORKDIR /usr/app
 COPY package*.json ./
 COPY tsconfig.json ./
@@ -7,8 +8,8 @@ RUN npm install
 COPY ./src ./src
 RUN npm run build
 
-#final image
-FROM node:20.11.0-alpine
+# final image
+FROM node:21.6.2-alpine
 WORKDIR /usr/app
 RUN chown node:node .
 COPY package*.json ./

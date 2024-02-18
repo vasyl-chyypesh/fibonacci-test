@@ -1,4 +1,6 @@
-import { Fibonacci } from '../fibonacci';
+import { describe, test } from 'node:test';
+import assert from 'node:assert';
+import { Fibonacci } from '../fibonacci.js';
 
 describe('Fibonacci', () => {
   test('getValueFor should return 1 for 1', async () => {
@@ -6,7 +8,7 @@ describe('Fibonacci', () => {
 
     const result = await fibonacci.getValueFor(1);
 
-    expect(result).toBe(1n);
+    assert.strictEqual(result, 1n);
   });
 
   test('getValueFor should return 13 for 7', async () => {
@@ -14,7 +16,7 @@ describe('Fibonacci', () => {
 
     const result = await fibonacci.getValueFor(7);
 
-    expect(result).toBe(13n);
+    assert.strictEqual(result, 13n);
   });
 
   test('getValueFor should return 21 for 9', async () => {
@@ -22,14 +24,14 @@ describe('Fibonacci', () => {
 
     const result = await fibonacci.getValueFor(9);
 
-    expect(result).toBe(34n);
+    assert.strictEqual(result, 34n);
   });
 
   test('getValueFor should throw error', async () => {
     const fibonacci = new Fibonacci();
 
-    expect(() => {
+    assert.throws(() => {
       fibonacci.getValueFor(-1);
-    }).toThrow('Invalid input number: -1');
+    }, /Invalid input number: -1/);
   });
 });

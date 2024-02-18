@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import { TicketData } from '../types/TicketData';
-import { ServiceFactory, ClassName, RequestService } from '../service/serviceFactory';
+import { TicketData } from '../types/TicketData.js';
+import { ServiceFactory, ClassName, RequestService } from '../service/serviceFactory.js';
 
 const output = async (req: Request, res: Response, next: NextFunction) => {
   try {

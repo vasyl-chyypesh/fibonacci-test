@@ -1,5 +1,5 @@
-import { IStorage } from '../types/IStorage';
-import { RedisClient } from './redisClient';
+import { IStorage } from '../types/IStorage.js';
+import { RedisClient } from './redisClient.js';
 
 export class RedisStorage implements IStorage {
   private readonly redisClient: RedisClient;

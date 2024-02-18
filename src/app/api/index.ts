@@ -1,7 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
-import input from './input';
-import output from './output';
-import { Logger } from '../utils/logger';
+import input from './input.js';
+import output from './output.js';
+import { Logger } from '../utils/logger.js';
 
 const router = Router();
 

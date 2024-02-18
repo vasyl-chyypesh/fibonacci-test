@@ -1,4 +1,4 @@
-import { IStorage } from '../types/IStorage';
+import { IStorage } from '../types/IStorage.js';
 
 export class TicketService {
   private storageService;

@@ -1,7 +1,7 @@
 import http from 'http';
-import app from './app';
-import { disconnectClient } from './storage/redisClient';
-import { Logger } from './utils/logger';
+import app from './app.js';
+import { disconnectClient } from './storage/redisClient.js';
+import { Logger } from './utils/logger.js';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 
