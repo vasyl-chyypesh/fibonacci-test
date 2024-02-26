@@ -111,3 +111,8 @@ dist
 
 # GitGuardian ggshield cache
 .cache_ggshield
+
+# SAST scanners
+.scannerwork/
+reports/
+.dccache
