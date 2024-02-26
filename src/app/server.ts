@@ -1,15 +1,16 @@
 import http from 'http';
+import { ListenOptions, Socket } from 'node:net';
 import app from './app.js';
 import { disconnectClient } from './storage/redisClient.js';
 import { Logger } from './utils/logger.js';
 
 const port = parseInt(process.env.PORT || '3000', 10);
 
-const connections: { [k: string]: any } = {};
+const connections = new Map<string, Socket>();
 
 const server = http.createServer(app);
 
-const promisifyListen = (serverInstance: http.Server, options: any) => {
+const promisifyListen = (serverInstance: http.Server, options: ListenOptions) => {
   return new Promise((resolve) => {
     serverInstance.listen(options, () => {
       return resolve(serverInstance);
@@ -18,12 +19,12 @@ const promisifyListen = (serverInstance: http.Server, options: any) => {
 };
 
 const storeConnections = (server: http.Server) => {
-  server.on('connection', (conn) => {
+  server.on('connection', (conn: Socket) => {
     const key = `${conn.remoteAddress}:${conn.remotePort}`;
-    connections[key] = conn;
+    connections.set(key, conn);
 
     conn.on('close', () => {
-      delete connections[key];
+      connections.delete(key);
     });
   });
 };
@@ -31,9 +32,9 @@ const storeConnections = (server: http.Server) => {
 const releaseConnections = () => {
   server.close();
 
-  for (const key in connections) {
-    connections[key].destroy();
-  }
+  connections.forEach((conn) => {
+    conn.destroy();
+  });
 };
 
 const serverWrapper = {

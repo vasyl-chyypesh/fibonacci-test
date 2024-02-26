@@ -12,7 +12,8 @@ export class Fibonacci {
     }
 
     if (inputNumber < this.list.length) {
-      return Promise.resolve(this.list[inputNumber]);
+      const alreadyCalculated = this.list.at(inputNumber) as bigint;
+      return Promise.resolve(alreadyCalculated);
     }
 
     return this.calculateValue(inputNumber);
