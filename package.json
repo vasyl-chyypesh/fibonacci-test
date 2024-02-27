@@ -1,6 +1,6 @@
 {
   "name": "fibonacci-test",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "test project for fibonacci numbers",
   "main": "dist/app/index.js",
   "engines": {
