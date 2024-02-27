@@ -4,7 +4,7 @@ FROM node:21.6.2-alpine AS builder
 WORKDIR /usr/app
 COPY package*.json ./
 COPY tsconfig.json ./
-RUN npm install
+RUN npm install --ignore-scripts
 COPY ./src ./src
 RUN npm run build
 
@@ -14,7 +14,7 @@ WORKDIR /usr/app
 RUN chown node:node .
 COPY package*.json ./
 COPY tsconfig.json ./
-RUN npm install --production
+RUN npm install --production --ignore-scripts
 COPY --from=builder /usr/app/dist ./dist
 
 USER node
