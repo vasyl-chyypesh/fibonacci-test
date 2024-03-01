@@ -44,6 +44,11 @@ jobs:
 
       - name: Run test
         run: npm test
+      
+      - name: Run security scan (bearer cli)
+        uses: bearer/bearer-action@v2
+        with:
+          severity: critical,high,medium,low
 
   build:
     runs-on: ubuntu-latest
