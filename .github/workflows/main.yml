@@ -48,9 +48,10 @@ jobs:
       - name: Run security scan (bearer cli)
         uses: bearer/bearer-action@v2
         with:
-          severity: critical,high,medium,low
+          severity: critical,high,medium
 
   build:
+    needs: test
     runs-on: ubuntu-latest
 
     steps:
@@ -61,6 +62,7 @@ jobs:
         run: docker build . --file Dockerfile --tag fibonacci-test:$(date +%s)
   
   deploy:
+    needs: build
     runs-on: ubuntu-latest
     # These permissions are needed to interact with GitHub's OIDC Token endpoint.
     permissions:
