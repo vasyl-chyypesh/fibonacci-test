@@ -1,24 +1,33 @@
 # Fibonacci fun project
 
-This is test project for fibonacci numbers.
+Test Project for Fibonacci Numbers.
 
 ### Requirements
-- docker ([download](https://docs.docker.com/get-docker/))
+- Git ([download](https://git-scm.com/downloads))
+- Docker ([download](https://docs.docker.com/get-docker/))
 
 ### Run project in docker
-```docker-compose build```
+```bash
+git clone https://github.com/vasyl-chyypesh/fibonacci-test.git
 
-```docker-compose up --build```
+cd fibonacci-test
+
+docker-compose up --build
+```
 
 ### Test via curl
-POST data with number:
+POST data with a number:
 
 ```curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input```
 
-It will send response with ticket id in body: `{ "ticket": 1 }`
+This will send a response with a ticket ID in the body:
 
-GET data by ticket id:
+```{ "ticket": 1 }```
+
+GET data by ticket ID:
 
 ```curl http://localhost:3000/output/1```
 
-It will send response with result data in body: `{ "ticket": 1, "inputNumber": 7, "result": "13" }`
+This will send a response with result data in the body:
+
+```{ "ticket": 1, "inputNumber": 7, "result": "13" }```
