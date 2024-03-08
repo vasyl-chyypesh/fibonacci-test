@@ -19,7 +19,7 @@ export class RequestService {
     return this.storageService.get(this.getStorageId(ticket));
   }
 
-  updateRequestWithField(ticket: number, field: string, value: any) {
+  updateRequestWithField(ticket: number, field: string, value: string | number) {
     return this.storageService.executeIsolated(async (isolatedClient: any) => {
       const prevValue = await isolatedClient.get(this.getStorageId(ticket));
       const prevReq = JSON.parse(prevValue);

@@ -14,7 +14,7 @@ router.use((req: Request, res: Response, next: NextFunction) => {
 router.use(rateLimiter);
 
 router.get('/health', (req: Request, res: Response) => {
-  res.status(200).json({ message: 'Ok' });
+  return res.status(200).json({ message: 'Ok' });
 });
 
 router.post('/input', input);
@@ -22,14 +22,14 @@ router.post('/input', input);
 router.get('/output/:ticket', output);
 
 router.use((req: Request, res: Response) => {
-  res.status(404).json({ message: 'Page not found' });
+  return res.status(404).json({ message: 'Page not found' });
 });
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 router.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
   Logger.error(err);
 
-  res.status(500).json({ message: 'Internal server error' });
+  return res.status(500).json({ message: 'Internal server error' });
 });
 
 export default router;

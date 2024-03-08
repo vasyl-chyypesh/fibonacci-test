@@ -26,9 +26,9 @@ const input = async (req: Request, res: Response, next: NextFunction) => {
 
     await queueHandler.addJobToQueue(QueueEnum.Fibonacci, { ticket, inputNumber });
 
-    res.status(200).json({ ticket });
+    return res.status(200).json({ ticket });
   } catch (err) {
-    next(err);
+    return next(err);
   }
 };
 
