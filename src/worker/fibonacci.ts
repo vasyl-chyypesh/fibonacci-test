@@ -1,38 +1,46 @@
+/**
+ * The Fibonacci class.
+ */
 export class Fibonacci {
-  private readonly list: Array<bigint>;
+  private readonly fibonacciNumbers: Array<bigint>;
 
-  // TODO should be stored in redis
   constructor() {
-    this.list = [0n, 1n];
+    this.fibonacciNumbers = [0n, 1n];
   }
 
-  getValueFor(inputNumber: number): Promise<bigint> {
-    if (!inputNumber || inputNumber < 0) {
-      throw new Error(`Invalid input number: ${inputNumber}`);
+  /**
+   * Gets the Fibonacci number for the given index.
+   *
+   * @param fibonacciIndex - The index of the Fibonacci number to retrieve.
+   * @returns A Promise that resolves with the Fibonacci number for the given index.
+   */
+  getValueFor(fibonacciIndex: number): Promise<bigint> {
+    if (!Number.isInteger(fibonacciIndex) || fibonacciIndex < 0) {
+      throw new Error(`Invalid input fibonacci index: ${fibonacciIndex}`);
     }
 
-    if (inputNumber < this.list.length) {
-      const alreadyCalculated = this.list.at(inputNumber) as bigint;
+    if (fibonacciIndex < this.fibonacciNumbers.length) {
+      const alreadyCalculated = this.fibonacciNumbers.at(fibonacciIndex) as bigint;
       return Promise.resolve(alreadyCalculated);
     }
 
-    return this.calculateValue(inputNumber);
+    return this.calculateValue(fibonacciIndex);
   }
 
   private async calculateValue(inputNumber: number): Promise<bigint> {
-    let [a, b] = [0n, 1n];
+    let [previous, current] = [0n, 1n];
     let i = 2;
     while (i <= inputNumber) {
-      [a, b] = await this.calculateNext(a, b);
+      [previous, current] = await this.calculateNext(previous, current);
       i++;
     }
-    return b;
+    return current;
   }
 
-  private async calculateNext(a: bigint, b: bigint): Promise<[bigint, bigint]> {
+  private async calculateNext(previous: bigint, current: bigint): Promise<[bigint, bigint]> {
     return new Promise((resolve) => {
       setImmediate(() => {
-        return resolve([b, a + b]);
+        return resolve([current, previous + current]);
       });
     });
   }

@@ -32,6 +32,6 @@ describe('Fibonacci', () => {
 
     assert.throws(() => {
       fibonacci.getValueFor(-1);
-    }, /Invalid input number: -1/);
+    }, /Invalid input fibonacci index: -1/);
   });
 });
