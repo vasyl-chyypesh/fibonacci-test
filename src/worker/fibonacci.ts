@@ -14,7 +14,7 @@ export class Fibonacci {
    * @param fibonacciIndex - The index of the Fibonacci number to retrieve.
    * @returns A Promise that resolves with the Fibonacci number for the given index.
    */
-  getValueFor(fibonacciIndex: number): Promise<bigint> {
+  public async getValueFor(fibonacciIndex: number): Promise<bigint> {
     if (!Number.isInteger(fibonacciIndex) || fibonacciIndex < 0) {
       throw new Error(`Invalid input fibonacci index: ${fibonacciIndex}`);
     }

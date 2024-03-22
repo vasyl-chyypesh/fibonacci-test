@@ -30,8 +30,8 @@ describe('Fibonacci', () => {
   test('getValueFor should throw error', async () => {
     const fibonacci = new Fibonacci();
 
-    assert.throws(() => {
-      fibonacci.getValueFor(-1);
+    assert.rejects(async () => {
+      await fibonacci.getValueFor(-1);
     }, /Invalid input fibonacci index: -1/);
   });
 });
