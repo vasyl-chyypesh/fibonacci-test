@@ -7,15 +7,19 @@ import { ServiceFactory, ClassName, RequestService } from '../app/service/servic
 const fibonacci = new Fibonacci();
 
 const jobHandler = async (msg: ConsumeMessage) => {
-  Logger.log('jobHandler retrieved:', msg.content.toString());
-  const { ticket, inputNumber } = JSON.parse(msg.content.toString()) as TicketData;
+  try {
+    Logger.log('jobHandler retrieved:', msg.content.toString());
+    const { ticket, inputNumber } = JSON.parse(msg.content.toString()) as TicketData;
 
-  Logger.log('jobHandler is starting calculate Fibonacci for:', inputNumber);
-  const result = await fibonacci.getValueFor(inputNumber);
-  Logger.log('jobHandler finished calculate Fibonacci for:', inputNumber);
+    Logger.log('jobHandler is starting calculate Fibonacci for:', inputNumber);
+    const result = await fibonacci.getValueFor(inputNumber);
+    Logger.log('jobHandler finished calculate Fibonacci for:', inputNumber);
 
-  const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
-  await requestService.updateRequestWithField(ticket, 'result', result.toString());
+    const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
+    await requestService.updateRequestWithField(ticket, 'result', result.toString());
+  } catch (err: unknown) {
+    Logger.error(err);
+  }
 };
 
 export default jobHandler;

@@ -22,6 +22,9 @@ export class RequestService {
   updateRequestWithField(ticket: number, field: string, value: string | number) {
     return this.storageService.executeIsolated(async (isolatedClient: any) => {
       const prevValue = await isolatedClient.get(this.getStorageId(ticket));
+      if (!prevValue) {
+        throw new Error(`Not found request by ticket: ${ticket}`);
+      }
       const prevReq = JSON.parse(prevValue);
       const updatedData = Object.assign(prevReq, { [field]: value });
       await isolatedClient.set(this.getStorageId(ticket), JSON.stringify(updatedData));
