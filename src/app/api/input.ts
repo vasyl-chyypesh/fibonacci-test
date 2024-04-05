@@ -3,7 +3,9 @@ import { QueueEnum } from '../types/QueueEnum.js';
 import { QueueHandler } from '../queue/queueHandler.js';
 import { ServiceFactory, ClassName, TicketService, RequestService } from '../service/serviceFactory.js';
 
-const queueHandler = new QueueHandler(process.env.RABBIT_URL as string);
+const RABBIT_URL = process.env.RABBIT_URL || 'amqp://localhost:5672';
+
+const queueHandler = new QueueHandler(RABBIT_URL);
 
 const input = async (req: Request, res: Response, next: NextFunction) => {
   try {
