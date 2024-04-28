@@ -1,10 +1,10 @@
 {
   "name": "fibonacci-test",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "test project for fibonacci numbers",
   "main": "dist/app/index.js",
   "engines": {
-    "node": ">=21.6.2"
+    "node": ">=22"
   },
   "type": "module",
   "scripts": {
@@ -14,7 +14,7 @@
     "scan:security": "docker run --rm -v $(pwd):/tmp/scan bearer/bearer:latest scan /tmp/scan --severity critical,high,medium",
     "scan:security:report": "docker run --rm -v $(pwd):/tmp/scan bearer/bearer:latest scan /tmp/scan --format html --output /tmp/scan/scan-report.html",
     "prettier": "prettier --write 'src/**/*.ts'",
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint src/",
     "lint:dockerfile": "docker run --rm -i hadolint/hadolint < Dockerfile",
     "build": "rm -rf dist && tsc",
     "start": "node dist/app/index.js",
