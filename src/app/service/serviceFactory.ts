@@ -1,4 +1,4 @@
-import { getRedisClient } from '../storage/redisClient.js';
+import { RedisClientInstance } from '../storage/redisClient.js';
 import { RedisStorage } from '../storage/redisStorage.js';
 import { RequestService } from './requestService.js';
 import { TicketService } from './ticketService.js';
@@ -17,7 +17,7 @@ export class ServiceFactory {
         return new RequestService(redisStorage) as T;
       }
       case ClassName.RedisStorage: {
-        const redisClient = await getRedisClient();
+        const redisClient = await RedisClientInstance.getRedisClient();
         return new RedisStorage(redisClient) as T;
       }
       default:

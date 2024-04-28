@@ -1,4 +1,4 @@
-import { IStorage } from '../types/IStorage.js';
+import { IStorage, ISimpleStorage } from '../types/IStorage.js';
 
 export class RequestService {
   private storageService;
@@ -20,7 +20,7 @@ export class RequestService {
   }
 
   updateRequestWithField(ticket: number, field: string, value: string | number) {
-    return this.storageService.executeIsolated(async (isolatedClient: any) => {
+    return this.storageService.executeIsolated(async (isolatedClient: ISimpleStorage) => {
       const prevValue = await isolatedClient.get(this.getStorageId(ticket));
       if (!prevValue) {
         throw new Error(`Not found request by ticket: ${ticket}`);

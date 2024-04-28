@@ -1,27 +1,27 @@
 import { createClient, RedisClientType } from 'redis';
 import { Logger } from '../utils/logger.js';
 
-let redisClient: RedisClient | undefined;
+export class RedisClientInstance {
+  private static redisClient: RedisClient | undefined;
 
-const REDIS_URL = process.env.REDIS_URL || 'localhost:6379';
+  public static async getRedisClient(redisUrl = process.env.REDIS_URL || 'localhost:6379'): Promise<RedisClient> {
+    if (!RedisClientInstance.redisClient) {
+      RedisClientInstance.redisClient = createClient({ url: `redis://${redisUrl}` });
+      RedisClientInstance.redisClient.on('error', (err: unknown) => Logger.error('Redis client error', err));
+      await RedisClientInstance.redisClient.connect();
+    }
 
-export async function getRedisClient(): Promise<RedisClient> {
-  if (!redisClient) {
-    redisClient = createClient({ url: `redis://${REDIS_URL}` });
-    redisClient.on('error', (err: unknown) => Logger.error('Redis client error', err));
-    await redisClient.connect();
+    return RedisClientInstance.redisClient;
   }
 
-  return redisClient;
-}
+  public static async disconnectClient(): Promise<void> {
+    if (!RedisClientInstance.redisClient) {
+      return;
+    }
 
-export async function disconnectClient(): Promise<void> {
-  if (!redisClient) {
-    return;
+    await RedisClientInstance.redisClient.disconnect();
+    RedisClientInstance.redisClient = undefined;
   }
-
-  await redisClient.disconnect();
-  redisClient = undefined;
 }
 
 export type RedisClient = RedisClientType;

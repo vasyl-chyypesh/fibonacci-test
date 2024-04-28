@@ -1,7 +1,7 @@
 import http from 'http';
 import { ListenOptions, Socket } from 'node:net';
 import app from './app.js';
-import { disconnectClient } from './storage/redisClient.js';
+import { RedisClientInstance } from './storage/redisClient.js';
 import { Logger } from './utils/logger.js';
 
 const port = parseInt(process.env.PORT || '3000', 10);
@@ -50,7 +50,7 @@ const serverWrapper = {
 
   async stop() {
     releaseConnections();
-    await disconnectClient();
+    await RedisClientInstance.disconnectClient();
 
     Logger.log('Connections are closed. Process is exiting');
 

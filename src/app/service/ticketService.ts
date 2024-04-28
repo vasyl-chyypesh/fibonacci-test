@@ -1,4 +1,4 @@
-import { IStorage } from '../types/IStorage.js';
+import { IStorage, ISimpleStorage } from '../types/IStorage.js';
 
 export class TicketService {
   private storageService;
@@ -10,7 +10,7 @@ export class TicketService {
 
   async getTicket(): Promise<number> {
     let newValue = 1;
-    await this.storageService.executeIsolated(async (isolatedClient: any) => {
+    await this.storageService.executeIsolated(async (isolatedClient: ISimpleStorage) => {
       const prevValue = await isolatedClient.get(this.storageName);
       if (prevValue) {
         newValue = parseInt(prevValue, 10) + 1;
