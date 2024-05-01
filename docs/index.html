@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta content="text/html; charset=utf-8" />
+    <title>Fibonacci Test</title>
+</head>
+
+<body>
+    <div id="root">
+        <h2>Welcome To Fibonacci Test Project!</h2>
+        <h3 id="requirements" class="code-line" dir="auto" data-line="4">Requirements</h3>
+        <ul class="code-line" dir="auto" data-line="5">
+            <li class="code-line" dir="auto" data-line="5">Git (<a title="https://git-scm.com/downloads"
+                    href="https://git-scm.com/downloads" data-href="https://git-scm.com/downloads">download</a>)</li>
+            <li class="code-line" dir="auto" data-line="6">Docker (<a title="https://docs.docker.com/get-docker/"
+                    href="https://docs.docker.com/get-docker/"
+                    data-href="https://docs.docker.com/get-docker/">download</a>)</li>
+        </ul>
+        <h3 id="run-project-in-docker" class="code-line" dir="auto" data-line="8">Run project in docker</h3>
+        <blockquote>
+            <pre><code class="code-line language-bash" dir="auto" data-line="9">git <span class="hljs-built_in">clone</span> https://github.com/vasyl-chyypesh/fibonacci-test.git
+
+<span class="hljs-built_in">cd</span> fibonacci-test
+
+docker-compose up --build
+</code></pre>
+        </blockquote>
+        <h3 id="test-via-curl" class="code-line" dir="auto" data-line="17">Test via curl</h3>
+        <p class="code-line" dir="auto" data-line="18">POST data with a number:</p>
+        <blockquote>
+            <p class="code-line" dir="auto" data-line="20">
+                <code>curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input</code>
+            </p>
+        </blockquote>
+        <p class="code-line" dir="auto" data-line="22">This will send a response with a ticket ID in the body:</p>
+        <blockquote>
+            <p><code>{ "ticket": 1 }</code></p>
+        </blockquote>
+        <p class="code-line" dir="auto" data-line="26">GET data by ticket ID:</p>
+        <blockquote>
+            <p class="code-line" dir="auto" data-line="28"><code>curl http://localhost:3000/output/1</code></p>
+        </blockquote>
+        <p class="code-line" dir="auto" data-line="30">This will send a response with result data in the body:</p>
+        <blockquote>
+            <p class="code-line" dir="auto" data-line="32">
+                <code>{ "ticket": 1, "inputNumber": 7, "result": "13" }</code></p>
+        </blockquote>
+    </div>
+</body>
+
+</html>
