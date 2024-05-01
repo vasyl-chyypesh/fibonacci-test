@@ -29,23 +29,18 @@ docker-compose up --build
         <h3 id="test-via-curl" class="code-line" dir="auto" data-line="17">Test via curl</h3>
         <p class="code-line" dir="auto" data-line="18">POST data with a number:</p>
         <blockquote>
-            <p class="code-line" dir="auto" data-line="20">
-                <code>curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input</code>
+            <p><code>curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input</code>
             </p>
         </blockquote>
         <p class="code-line" dir="auto" data-line="22">This will send a response with a ticket ID in the body:</p>
-        <blockquote>
-            <p><code>{ "ticket": 1 }</code></p>
-        </blockquote>
+        <blockquote><code>{ "ticket": 1 }</code></blockquote>
         <p class="code-line" dir="auto" data-line="26">GET data by ticket ID:</p>
-        <blockquote>
-            <p class="code-line" dir="auto" data-line="28"><code>curl http://localhost:3000/output/1</code></p>
-        </blockquote>
+        <blockquote><code>curl http://localhost:3000/output/1</code></blockquote>
         <p class="code-line" dir="auto" data-line="30">This will send a response with result data in the body:</p>
-        <blockquote>
-            <p class="code-line" dir="auto" data-line="32">
-                <code>{ "ticket": 1, "inputNumber": 7, "result": "13" }</code></p>
-        </blockquote>
+        <blockquote><code>{ "ticket": 1, "inputNumber": 7, "result": "13" }</code></blockquote>
+        <h3 id="test-via-curl" class="code-line" dir="auto" data-line="34">Source code</h3>
+        <p><code><a title="https://github.com/vasyl-chyypesh/fibonacci-test" href="https://github.com/vasyl-chyypesh/fibonacci-test" data-href="https://github.com/vasyl-chyypesh/fibonacci-test">github.com</a></code>
+        </p>
     </div>
 </body>
 

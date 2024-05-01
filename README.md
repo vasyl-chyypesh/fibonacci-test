@@ -18,16 +18,24 @@ docker-compose up --build
 ### Test via curl
 POST data with a number:
 
-```curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input```
+```bash
+curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input
+```
 
 This will send a response with a ticket ID in the body:
 
-```{ "ticket": 1 }```
+```bash
+{ "ticket": 1 }
+```
 
 GET data by ticket ID:
 
-```curl http://localhost:3000/output/1```
+```bash
+curl http://localhost:3000/output/1
+```
 
 This will send a response with result data in the body:
 
-```{ "ticket": 1, "inputNumber": 7, "result": "13" }```
+```bash
+{ "ticket": 1, "inputNumber": 7, "result": "13" }
+```
