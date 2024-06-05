@@ -63,11 +63,14 @@ jobs:
       name: production
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    concurrency: 
+      group: 'deploy-docs-concurrency-group'
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v3
 
@@ -75,7 +78,7 @@ jobs:
         uses: actions/upload-pages-artifact@v3
         with: 
           path: "./docs"
-      
+
       - name: Deploy docs to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
