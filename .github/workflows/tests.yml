@@ -34,6 +34,9 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+      - name: Run linter for branch name
+        run: npm run lint:branch
+
       - name: Run test
         run: npm test
       
