@@ -34,8 +34,13 @@ jobs:
       - name: Run lint
         run: npm run lint
 
-      - name: Run linter for branch name
-        run: npm run lint:branch
+      - name: Extract branch name
+        shell: bash
+        run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
+        id: extract_branch
+
+      - name: Run validation for branch name
+        run: npx validate-branch-name -t ${{ steps.extract_branch.outputs.branch }}
 
       - name: Run test
         run: npm test
