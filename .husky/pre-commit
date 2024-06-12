@@ -1,2 +1,8 @@
+# run linter
 npm run lint
+
+# scan for secrets
 npm run scan:secrets:precommit
+
+# validate branch name before commit
+npm run lint:branch
