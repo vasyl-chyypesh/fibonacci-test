@@ -3,6 +3,7 @@ import inputRouter from './input/index.js';
 import outputRouter from './output/index.js';
 import { Logger } from '../utils/logger.js';
 import { rateLimiter } from './middlewares/rateLimiter.js';
+import { slowDownLimiter } from './middlewares/slowDownLimiter.js';
 import { errorHandler } from './middlewares/errorHandler.js';
 import { notFoundHandler } from './middlewares/notFoundHandler.js';
 
@@ -13,6 +14,7 @@ router.use((req: Request, res: Response, next: NextFunction) => {
   return next();
 });
 
+router.use(slowDownLimiter);
 router.use(rateLimiter);
 
 router.get('/health', (req: Request, res: Response) => {
