@@ -59,7 +59,21 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Build the Docker image
-        run: docker build . --file Dockerfile --tag fibonacci-test:$(date +%s)
+        run: docker build . --file Dockerfile --tag fibonacci-test:${{ github.sha }}
+
+      - name: Run Trivy container scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'fibonacci-test:${{ github.sha }}'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          timeout: 10m0s
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v2
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
 
   deploy-docs:
     needs: build
