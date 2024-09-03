@@ -1,7 +1,10 @@
 # official node images: https://hub.docker.com/_/node/
 # use --platform=linux/amd64 if npm install hangs on M3 Mac
+# basse image
+FROM node:22-alpine AS base
+
 # builder image
-FROM node:22-alpine AS builder
+FROM base AS builder
 WORKDIR /usr/app
 COPY package*.json ./
 COPY tsconfig.json ./
@@ -10,7 +13,7 @@ COPY ./src ./src
 RUN npm run build
 
 # final image
-FROM node:22-alpine AS runner
+FROM base AS runner
 WORKDIR /usr/app
 RUN chown node:node .
 COPY package*.json ./
