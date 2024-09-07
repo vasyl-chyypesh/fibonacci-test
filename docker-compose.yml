@@ -39,7 +39,7 @@ services:
   redis:
     container_name: fib_redis
     # redis official image https://hub.docker.com/_/redis
-    image: redis:7.2.4-alpine
+    image: redis:7-alpine
     expose:
       - 6379
     networks:
@@ -48,7 +48,7 @@ services:
   rabbitmq:
     container_name: fib_rabbitmq
     # rabbitmq official image https://hub.docker.com/_/rabbitmq
-    image: rabbitmq:3.13.1-alpine
+    image: rabbitmq:3-alpine
     expose:
       - 5672
     ports:

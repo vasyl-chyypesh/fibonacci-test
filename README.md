@@ -12,7 +12,7 @@ git clone https://github.com/vasyl-chyypesh/fibonacci-test.git
 
 cd fibonacci-test
 
-docker-compose up --build
+docker compose up --build
 ```
 
 ### Test via curl
