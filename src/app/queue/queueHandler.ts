@@ -1,9 +1,9 @@
-import amqplib, { Connection, Channel, ConsumeMessage } from 'amqplib';
+import amqplib, { ChannelModel, Channel, ConsumeMessage } from 'amqplib';
 import { Logger } from '../utils/logger.js';
 
 export class QueueHandler {
   private rmqUrl: string;
-  private connection: Connection | undefined;
+  private connection: ChannelModel | undefined;
   private channel: Channel | undefined;
 
   constructor(rmqUrl: string) {
