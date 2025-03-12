@@ -38,7 +38,4 @@ export default [{
         "no-console": "error",
         "@typescript-eslint/no-explicit-any": "warn",
     },
-}, ...compat.extends("plugin:@typescript-eslint/disable-type-checked").map(config => ({
-    ...config,
-    files: ["./src/**/*.spec.ts"],
-}))];
+}];
