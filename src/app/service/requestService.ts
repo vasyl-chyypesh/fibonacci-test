@@ -1,4 +1,4 @@
-import { IStorage, ISimpleStorage } from '../types/IStorage.js';
+import { IStorage, ISimpleStorage } from '../types/Storage.js';
 
 export class RequestService {
   private storageService;

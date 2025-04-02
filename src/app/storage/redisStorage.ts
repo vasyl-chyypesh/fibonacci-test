@@ -1,4 +1,4 @@
-import { IStorage } from '../types/IStorage.js';
+import { IStorage } from '../types/Storage.js';
 import { RedisClient } from './redisClient.js';
 
 export class RedisStorage implements IStorage {
