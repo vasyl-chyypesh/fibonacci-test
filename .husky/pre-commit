@@ -1,6 +1,9 @@
 # run linter
 npm run lint
 
+# run file names linter
+npm run lint:files
+
 # scan for secrets
 npm run scan:secrets:precommit
 

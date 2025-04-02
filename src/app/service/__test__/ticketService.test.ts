@@ -1,7 +1,7 @@
 import { describe, test, mock, Mock, afterEach } from 'node:test';
 import assert from 'node:assert';
 import { TicketService } from '../ticketService.js';
-import { IStorage, ISimpleStorage } from '../../types/IStorage.js';
+import { IStorage, ISimpleStorage } from '../../types/Storage.js';
 
 describe('TicketService', () => {
   const mockStorageService: IStorage = {
