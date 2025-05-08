@@ -12,17 +12,21 @@ const output = async (req: Request, res: Response, next: NextFunction) => {
     const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
     const reqData = await requestService.getRequest(ticket);
     if (!reqData) {
-      return next(new HttpError(`Not found data for ticket: ${ticket}`, CODES.NOT_FOUND, 404));
+      next(new HttpError(`Not found data for ticket: ${ticket}`, CODES.NOT_FOUND, 404));
+      return;
     }
 
     const { result, inputNumber } = JSON.parse(reqData) as TicketData;
     if (!result) {
-      return next(new HttpError(`Not found result for ticket: ${ticket}`, CODES.NOT_FOUND, 404));
+      next(new HttpError(`Not found result for ticket: ${ticket}`, CODES.NOT_FOUND, 404));
+      return;
     }
 
-    return res.status(200).json({ ticket, inputNumber, fibonacci: result });
+    res.status(200).json({ ticket, inputNumber, fibonacci: result });
+    return;
   } catch (err) {
-    return next(err);
+    next(err);
+    return;
   }
 };
 

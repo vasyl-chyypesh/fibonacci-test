@@ -10,13 +10,14 @@ export function errorHandler(error: Error, request: Request, response: Response,
 
   if (error instanceof HttpError) {
     const appError = error as HttpError;
-    return response.status(appError.httpStatus).json({
+    response.status(appError.httpStatus).json({
       code: appError.code,
       message: appError.message,
     });
+    return;
   }
 
-  return response.status(500).json({
+  response.status(500).json({
     code: CODES.INTERNAL_ERROR,
     message: MESSAGES.INTERNAL_SERVER_ERROR,
   });

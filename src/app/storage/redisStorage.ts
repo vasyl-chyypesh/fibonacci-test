@@ -20,7 +20,7 @@ export class RedisStorage implements IStorage {
     return this.redisClient.get(key);
   }
 
-  executeIsolated(func: (client: RedisClient) => Promise<void>): Promise<void> {
+  executeIsolated(func: (client: RedisClient) => Promise<void>): Promise<unknown> {
     return this.redisClient.executeIsolated(func);
   }
 }

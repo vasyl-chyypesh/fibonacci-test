@@ -4,5 +4,5 @@ export interface ISimpleStorage {
 }
 
 export interface IStorage extends ISimpleStorage {
-  executeIsolated(func: (client: any) => Promise<void>): Promise<void>;
+  executeIsolated(func: (client: any) => Promise<void>): Promise<unknown>;
 }
