@@ -1,5 +1,7 @@
-import { createClient, RedisClientType } from 'redis';
+import { createClient } from 'redis';
 import { Logger } from '../utils/logger.js';
+
+export type RedisClient = ReturnType<typeof createClient>;
 
 export class RedisClientInstance {
   private static redisClient: RedisClient | undefined;
@@ -23,5 +25,3 @@ export class RedisClientInstance {
     RedisClientInstance.redisClient = undefined;
   }
 }
-
-export type RedisClient = RedisClientType;

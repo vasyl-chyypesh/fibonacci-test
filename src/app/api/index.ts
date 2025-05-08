@@ -18,7 +18,7 @@ router.use(slowDownLimiter);
 router.use(rateLimiter);
 
 router.get('/health', (req: Request, res: Response) => {
-  return res.status(200).json({ message: 'Ok', time: new Date().toISOString() });
+  res.status(200).json({ message: 'OK', time: new Date().toISOString() });
 });
 
 router.use('/input', inputRouter);

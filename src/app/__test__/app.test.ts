@@ -10,7 +10,7 @@ describe('App Service Tests', () => {
       const response = await request(app).get('/health');
 
       assert.strictEqual(response.status, 200);
-      assert.strictEqual(response.body.message, 'Ok');
+      assert.strictEqual(response.body.message, 'OK');
       assert.ok(response.body.time, 'Response should include timestamp');
 
       // Verify the timestamp is in ISO format

@@ -11,7 +11,7 @@ describe('API Output Tests', () => {
   mock.method(ServiceFactory, 'getInstanceOfClass', async (className: ClassName) => {
     if (className === ClassName.RequestService) {
       return {
-        getRequest: mockGetRequest
+        getRequest: mockGetRequest,
       };
     }
     throw new Error('Unknown class');
@@ -30,26 +30,22 @@ describe('API Output Tests', () => {
       const result = '55'; // Fibonacci of 10
 
       // Mock the request service to return data for this ticket
-      mockGetRequest.mock.mockImplementation(() =>
-        Promise.resolve(JSON.stringify({ inputNumber, result }))
-      );
+      mockGetRequest.mock.mockImplementation(() => Promise.resolve(JSON.stringify({ inputNumber, result })));
 
-      const response = await request(app)
-        .get(`/output/${ticket}`)
-        .set('Accept', 'application/json');
+      const response = await request(app).get(`/output/${ticket}`).set('Accept', 'application/json');
 
       assert.strictEqual(response.status, 200);
       assert.deepStrictEqual(response.body, {
         ticket,
         inputNumber,
-        fibonacci: result
+        fibonacci: result,
       });
 
       // Verify ServiceFactory was called correctly
       assert.strictEqual((ServiceFactory.getInstanceOfClass as any).mock.calls.length, 1);
       assert.strictEqual(
         (ServiceFactory.getInstanceOfClass as any).mock.calls[0].arguments[0],
-        ClassName.RequestService
+        ClassName.RequestService,
       );
 
       // Verify getRequest was called with the correct ticket
@@ -64,9 +60,7 @@ describe('API Output Tests', () => {
       // Mock the request service to return null (ticket not found)
       mockGetRequest.mock.mockImplementation(() => Promise.resolve(null));
 
-      const response = await request(app)
-        .get(`/output/${ticket}`)
-        .set('Accept', 'application/json');
+      const response = await request(app).get(`/output/${ticket}`).set('Accept', 'application/json');
 
       assert.strictEqual(response.status, 404);
       assert.ok(response.body.message.includes('Not found data for ticket'));
@@ -77,31 +71,23 @@ describe('API Output Tests', () => {
       const inputNumber = 10;
 
       // Mock the request service to return data without result
-      mockGetRequest.mock.mockImplementation(() =>
-        Promise.resolve(JSON.stringify({ inputNumber }))
-      );
+      mockGetRequest.mock.mockImplementation(() => Promise.resolve(JSON.stringify({ inputNumber })));
 
-      const response = await request(app)
-        .get(`/output/${ticket}`)
-        .set('Accept', 'application/json');
+      const response = await request(app).get(`/output/${ticket}`).set('Accept', 'application/json');
 
       assert.strictEqual(response.status, 404);
       assert.ok(response.body.message.includes('Not found result for ticket'));
     });
 
     test('should return 400 when ticket is not a number', async () => {
-      const response = await request(app)
-        .get('/output/not-a-number')
-        .set('Accept', 'application/json');
+      const response = await request(app).get('/output/not-a-number').set('Accept', 'application/json');
 
       assert.strictEqual(response.status, 400);
       assert.ok(response.body.message.includes('ticket must be integer'));
     });
 
     test('should return 400 when ticket is less than minimum', async () => {
-      const response = await request(app)
-        .get('/output/0')
-        .set('Accept', 'application/json');
+      const response = await request(app).get('/output/0').set('Accept', 'application/json');
 
       assert.strictEqual(response.status, 400);
       assert.ok(response.body.message.includes('ticket must be >= 1'));
