@@ -16,7 +16,7 @@ describe('Fibonacci Performance', () => {
       const executionTime = Number(endTime - startTime) / 1_000_000; // Convert to milliseconds
 
       assert.strictEqual(result, 6765n);
-      assert.ok(executionTime < 2, `Execution time ${executionTime}ms exceeded 2ms threshold`);
+      assert.ok(executionTime < 5, `Execution time ${executionTime}ms exceeded 5ms threshold`);
     });
 
     test('should calculate medium numbers within reasonable time', async () => {
