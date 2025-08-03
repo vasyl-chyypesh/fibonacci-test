@@ -4,7 +4,7 @@ import { Fibonacci } from '../fibonacci.js';
 
 describe('Fibonacci Performance', () => {
   describe('getValueFor', () => {
-    test('should calculate numbers quickly (cached)', async () => {
+    test('should get numbers quickly (from pre-calculated cache)', async () => {
       const fibonacci = new Fibonacci();
       await fibonacci.getValueFor(20); // pre-calculate the value
 
@@ -52,7 +52,7 @@ describe('Fibonacci Performance', () => {
       // Run the same calculation multiple times
       for (let i = 0; i < 5; i++) {
         const startTime = process.hrtime.bigint();
-        await fibonacci.getValueFor(30);
+        await fibonacci.getValueFor(30 + i);
         const endTime = process.hrtime.bigint();
         times.push(Number(endTime - startTime) / 1_000_000);
       }
