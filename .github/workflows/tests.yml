@@ -99,6 +99,15 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Download coverage report from previous job
+        uses: actions/download-artifact@v5
+        with:
+          name: coverage-report
+          path: "./coverage"
+
+      - name: Display structure of downloaded coverage-report
+        run: ls -R ./coverage
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
