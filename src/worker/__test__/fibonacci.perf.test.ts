@@ -65,7 +65,7 @@ describe('Fibonacci Performance', () => {
       const stdDev = Math.sqrt(times.reduce((sq, n) => sq + Math.pow(n - avg, 2), 0) / times.length);
 
       // Check that standard deviation is not too high (indicating inconsistent performance)
-      assert.ok(stdDev < avg * 0.5, `Performance is too inconsistent: avg=${avg}ms, stdDev=${stdDev}ms`);
+      assert.ok(stdDev < avg * 0.5, `Performance is too inconsistent: average = ${avg} ns, standard deviation = ${stdDev} ns`);
     });
   });
 });
