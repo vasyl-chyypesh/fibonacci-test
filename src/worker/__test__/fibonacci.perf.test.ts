@@ -52,9 +52,9 @@ describe('Fibonacci Performance', () => {
       // Run the same calculation multiple times
       for (let i = 0; i < 5; i++) {
         const startTime = process.hrtime.bigint();
-        await fibonacci.getValueFor(30 + i);
+        await fibonacci.getValueFor(40 + i);
         const endTime = process.hrtime.bigint();
-        times.push(Number(endTime - startTime) / 1_000_000);
+        times.push(Number(endTime - startTime));
       }
 
       // Ignore the first run
@@ -65,7 +65,7 @@ describe('Fibonacci Performance', () => {
       const stdDev = Math.sqrt(times.reduce((sq, n) => sq + Math.pow(n - avg, 2), 0) / times.length);
 
       // Check that standard deviation is not too high (indicating inconsistent performance)
-      assert.ok(stdDev < avg * 0.5, `Performance is too inconsistent: avg=${avg}ms, stdDev=${stdDev}ms`);
+      assert.ok(stdDev < avg * 0.5, `Performance is too inconsistent: average = ${avg} ns, standard deviation = ${stdDev} ns`);
     });
   });
 });
