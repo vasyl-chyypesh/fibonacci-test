@@ -43,8 +43,14 @@ jobs:
         run: npx validate-branch-name -t ${{ steps.extract_branch.outputs.branch }}
 
       - name: Run test
-        run: npm test
-      
+        run: npm run test:coverage:report
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: "./coverage"
+
       - name: Run security scan (bearer cli)
         uses: bearer/bearer-action@v2
         with:
