@@ -52,7 +52,7 @@ describe('Fibonacci Performance', () => {
       // Run the same calculation multiple times
       for (let i = 0; i < 5; i++) {
         const startTime = process.hrtime.bigint();
-        await fibonacci.getValueFor(30 + i);
+        await fibonacci.getValueFor(50 + i);
         const endTime = process.hrtime.bigint();
         times.push(Number(endTime - startTime) / 1_000_000);
       }
