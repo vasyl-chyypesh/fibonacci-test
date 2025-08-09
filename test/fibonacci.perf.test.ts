@@ -1,6 +1,6 @@
 import { describe, test } from 'node:test';
 import assert from 'node:assert';
-import { Fibonacci } from '../fibonacci.js';
+import { Fibonacci } from '../src/worker/fibonacci.js';
 
 describe('Fibonacci Performance', () => {
   describe('getValueFor', () => {

@@ -21,8 +21,8 @@
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "start": "node dist/app/index.js",
     "test": "node --import tsx --test 'src/**/*.test.ts'",
-    "test:perf": "node --import tsx --test 'src/**/*.perf.test.ts'",
-    "test:integration": "node --import tsx --test 'test/api.integration.test.ts'",
+    "test:performance": "node --import tsx --test 'test/**/*.perf.test.ts'",
+    "test:integration": "node --import tsx --test 'test/**/*.int.test.ts'",
     "test:coverage": "c8 --all --src src/ node --import tsx --test 'src/**/*.test.ts'",
     "test:coverage:report": "c8 --all --src src/ --reporter html node --import tsx --test 'src/**/*.test.ts'"
   },
