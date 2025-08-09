@@ -1,0 +1,75 @@
+services:
+  app:
+    build: .
+    container_name: fib_app
+    environment:
+      - PORT=3000
+      - REDIS_URL=redis:6379
+      - RABBIT_URL=amqp://rabbitmq:5672
+    ports:
+      - 3000:3000
+    volumes:
+      - ./wait-for-service.sh:/usr/app/wait-for-service.sh/
+    command: sh -c "sh ./wait-for-service.sh rabbitmq 5672 && node dist/app/index.js"
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - fib_network
+
+  worker:
+    build: .
+    container_name: fib_worker
+    environment:
+      - REDIS_URL=redis:6379
+      - RABBIT_URL=amqp://rabbitmq:5672
+    volumes:
+      - ./wait-for-service.sh:/usr/app/wait-for-service.sh/
+    command: sh -c "sh ./wait-for-service.sh rabbitmq 5672 && node dist/worker/index.js"
+    depends_on:
+      - redis
+      - rabbitmq
+    networks:
+      - fib_network
+
+  redis:
+    container_name: fib_redis
+    # redis official image https://hub.docker.com/_/redis
+    image: redis:8-alpine
+    expose:
+      - 6379
+    networks:
+      - fib_network
+  
+  rabbitmq:
+    container_name: fib_rabbitmq
+    # rabbitmq official image https://hub.docker.com/_/rabbitmq
+    image: rabbitmq:4-alpine
+    expose:
+      - 5672
+    ports:
+      - 5672:5672
+    networks:
+      - fib_network
+
+  test:
+    build: .
+    container_name: fib_test
+    environment:
+      - API_URL=http://app:3000
+    volumes:
+      - ./wait-for-service.sh:/usr/app/wait-for-service.sh/
+      - ./test:/usr/app/test/
+    user: root
+    command: sh -c "sh ./wait-for-service.sh rabbitmq 5672 && npm i tsx && npm run test:integration"
+    depends_on:
+      - redis
+      - rabbitmq
+      - app
+      - worker
+    networks:
+      - fib_network
+
+networks:
+  fib_network:
+    driver: bridge
