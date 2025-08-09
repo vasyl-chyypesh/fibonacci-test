@@ -37,5 +37,5 @@ curl http://localhost:3000/output/1
 This will send a response with result data in the body:
 
 ```bash
-{ "ticket": 1, "inputNumber": 7, "result": "13" }
+{ "ticket": 1, "inputNumber": 7, "fibonacci": "13" }
 ```
