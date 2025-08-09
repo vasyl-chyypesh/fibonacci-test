@@ -39,7 +39,7 @@ describe('App Service Tests', () => {
       const response = await request(API_URL).get(`/output/${notUsedTicket}`);
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.body.message, `Not FAIL found data for ticket: ${notUsedTicket}`);
+      assert.strictEqual(response.body.message, `Not found data for ticket: ${notUsedTicket}`);
     });
 
     test('should return 200 status with result for ticket', async () => {
