@@ -81,8 +81,22 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
-  deploy-docs:
+  test-integration:
     needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run integration tests (via docker compose)
+        run: docker compose -f docker-compose.test.yml up --abort-on-container-exit
+
+      - name: Stop and remove services
+        run: docker compose -f docker-compose.test.yml down
+
+  deploy-docs:
+    needs: test-integration
     permissions:
       contents: write
       pages: write
