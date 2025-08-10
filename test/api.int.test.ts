@@ -4,7 +4,7 @@ import request from 'supertest';
 
 const API_URL = process.env.API_URL || 'http://localhost:3000';
 
-const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('App Service Tests', () => {
   describe('GET /health', () => {
