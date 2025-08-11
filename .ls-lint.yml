@@ -1,6 +1,6 @@
 ls:
     .js: camelCase
-    .ts: camelCase | PascalCase
+    .ts: camelCase | PascalCase | regex:[A-Za-z]+
     .yml: kebab-case
     .json: kebab-case
 

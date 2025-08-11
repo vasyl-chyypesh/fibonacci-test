@@ -12,7 +12,7 @@ const startConsume = async () => {
   const fibonacci = new Fibonacci();
   const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
   const jobHandler = new JobHandler(fibonacci, requestService);
-  await queueHandler.attachJobHandlerToQueue(QueueEnum.Fibonacci, jobHandler.handleMessage);
+  await queueHandler.attachJobHandlerToQueue(QueueEnum.Fibonacci, jobHandler);
 };
 
 startConsume()

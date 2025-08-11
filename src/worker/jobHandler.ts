@@ -1,10 +1,11 @@
 import { ConsumeMessage } from 'amqplib';
 import { Fibonacci } from './fibonacci.js';
 import { Logger } from '../app/utils/logger.js';
+import { IJobHandler } from '../app/types/IJobHandler.js';
 import { TicketData } from '../app/types/TicketData.js';
 import { RequestService } from '../app/service/serviceFactory.js';
 
-export default class JobHandler {
+export default class JobHandler implements IJobHandler {
   private readonly fibonacci: Fibonacci;
   private readonly requestService: RequestService;
 

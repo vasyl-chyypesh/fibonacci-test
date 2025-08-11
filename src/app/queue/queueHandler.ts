@@ -1,5 +1,6 @@
 import amqplib, { ChannelModel, Channel, ConsumeMessage } from 'amqplib';
 import { Logger } from '../utils/logger.js';
+import { IJobHandler } from '../types/IJobHandler.js';
 
 export class QueueHandler {
   private rmqUrl: string;
@@ -36,7 +37,7 @@ export class QueueHandler {
     return ok;
   }
 
-  async attachJobHandlerToQueue(queue: string, jobHandler: (msg: ConsumeMessage) => Promise<void>) {
+  async attachJobHandlerToQueue(queue: string, jobHandler: IJobHandler) {
     const channel = await this.getChannel(queue);
     await channel.consume(queue, async (msg: ConsumeMessage | null) => {
       if (!msg) {
@@ -45,7 +46,7 @@ export class QueueHandler {
       }
       Logger.log(`New message from rabbitMQ queue: ${queue}`);
       channel.ack(msg); // default acknowledgement timeout is 30 minutes
-      await jobHandler(msg);
+      await jobHandler.handleMessage(msg);
       Logger.log(`Handled message from rabbitMQ queue: ${queue}`);
     });
   }
