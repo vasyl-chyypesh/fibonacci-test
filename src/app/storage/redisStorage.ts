@@ -1,4 +1,4 @@
-import { IStorage } from '../types/Storage.js';
+import { IStorage } from '../types/IStorage.js';
 import { RedisClient } from './redisClient.js';
 
 export class RedisStorage implements IStorage {
@@ -20,7 +20,7 @@ export class RedisStorage implements IStorage {
     return this.redisClient.get(key);
   }
 
-  executeIsolated(func: (client: RedisClient) => Promise<void>): Promise<unknown> {
-    return this.redisClient.executeIsolated(func);
+  increment(key: string): Promise<number> {
+    return this.redisClient.incr(key);
   }
 }

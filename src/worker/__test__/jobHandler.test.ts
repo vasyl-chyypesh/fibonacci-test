@@ -11,8 +11,7 @@ describe('JobHandler', () => {
   let mockRequestService: RequestService;
 
   const mockGetValueFor = mock.fn<(ticket: number) => Promise<bigint>>();
-  const mockUpdateRequestWithField =
-    mock.fn<(ticket: number, field: string, value: string | number) => Promise<void>>();
+  const mockUpdateRequestWithData = mock.fn<(ticket: number, data: any) => Promise<void>>();
 
   beforeEach(() => {
     mockFibonacci = {
@@ -20,7 +19,7 @@ describe('JobHandler', () => {
     } as unknown as Fibonacci;
 
     mockRequestService = {
-      updateRequestWithField: mockUpdateRequestWithField,
+      updateRequestWithData: mockUpdateRequestWithData,
     } as unknown as RequestService;
 
     jobHandler = new JobHandler(mockFibonacci, mockRequestService);
@@ -28,7 +27,7 @@ describe('JobHandler', () => {
 
   afterEach(() => {
     mockGetValueFor.mock.resetCalls();
-    mockUpdateRequestWithField.mock.resetCalls();
+    mockUpdateRequestWithData.mock.resetCalls();
   });
 
   describe('handleMessage method', () => {
@@ -44,16 +43,18 @@ describe('JobHandler', () => {
       } as ConsumeMessage;
 
       mockGetValueFor.mock.mockImplementation(() => Promise.resolve(result));
-      mockUpdateRequestWithField.mock.mockImplementation(() => Promise.resolve());
+      mockUpdateRequestWithData.mock.mockImplementation(() => Promise.resolve());
 
       await jobHandler.handleMessage(jobMessage);
 
       assert.strictEqual(mockGetValueFor.mock.callCount(), 1);
       assert.strictEqual(mockGetValueFor.mock.calls[0].arguments[0], inputNumber);
-      assert.strictEqual(mockUpdateRequestWithField.mock.callCount(), 1);
-      assert.strictEqual(mockUpdateRequestWithField.mock.calls[0].arguments[0], ticket);
-      assert.strictEqual(mockUpdateRequestWithField.mock.calls[0].arguments[1], 'result');
-      assert.strictEqual(mockUpdateRequestWithField.mock.calls[0].arguments[2], result.toString());
+      assert.strictEqual(mockUpdateRequestWithData.mock.callCount(), 1);
+      assert.strictEqual(mockUpdateRequestWithData.mock.calls[0].arguments[0], ticket);
+      assert.deepEqual(mockUpdateRequestWithData.mock.calls[0].arguments[1], {
+        inputNumber,
+        result: result.toString(),
+      });
     });
 
     test('should handle invalid JSON in message content', async () => {
@@ -64,12 +65,12 @@ describe('JobHandler', () => {
       } as ConsumeMessage;
 
       mockGetValueFor.mock.mockImplementation(() => Promise.resolve(55n));
-      mockUpdateRequestWithField.mock.mockImplementation(() => Promise.resolve());
+      mockUpdateRequestWithData.mock.mockImplementation(() => Promise.resolve());
 
       await jobHandler.handleMessage(jobMessageWithInvalidJson);
 
       assert.strictEqual(mockGetValueFor.mock.callCount(), 0);
-      assert.strictEqual(mockUpdateRequestWithField.mock.callCount(), 0);
+      assert.strictEqual(mockUpdateRequestWithData.mock.callCount(), 0);
     });
   });
 });
