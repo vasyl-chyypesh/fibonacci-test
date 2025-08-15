@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { TicketData } from '../../types/TicketData.js';
+import { TicketData } from '../../types/ITicketData.js';
 import { ServiceFactory, ClassName, RequestService } from '../../service/serviceFactory.js';
 import { TicketNumber } from './output.schema.js';
 import { HttpError } from '../../utils/errors/httpError.js';

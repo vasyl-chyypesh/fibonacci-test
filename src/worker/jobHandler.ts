@@ -2,7 +2,7 @@ import { ConsumeMessage } from 'amqplib';
 import { Fibonacci } from './fibonacci.js';
 import { Logger } from '../app/utils/logger.js';
 import { IJobHandler } from '../app/types/IJobHandler.js';
-import { TicketData } from '../app/types/TicketData.js';
+import { TicketData } from '../app/types/ITicketData.js';
 import { RequestService } from '../app/service/serviceFactory.js';
 
 export default class JobHandler implements IJobHandler {
@@ -23,7 +23,7 @@ export default class JobHandler implements IJobHandler {
       const result = await this.fibonacci.getValueFor(inputNumber);
       Logger.log('finished calculate Fibonacci for:', inputNumber);
 
-      await this.requestService.updateRequestWithField(ticket, 'result', result.toString());
+      await this.requestService.updateRequestWithData(ticket, { inputNumber, result: result.toString() });
       Logger.log('updated result for request ticket:', ticket);
     } catch (err: unknown) {
       Logger.error(err);
