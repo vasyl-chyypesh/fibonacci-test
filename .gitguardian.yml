@@ -1,6 +1,9 @@
 version: 2
 
+verbose: true
+
 secret:
-  ignored-paths:
+  ignored_paths:
   - .env
-  - node_modules/**
+  - 'node_modules/**/*'
+  - 'coverage/**/*'
