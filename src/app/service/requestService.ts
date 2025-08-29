@@ -1,7 +1,7 @@
 import { IStorage } from '../types/IStorage.js';
 
 export class RequestService {
-  private storageService;
+  private readonly storageService;
 
   constructor(storageService: IStorage) {
     this.storageService = storageService;
