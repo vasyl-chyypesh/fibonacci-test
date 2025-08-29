@@ -68,7 +68,7 @@ jobs:
         run: docker build . --file Dockerfile --tag fibonacci-test:${{ github.sha }}
 
       - name: Run Trivy container scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.33.0
         with:
           image-ref: 'fibonacci-test:${{ github.sha }}'
           format: 'sarif'
