@@ -9,15 +9,13 @@ export function errorHandler(error: Error, request: Request, response: Response,
   Logger.error(error);
 
   if (error instanceof HttpError) {
-    const appError = error as HttpError;
-    response.status(appError.httpStatus).json({
-      code: appError.code,
-      message: appError.message,
+    return response.status(error.httpStatus).json({
+      code: error.code,
+      message: error.message,
     });
-    return;
   }
 
-  response.status(500).json({
+  return response.status(500).json({
     code: CODES.INTERNAL_ERROR,
     message: MESSAGES.INTERNAL_SERVER_ERROR,
   });

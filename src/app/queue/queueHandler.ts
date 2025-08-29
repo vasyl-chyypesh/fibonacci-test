@@ -3,7 +3,7 @@ import { Logger } from '../utils/logger.js';
 import { IJobHandler } from '../types/IJobHandler.js';
 
 export class QueueHandler {
-  private rmqUrl: string;
+  private readonly rmqUrl: string;
   private connection: ChannelModel | undefined;
   private channel: Channel | undefined;
 
