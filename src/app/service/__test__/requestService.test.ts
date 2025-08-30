@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { RequestService } from '../requestService.js';
 import { IStorage } from '../../types/IStorage.js';
 
-describe.only('RequestService', () => {
+describe('RequestService', () => {
   const mockStorageService: IStorage = {
     set: mock.fn(),
     get: mock.fn(),
