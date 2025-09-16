@@ -48,7 +48,7 @@ describe('RedisStorage', () => {
         {
           name: 'Error',
           message: `RedisStorage has not set value: ${value} for key: ${key}`,
-        }
+        },
       );
     });
 
@@ -65,7 +65,7 @@ describe('RedisStorage', () => {
         {
           name: 'Error',
           message: `RedisStorage has not set value: ${value} for key: ${key}`,
-        }
+        },
       );
     });
 
@@ -85,7 +85,7 @@ describe('RedisStorage', () => {
         {
           name: 'Error',
           message: errorMessage,
-        }
+        },
       );
     });
   });
@@ -127,7 +127,7 @@ describe('RedisStorage', () => {
         {
           name: 'Error',
           message: errorMessage,
-        }
+        },
       );
     });
   });
@@ -170,7 +170,7 @@ describe('RedisStorage', () => {
         {
           name: 'Error',
           message: errorMessage,
-        }
+        },
       );
     });
   });
