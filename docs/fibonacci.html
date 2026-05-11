@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fibonacci UI</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <div id="root">
+        <div class="theme-toggle-row">
+            <button
+                id="theme-toggle"
+                class="theme-toggle"
+                type="button"
+                aria-pressed="false"
+                aria-label="Switch to Dark mode"
+                title="Switch to Dark mode"
+            >
+                <svg class="theme-icon theme-icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <circle cx="12" cy="12" r="4"></circle>
+                    <line x1="12" y1="1.5" x2="12" y2="4.5"></line>
+                    <line x1="12" y1="19.5" x2="12" y2="22.5"></line>
+                    <line x1="1.5" y1="12" x2="4.5" y2="12"></line>
+                    <line x1="19.5" y1="12" x2="22.5" y2="12"></line>
+                    <line x1="4.2" y1="4.2" x2="6.4" y2="6.4"></line>
+                    <line x1="17.6" y1="17.6" x2="19.8" y2="19.8"></line>
+                    <line x1="4.2" y1="19.8" x2="6.4" y2="17.6"></line>
+                    <line x1="17.6" y1="6.4" x2="19.8" y2="4.2"></line>
+                </svg>
+                <svg class="theme-icon theme-icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                    <path d="M14.5 3a8.5 8.5 0 1 0 6.5 14a8 8 0 0 1 -6.5 -14z"></path>
+                </svg>
+            </button>
+        </div>
+
+        <h2>Fibonacci Calculator</h2>
+        <p>Submit a number to the current API and wait for the computed Fibonacci value.</p>
+        <p><a href="index.html">Back to docs homepage</a></p>
+
+        <form id="fibonacci-form" class="fibonacci-form">
+            <label for="number-input">Number</label>
+            <div class="input-with-loader">
+                <input id="number-input" name="number" type="number" min="1" step="1" placeholder="e.g. 7" required />
+                <span id="checking-loader" class="checking-loader" aria-hidden="true" hidden></span>
+                <span class="visually-hidden" id="checking-status">Checking result</span>
+            </div>
+            <button id="submit-button" type="submit">Calculate</button>
+        </form>
+
+        <output id="status-message" class="status-message" aria-live="polite"></output>
+        <p id="error-message" class="error-message" role="alert" aria-live="assertive"></p>
+
+        <div id="result-panel" class="result-panel" hidden>
+            <h3>Result</h3>
+            <p><strong>Ticket:</strong> <span id="result-ticket"></span></p>
+            <p><strong>Input:</strong> <span id="result-input"></span></p>
+            <p><strong>Fibonacci:</strong></p>
+            <pre id="result-fibonacci" class="result-fibonacci"></pre>
+        </div>
+    </div>
+
+    <script>
+        const themeToggle = document.querySelector('#theme-toggle');
+        const rootElement = document.documentElement;
+        const THEME_STORAGE_KEY = 'theme';
+
+        const fibonacciForm = document.querySelector('#fibonacci-form');
+        const numberInput = document.querySelector('#number-input');
+        const submitButton = document.querySelector('#submit-button');
+        const statusMessage = document.querySelector('#status-message');
+        const errorMessage = document.querySelector('#error-message');
+        const resultPanel = document.querySelector('#result-panel');
+        const resultTicket = document.querySelector('#result-ticket');
+        const resultInput = document.querySelector('#result-input');
+        const resultFibonacci = document.querySelector('#result-fibonacci');
+        const checkingLoader = document.querySelector('#checking-loader');
+
+        const POLL_INTERVAL_MS = 3000;
+        const MAX_POLL_ATTEMPTS = 100;
+
+        function getPreferredTheme() {
+            return globalThis.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        }
+
+        function setTheme(theme) {
+            rootElement.dataset.theme = theme;
+            const isDark = theme === 'dark';
+            const nextThemeLabel = isDark ? 'Switch to Light mode' : 'Switch to Dark mode';
+            themeToggle.dataset.nextTheme = isDark ? 'light' : 'dark';
+            themeToggle.setAttribute('title', nextThemeLabel);
+            themeToggle.setAttribute('aria-label', nextThemeLabel);
+            themeToggle.setAttribute('aria-pressed', String(isDark));
+        }
+
+        function initializeTheme() {
+            const savedTheme = globalThis.localStorage.getItem(THEME_STORAGE_KEY);
+            if (savedTheme === 'light' || savedTheme === 'dark') {
+                setTheme(savedTheme);
+                return;
+            }
+
+            const preferredTheme = getPreferredTheme();
+            setTheme(preferredTheme);
+            delete rootElement.dataset.theme;
+        }
+
+        function setFormBusy(isBusy) {
+            submitButton.disabled = isBusy;
+            numberInput.disabled = isBusy;
+        }
+
+        function clearMessages() {
+            statusMessage.textContent = '';
+            errorMessage.textContent = '';
+        }
+
+        function setCheckingState(isChecking) {
+            checkingLoader.hidden = !isChecking;
+        }
+
+        function hideResult() {
+            resultPanel.hidden = true;
+            resultTicket.textContent = '';
+            resultInput.textContent = '';
+            resultFibonacci.textContent = '';
+        }
+
+        function parseJsonSafely(response) {
+            return response.text().then((text) => {
+                if (!text) {
+                    return {};
+                }
+
+                try {
+                    return JSON.parse(text);
+                } catch {
+                    return {};
+                }
+            });
+        }
+
+        function sleep(delayMs) {
+            return new Promise((resolve) => {
+                setTimeout(resolve, delayMs);
+            });
+        }
+
+        function validateNumber(rawValue) {
+            const numericValue = Number(rawValue);
+            if (!Number.isInteger(numericValue) || numericValue < 1) {
+                return {
+                    valid: false,
+                    message: 'Please enter an integer greater than or equal to 1.'
+                };
+            }
+
+            return { valid: true, value: numericValue };
+        }
+
+        async function createTicket(number) {
+            const response = await fetch('/input', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ number })
+            });
+
+            const body = await parseJsonSafely(response);
+            if (!response.ok) {
+                throw new Error(body.message || 'Could not submit number to the API.');
+            }
+
+            if (!Number.isInteger(body.ticket)) {
+                throw new TypeError('API returned an invalid ticket.');
+            }
+
+            return body.ticket;
+        }
+
+        async function fetchResult(ticket) {
+            const response = await fetch(`/output/${ticket}`);
+            const body = await parseJsonSafely(response);
+            return { response, body };
+        }
+
+        async function pollForResult(ticket) {
+            for (let attempt = 1; attempt <= MAX_POLL_ATTEMPTS; attempt += 1) {
+                statusMessage.textContent = `Waiting for result (attempt ${attempt}/${MAX_POLL_ATTEMPTS})...`;
+                const { response, body } = await fetchResult(ticket);
+
+                if (response.ok) {
+                    return body;
+                }
+
+                if (response.status === 404) {
+                    await sleep(POLL_INTERVAL_MS);
+                    continue;
+                }
+
+                throw new Error(body.message || 'Could not fetch Fibonacci result.');
+            }
+
+            throw new Error('Timed out while waiting for Fibonacci result. Please try again.');
+        }
+
+        function renderResult(result) {
+            resultTicket.textContent = String(result.ticket);
+            resultInput.textContent = String(result.inputNumber);
+            resultFibonacci.textContent = String(result.fibonacci);
+            resultPanel.hidden = false;
+        }
+
+        fibonacciForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            clearMessages();
+            hideResult();
+
+            const validation = validateNumber(numberInput.value);
+            if (!validation.valid) {
+                errorMessage.textContent = validation.message;
+                return;
+            }
+
+            setFormBusy(true);
+            setCheckingState(false);
+            statusMessage.textContent = 'Submitting request...';
+
+            try {
+                const ticket = await createTicket(validation.value);
+                statusMessage.textContent = `Submitted successfully. Ticket: ${ticket}.`;
+
+                setCheckingState(true);
+                const result = await pollForResult(ticket);
+                renderResult(result);
+                statusMessage.textContent = 'Result received.';
+            } catch (error) {
+                errorMessage.textContent = error instanceof Error ? error.message : 'Unexpected error occurred.';
+            } finally {
+                setCheckingState(false);
+                setFormBusy(false);
+            }
+        });
+
+        themeToggle.addEventListener('click', () => {
+            const activeTheme = rootElement.dataset.theme || getPreferredTheme();
+            const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+            setTheme(nextTheme);
+            globalThis.localStorage.setItem(THEME_STORAGE_KEY, nextTheme);
+        });
+
+        initializeTheme();
+    </script>
+</body>
+
+</html>
