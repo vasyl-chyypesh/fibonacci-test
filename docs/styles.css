@@ -259,6 +259,121 @@ html[data-theme="dark"] {
     display: block;
 }
 
+.fibonacci-form {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.75rem;
+    max-width: 20rem;
+}
+
+.fibonacci-form label {
+    font-weight: 600;
+}
+
+.fibonacci-form input,
+.fibonacci-form button {
+    font: inherit;
+    border-radius: 6px;
+    border: 1px solid var(--link-color);
+    background: transparent;
+    color: var(--text-color);
+    padding: 0.6rem 0.75rem;
+}
+
+.input-with-loader {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.input-with-loader input {
+    flex: 1;
+}
+
+.fibonacci-form button {
+    cursor: pointer;
+    color: var(--link-color);
+    font-weight: 600;
+}
+
+.fibonacci-form button:hover {
+    color: var(--link-hover-color);
+    border-color: var(--link-hover-color);
+}
+
+.fibonacci-form button:disabled {
+    opacity: 0.65;
+    cursor: not-allowed;
+}
+
+.status-message,
+.error-message {
+    margin-top: 1rem;
+    min-height: 1.5rem;
+}
+
+.error-message {
+    color: #b91c1c;
+}
+
+html[data-theme="dark"] .error-message {
+    color: #fca5a5;
+}
+
+.result-panel {
+    margin-top: 1rem;
+    border: 1px solid var(--link-color);
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.result-panel h3 {
+    margin-top: 0;
+}
+
+.result-fibonacci {
+    margin-top: 0.25rem;
+    margin-bottom: 0;
+    max-width: 100%;
+    background: var(--code-bg);
+    border-radius: 6px;
+    padding: 0.75rem;
+    overflow-wrap: anywhere;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.checking-loader {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid var(--code-bg);
+    border-top-color: var(--link-color);
+    border-radius: 50%;
+    animation: spin 0.75s linear infinite;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 @media (max-width: 640px) {
     body {
         padding: 1rem;

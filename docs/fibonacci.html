@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Fibonacci UI</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts/theme.js" defer></script>
+    <script src="scripts/fibonacciPage.js" defer></script>
+</head>
+
+<body>
+    <div id="root">
+        <div class="theme-toggle-row" id="theme-toggle-slot"></div>
+
+        <h2>Fibonacci Calculator</h2>
+        <p>Submit a number to the current API and wait for the computed Fibonacci value.</p>
+        <p><a href="index.html">Back to docs homepage</a></p>
+
+        <form id="fibonacci-form" class="fibonacci-form">
+            <label for="number-input">Number</label>
+            <div class="input-with-loader">
+                <input id="number-input" name="number" type="number" min="1" step="1" placeholder="e.g. 7" required />
+                <span id="checking-loader" class="checking-loader" aria-hidden="true" hidden></span>
+                <span class="visually-hidden" id="checking-status">Checking result</span>
+            </div>
+            <button id="submit-button" type="submit">Calculate</button>
+        </form>
+
+        <output id="status-message" class="status-message" aria-live="polite"></output>
+        <p id="error-message" class="error-message" role="alert" aria-live="assertive"></p>
+
+        <div id="result-panel" class="result-panel" hidden>
+            <h3>Result</h3>
+            <p><strong>Ticket:</strong> <span id="result-ticket"></span></p>
+            <p><strong>Input:</strong> <span id="result-input"></span></p>
+            <p><strong>Fibonacci:</strong></p>
+            <pre id="result-fibonacci" class="result-fibonacci"></pre>
+        </div>
+    </div>
+
+</body>
+
+</html>
