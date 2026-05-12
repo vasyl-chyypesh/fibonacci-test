@@ -2,6 +2,12 @@
 
 Test Project for Fibonacci Numbers.
 
+### Contributor notes
+- Review agent guidance before making changes:
+  - [`AGENTS.md`](./AGENTS.md) for repository-wide rules
+  - [`src/app/AGENTS.md`](./src/app/AGENTS.md) for API app conventions
+  - [`src/worker/AGENTS.md`](./src/worker/AGENTS.md) for worker conventions
+
 ### Requirements
 - Git ([download](https://git-scm.com/downloads))
 - Docker ([download](https://docs.docker.com/get-docker/))
