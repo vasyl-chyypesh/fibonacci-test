@@ -1,10 +1,10 @@
 {
   "name": "fibonacci-test",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "description": "test project for fibonacci numbers",
   "main": "dist/app/index.js",
   "engines": {
-    "node": ">=24"
+    "node": ">=25"
   },
   "type": "module",
   "scripts": {
