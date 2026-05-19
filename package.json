@@ -1,6 +1,6 @@
 {
   "name": "fibonacci-test",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "test project for fibonacci numbers",
   "main": "dist/app/index.js",
   "engines": {
@@ -20,6 +20,7 @@
     "lint:files": "ls-lint",
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "start": "node dist/app/index.js",
+    "serve:docs": "npx http-server docs -p 8080 -P http://localhost:3000",
     "test": "node --import tsx --test 'src/**/*.test.ts'",
     "test:performance": "node --import tsx --test 'test/**/*.perf.test.ts'",
     "test:integration": "node --import tsx --test 'test/**/*.int.test.ts'",
@@ -42,7 +43,7 @@
     "ajv": "8.20.0",
     "amqplib": "2.0.1",
     "express": "5.2.1",
-    "express-rate-limit": "8.5.1",
+    "express-rate-limit": "8.5.2",
     "express-slow-down": "3.1.0",
     "helmet": "8.1.0",
     "redis": "5.12.1"
@@ -55,19 +56,19 @@
     "@ls-lint/ls-lint": "^2.3.1",
     "@types/amqplib": "^0.10.8",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.7.0",
+    "@types/node": "^25.9.0",
     "@types/supertest": "^7.2.0",
-    "@typescript-eslint/eslint-plugin": "^8.59.3",
-    "@typescript-eslint/parser": "^8.59.3",
+    "@typescript-eslint/eslint-plugin": "^8.59.4",
+    "@typescript-eslint/parser": "^8.59.4",
     "c8": "^11.0.0",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.0",
     "eslint-plugin-security": "^4.0.0",
     "husky": "^9.1.7",
     "prettier": "^3.8.3",
     "supertest": "^7.2.2",
-    "tsx": "^4.21.0",
+    "tsx": "^4.22.3",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.59.3",
+    "typescript-eslint": "^8.59.4",
     "validate-branch-name": "^1.3.2"
   }
 }
