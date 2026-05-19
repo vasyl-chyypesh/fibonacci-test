@@ -44,4 +44,26 @@ export class Fibonacci {
       });
     });
   }
+
+  public async getValueForWithLastOptions(
+    fibonacciIndex: number,
+    lastOptions: { lastIndex: number; lastValues: bigint[] },
+  ) {
+    if (!Number.isInteger(fibonacciIndex) || fibonacciIndex < 0) {
+      throw new Error(`Invalid input fibonacci index: ${fibonacciIndex}`);
+    }
+
+    if (fibonacciIndex <= lastOptions.lastIndex) {
+      throw new Error(`Fibonacci index is less than or equal to last index`);
+    }
+
+    let [previous, current] = lastOptions.lastValues;
+    let i = lastOptions.lastIndex;
+    while (i < fibonacciIndex) {
+      [previous, current] = await this.calculateNext(previous, current);
+      i++;
+    }
+
+    return current;
+  }
 }
