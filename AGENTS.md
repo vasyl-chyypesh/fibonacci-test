@@ -7,6 +7,7 @@
   - Infra code in `infrastructure`
   - UI code in `docs`
 - Runtime uses ESM (`"type": "module"`), so use `.js` extension in TypeScript imports.
+- Requires Node.js >= 25 (see `.nvmrc`, `package.json` `engines`, and CI).
 
 ## General Coding Rules
 - Keep changes focused and minimal; do not refactor unrelated areas.
@@ -19,9 +20,14 @@
 - Run formatting/lint/tests relevant to changed code:
   - `npm run prettier`
   - `npm run lint`
+  - `npm run build` (TypeScript typecheck — must pass before committing)
   - `npm test`
 - For API behavior changes, also run integration tests where applicable:
   - `npm run test:integration`
+- Repo hooks (Husky) and CI also enforce:
+  - Conventional Commits via commitlint (`commit-msg` hook)
+  - Branch naming via `npm run lint:branch`
+  - File/dir naming via `npm run lint:files` (ls-lint)
 
 ## API & Contracts
 - Keep request/response shapes backward compatible unless explicitly asked.

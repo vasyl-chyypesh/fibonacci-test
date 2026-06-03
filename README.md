@@ -45,3 +45,15 @@ This will send a response with result data in the body:
 ```bash
 { "ticket": 1, "inputNumber": 7, "fibonacci": "13" }
 ```
+
+### Health check
+
+```bash
+curl http://localhost:3000/health
+```
+
+Returns `200` with a status payload:
+
+```bash
+{ "message": "OK", "time": "2026-06-03T00:00:00.000Z" }
+```
