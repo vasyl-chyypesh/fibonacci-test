@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         { href: 'index.html', label: 'Docs', match: 'index.html' },
         { href: 'fibonacci.html', label: 'Calculator', match: 'fibonacci.html' },
         { href: 'api-docs.html', label: 'API docs', match: 'api-docs.html' },
-        { href: 'coverage/index.html', label: 'Coverage' }
+        { href: 'coverage/index.html', label: 'Coverage', newTab: true }
     ];
 
     function currentFile() {
@@ -24,8 +24,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const links = NAV_ITEMS.map((item) => {
         const isActive = item.match === current;
-        const attributes = isActive ? ' class="is-active" aria-current="page"' : '';
-        return `<a href="${item.href}"${attributes}>${item.label}</a>`;
+        const activeAttrs = isActive ? ' class="is-active" aria-current="page"' : '';
+        const tabAttrs = item.newTab ? ' target="_blank" rel="noopener noreferrer"' : '';
+        return `<a href="${item.href}"${activeAttrs}${tabAttrs}>${item.label}</a>`;
     }).join('');
 
     header.className = 'site-header';

@@ -415,6 +415,16 @@ a:focus-visible {
     border-radius: 2px;
 }
 
+/* External links get the same outbound arrow as the header's GitHub link.
+   inline-block keeps the arrow out of the link's underline. */
+.ext-link::after {
+    content: "\2197";
+    display: inline-block;
+    margin-left: 2px;
+    color: var(--accent-ink);
+    text-decoration: none;
+}
+
 /* --------------------------------------------------------------------------
    Theme toggle (markup created by scripts/theme.js)
    -------------------------------------------------------------------------- */
