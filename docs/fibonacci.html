@@ -11,19 +11,14 @@
         href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <script src="scripts/theme.js" defer></script>
+    <script src="scripts/siteHeader.js" defer></script>
     <script src="scripts/fibonacciPage.js" defer></script>
     <script src="scripts/copy.js" defer></script>
 </head>
 
 <body>
+    <header id="site-header"></header>
     <div class="page">
-        <header class="topbar">
-            <span class="brand"><span class="brand-dot"></span> <strong>Fibonacci</strong> · REST API</span>
-            <div class="theme-toggle-row" id="theme-toggle-slot"></div>
-        </header>
-
-        <a class="back-link" href="index.html">Back to docs homepage</a>
-
         <div class="doc" id="root">
             <h2>Fibonacci Calculator</h2>
             <p>Submit a number to the current API and wait for the computed Fibonacci value.</p>

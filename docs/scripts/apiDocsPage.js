@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    globalThis.DocsTheme?.mountThemeToggle('#theme-toggle-slot');
-
     const container = document.getElementById('redoc-container');
     if (!container || typeof Redoc === 'undefined') {
         return;

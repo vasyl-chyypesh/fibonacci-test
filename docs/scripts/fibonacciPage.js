@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    globalThis.DocsTheme?.mountThemeToggle('#theme-toggle-slot');
-
     const fibonacciForm = document.querySelector('#fibonacci-form');
     const numberInput = document.querySelector('#number-input');
     const submitButton = document.querySelector('#submit-button');
