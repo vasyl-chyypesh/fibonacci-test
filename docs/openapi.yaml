@@ -1,0 +1,175 @@
+openapi: 3.1.0
+info:
+  title: Fibonacci API
+  version: 0.8.0
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  description: |
+    Submit a number for Fibonacci calculation, then poll by ticket ID.
+    Results are computed asynchronously via a queue worker.
+
+servers:
+  - url: /
+    description: Default server
+
+security: []
+
+paths:
+  /health:
+    get:
+      summary: Health check
+      operationId: getHealth
+      responses:
+        '200':
+          description: Service is healthy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthResponse'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+
+  /input:
+    post:
+      summary: Submit a number for Fibonacci calculation
+      operationId: createInput
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InputNumber'
+            example:
+              number: 7
+      responses:
+        '200':
+          description: Ticket created; job queued
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TicketResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /output/{ticket}:
+    get:
+      summary: Get Fibonacci result by ticket
+      operationId: getOutput
+      parameters:
+        - name: ticket
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: Result available
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OutputResponse'
+              example:
+                ticket: 1
+                inputNumber: 7
+                fibonacci: '13'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          description: Ticket not found or result not ready
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          $ref: '#/components/responses/RateLimit'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  schemas:
+    InputNumber:
+      type: object
+      required:
+        - number
+      additionalProperties: false
+      properties:
+        number:
+          type: integer
+          minimum: 1
+          maximum: 9007199254740991
+
+    TicketResponse:
+      type: object
+      required:
+        - ticket
+      properties:
+        ticket:
+          type: integer
+          minimum: 1
+
+    OutputResponse:
+      type: object
+      required:
+        - ticket
+        - inputNumber
+        - fibonacci
+      properties:
+        ticket:
+          type: integer
+        inputNumber:
+          type: integer
+        fibonacci:
+          type: string
+          description: Fibonacci value as string (BigInt-safe)
+
+    HealthResponse:
+      type: object
+      required:
+        - message
+        - time
+      properties:
+        message:
+          type: string
+          example: OK
+        time:
+          type: string
+          format: date-time
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          enum:
+            - BAD_REQUEST
+            - NOT_FOUND
+            - RATE_LIMIT
+            - INTERNAL_ERROR
+        message:
+          type: string
+
+  responses:
+    BadRequest:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    RateLimit:
+      description: Too many requests (60 per minute per IP)
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InternalError:
+      description: Unexpected server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
