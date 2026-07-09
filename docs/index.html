@@ -5,59 +5,67 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Fibonacci Test</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <script src="scripts/theme.js" defer></script>
-    <script src="scripts/indexPage.js" defer></script>
+    <script src="scripts/siteHeader.js" defer></script>
+    <script src="scripts/copy.js" defer></script>
 </head>
 
 <body>
-    <div id="root">
-        <div class="theme-toggle-row" id="theme-toggle-slot"></div>
-        <h2>Welcome To Fibonacci Test Project!</h2>
-        <h3 id="requirements">Requirements</h3>
-        <ul>
-            <li>Git (<a title="https://git-scm.com/downloads" href="https://git-scm.com/downloads">download</a>)</li>
-            <li>Docker (<a title="https://docs.docker.com/get-docker/" href="https://docs.docker.com/get-docker/">download</a>)</li>
-        </ul>
-        <h3 id="run-project-in-docker">Run project in docker</h3>
-        <blockquote>
-            <pre><code>git clone https://github.com/vasyl-chyypesh/fibonacci-test.git
+    <header id="site-header"></header>
+    <div class="page">
+        <article class="doc" id="root">
+            <h2>Welcome To Fibonacci Test Project!</h2>
 
+            <h3 id="requirements">Requirements</h3>
+            <ul>
+                <li>Git <a class="ext-link" href="https://git-scm.com/downloads" target="_blank" rel="noopener noreferrer">download</a></li>
+                <li>Docker <a class="ext-link" href="https://docs.docker.com/get-docker/" target="_blank" rel="noopener noreferrer">download</a></li>
+            </ul>
+
+            <h3 id="run-project-in-docker">Run project in docker</h3>
+            <pre data-copy><code>git clone https://github.com/vasyl-chyypesh/fibonacci-test.git
 cd fibonacci-test
+docker compose up --build</code></pre>
 
-docker compose up --build
-</code></pre>
-        </blockquote>
-        <h3 id="test-via-curl">Test via curl</h3>
-        <p>POST data with a number:</p>
-        <blockquote>
-            <p><code>curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input</code>
+            <h3 id="access-the-ui">Access the API documentation and test interface</h3>
+            <p>Once the Docker containers are running, open your browser and navigate to
+                <a href="http://localhost:8080">http://localhost:8080</a> to view the interactive API documentation and
+                try out the available endpoints via the UI.
             </p>
-        </blockquote>
-        <p>This will send a response with a ticket ID in the body:</p>
-        <blockquote><code>{ "ticket": 1 }</code></blockquote>
-        <p>GET data by ticket ID:</p>
-        <blockquote><code>curl http://localhost:3000/output/1</code></blockquote>
-        <p>This will send a response with result data in the body:</p>
-        <blockquote><code>{ "ticket": 1, "inputNumber": 7, "fibonacci": "13" }</code></blockquote>
-        <h3 id="fibonacci-ui">Fibonacci UI</h3>
-        <p><code><a href="fibonacci.html">Open Fibonacci calculator page</a></code></p>
-        <h3 id="coverage-report">Coverage report</h3>
-        <p><code><a href="coverage/index.html">Code coverage report</a></code></p>
-        <h3 id="source-code">Source code</h3>
-        <p><code><a title="https://github.com/vasyl-chyypesh/fibonacci-test" href="https://github.com/vasyl-chyypesh/fibonacci-test">github.com</a></code>
-        </p>
-    </div>
-    <div class="clock-container">
-        <div class="digital-clock">
-            <div class="time">
-                <span class="hours">00</span>
-                <span class="colon">:</span>
-                <span class="minutes">00</span>
-                <span class="colon">:</span>
-                <span class="seconds">00</span>
-            </div>
-        </div>
+
+            <h3 id="test-via-curl">Test via curl</h3>
+            <p>POST data with a number:</p>
+            <pre data-copy><code>curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input</code></pre>
+            <p>This will send a response with a ticket ID in the body:</p>
+            <pre><code>{ "ticket": 1 }</code></pre>
+            <p>GET data by ticket ID:</p>
+            <pre data-copy><code>curl http://localhost:3000/output/1</code></pre>
+            <p>This will send a response with result data in the body:</p>
+            <pre><code>{ "ticket": 1, "inputNumber": 7, "fibonacci": "13" }</code></pre>
+
+            <h3 id="health-check">Health check</h3>
+            <pre data-copy><code>curl http://localhost:3000/health</code></pre>
+            <p>Returns <code>200</code> with a status payload:</p>
+            <pre><code>{ "message": "OK", "time": "2026-06-03T00:00:00.000Z" }</code></pre>
+
+            <h3 id="api-documentation">API documentation</h3>
+            <p><a href="api-docs.html">Open API documentation</a></p>
+
+            <h3 id="fibonacci-ui">Fibonacci UI</h3>
+            <p><a href="fibonacci.html">Open Fibonacci calculator page</a></p>
+
+            <h3 id="coverage-report">Coverage report</h3>
+            <p><a href="coverage/index.html" target="_blank" rel="noopener noreferrer">Code coverage report</a></p>
+
+            <h3 id="source-code">Source code</h3>
+            <p><a class="ext-link" href="https://github.com/vasyl-chyypesh/fibonacci-test" target="_blank" rel="noopener noreferrer">github.com</a></p>
+        </article>
     </div>
 </body>
 

@@ -10,7 +10,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./wait-for-service.sh:/usr/app/wait-for-service.sh/
+      - ./wait-for-service.sh:/usr/app/wait-for-service.sh:ro
     command: sh -c "sh ./wait-for-service.sh rabbitmq 5672 && node dist/app/index.js"
     depends_on:
       - redis
@@ -26,7 +26,7 @@ services:
       - REDIS_URL=redis:6379
       - RABBIT_URL=amqp://rabbitmq:5672
     volumes:
-      - ./wait-for-service.sh:/usr/app/wait-for-service.sh/
+      - ./wait-for-service.sh:/usr/app/wait-for-service.sh:ro
     command: sh -c "sh ./wait-for-service.sh rabbitmq 5672 && node dist/worker/index.js"
     depends_on:
       - redis
@@ -51,6 +51,21 @@ services:
       - 5672
     ports:
       - 5672:5672
+    networks:
+      - fib_network
+
+  docs:
+    image: node:25-alpine
+    container_name: fib_docs
+    restart: unless-stopped
+    working_dir: /usr/app
+    volumes:
+      - ./docs:/usr/app/docs:ro
+    command: npx --yes http-server docs -p 8080 -P http://app:3000
+    ports:
+      - 8080:8080
+    depends_on:
+      - app
     networks:
       - fib_network
 

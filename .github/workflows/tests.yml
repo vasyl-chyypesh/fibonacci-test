@@ -34,6 +34,9 @@ jobs:
       - name: Run lint
         run: npm run lint
 
+      - name: Run OpenAPI lint
+        run: npm run lint:docs
+
       - name: Extract branch name
         shell: bash
         run: echo "branch=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}" >> $GITHUB_OUTPUT
