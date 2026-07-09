@@ -247,6 +247,70 @@ pre code {
     font-size: inherit;
 }
 
+/* Copy chip (injected by scripts/copy.js) */
+.code-block {
+    position: relative;
+}
+
+.code-block pre {
+    padding-right: 4rem;
+}
+
+.copy-chip {
+    position: absolute;
+    top: var(--space-8);
+    right: var(--space-8);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--space-34);
+    height: var(--space-34);
+    padding: 0;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.copy-chip:hover {
+    color: var(--accent-ink);
+    border-color: var(--accent);
+}
+
+.copy-chip:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.copy-chip.is-copied {
+    color: var(--success);
+    border-color: var(--success);
+}
+
+.copy-icon {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.copy-icon-check {
+    display: none;
+}
+
+.copy-chip.is-copied .copy-icon-clipboard {
+    display: none;
+}
+
+.copy-chip.is-copied .copy-icon-check {
+    display: block;
+}
+
 .io-note {
     font-family: var(--font-mono);
     font-size: 0.8rem;

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="styles.css">
     <script src="scripts/theme.js" defer></script>
     <script src="scripts/indexPage.js" defer></script>
+    <script src="scripts/copy.js" defer></script>
 </head>
 
 <body>
@@ -31,17 +32,17 @@
             </ul>
 
             <h3 id="run-project-in-docker">Run project in docker</h3>
-            <pre><code>git clone https://github.com/vasyl-chyypesh/fibonacci-test.git
+            <pre data-copy><code>git clone https://github.com/vasyl-chyypesh/fibonacci-test.git
 cd fibonacci-test
 docker compose up --build</code></pre>
 
             <h3 id="test-via-curl">Test via curl</h3>
             <p>POST data with a number:</p>
-            <pre><code>curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input</code></pre>
+            <pre data-copy><code>curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input</code></pre>
             <p>This will send a response with a ticket ID in the body:</p>
             <pre><code>{ "ticket": 1 }</code></pre>
             <p>GET data by ticket ID:</p>
-            <pre><code>curl http://localhost:3000/output/1</code></pre>
+            <pre data-copy><code>curl http://localhost:3000/output/1</code></pre>
             <p>This will send a response with result data in the body:</p>
             <pre><code>{ "ticket": 1, "inputNumber": 7, "fibonacci": "13" }</code></pre>
 
