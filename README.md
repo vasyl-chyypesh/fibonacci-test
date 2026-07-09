@@ -15,26 +15,35 @@ cd fibonacci-test
 docker compose up --build
 ```
 
-### Test via curl
-POST data with a number:
+### Access the API Documentation and Test Interface
+
+Once the Docker containers are running, open your browser and navigate to [http://localhost:8080](http://localhost:8080) to view the interactive API documentation and try out the available endpoints via the UI.
+
+### Testing the API with curl
+
+**Submit a Fibonacci calculation request:**
+
+Send a POST request with your number in the payload:
 
 ```bash
 curl -d '{"number":7}' -H "Content-Type: application/json" -X POST http://localhost:3000/input
 ```
 
-This will send a response with a ticket ID in the body:
+The API will respond with a JSON object containing a unique ticket ID, which you can use to check the status or retrieve the result:
 
 ```bash
 { "ticket": 1 }
 ```
 
-GET data by ticket ID:
+**Retrieve the Fibonacci result by ticket:**
+
+Use the ticket ID to query for your calculation result with a GET request:
 
 ```bash
 curl http://localhost:3000/output/1
 ```
 
-This will send a response with result data in the body:
+The response will include the original input number and its corresponding Fibonacci number:
 
 ```bash
 { "ticket": 1, "inputNumber": 7, "fibonacci": "13" }
