@@ -60,3 +60,20 @@ Returns `200` with a status payload:
 ```bash
 { "message": "OK", "time": "2026-06-03T00:00:00.000Z" }
 ```
+
+### System overview
+
+Calculating a large Fibonacci number takes too long to answer inside an HTTP request, so the work is split across two Node.js processes that never call each other directly. The API accepts a number and hands back a ticket immediately; a worker does the arithmetic in the background. Redis carries the state between them, RabbitMQ carries the work.
+
+```mermaid
+flowchart LR
+    Client -- "POST /input" --> API
+    Client -- "GET /output/:ticket" --> API
+    API -- "INCR ticket, save request" --> Redis[("Redis")]
+    API -- "publish job" --> Queue[["RabbitMQ<br>fibonacci_queue"]]
+    API -- "get result by ticket" --> Redis
+    Queue -- "consume job" --> Worker
+    Worker -- "save result" --> Redis
+```
+
+A `POST /input` validates the payload, reserves a ticket by incrementing a Redis counter, stores the request under `fib_request_<ticket>`, publishes a durable job to RabbitMQ, and returns the ticket. The worker consumes that job, computes the value, and overwrites the same Redis key with the result. A later `GET /output/:ticket` reads the key directly and returns `404` until the worker has written a result.
