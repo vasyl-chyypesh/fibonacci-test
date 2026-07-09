@@ -1,17 +1,90 @@
+/* ==========================================================================
+   Fibonacci Test — docs styles
+   Aesthetic: refined technical. The spacing scale below is literally the
+   Fibonacci sequence (px), the same idea the API computes.
+   ========================================================================== */
+
 :root {
     color-scheme: light dark;
-    --primary-color: #113177;
-    --text-color: #1f2937;
-    --bg-color: #f8fafc;
-    --code-bg: #f1f5f9;
-    --content-width: 800px;
-    --surface-color: #ffffff;
-    --heading-color: var(--primary-color);
-    --link-color: var(--primary-color);
-    --link-hover-color: #1d4ed8;
-    --focus-color: #1d4ed8;
-    --shadow-color: rgb(0 0 0 / 0.1);
-    --clock-bg: var(--bg-color);
+
+    /* Fibonacci spacing scale (px) — the signature system of the site */
+    --space-3: 3px;
+    --space-5: 5px;
+    --space-8: 8px;
+    --space-13: 13px;
+    --space-21: 21px;
+    --space-34: 34px;
+    --space-55: 55px;
+    --space-89: 89px;
+
+    --content-width: 760px;
+    --radius: 10px;
+    --radius-sm: 6px;
+
+    --font-display: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+    /* Light theme (default) */
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-sunken: #f1f3f6;
+    --ink: #17191e;
+    --muted: #59616e;
+    --hairline: #e4e7ec;
+    --accent: #c4901f;
+    --accent-ink: #8a6410;
+    --accent-soft: rgb(196 144 31 / 0.12);
+    --shadow: 0 1px 2px rgb(15 20 30 / 0.04), 0 12px 32px -18px rgb(15 20 30 / 0.28);
+    --danger: #b91c1c;
+    --success: #15803d;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg: #0e1014;
+        --surface: #15181e;
+        --surface-sunken: #1b1f27;
+        --ink: #e7eaef;
+        --muted: #9aa3b2;
+        --hairline: #262b34;
+        --accent: #e0ae4a;
+        --accent-ink: #e8bd63;
+        --accent-soft: rgb(224 174 74 / 0.14);
+        --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 20px 44px -24px rgb(0 0 0 / 0.7);
+        --danger: #fca5a5;
+        --success: #86efac;
+    }
+}
+
+html[data-theme="light"] {
+    --bg: #f6f7f9;
+    --surface: #ffffff;
+    --surface-sunken: #f1f3f6;
+    --ink: #17191e;
+    --muted: #59616e;
+    --hairline: #e4e7ec;
+    --accent: #c4901f;
+    --accent-ink: #8a6410;
+    --accent-soft: rgb(196 144 31 / 0.12);
+    --shadow: 0 1px 2px rgb(15 20 30 / 0.04), 0 12px 32px -18px rgb(15 20 30 / 0.28);
+    --danger: #b91c1c;
+    --success: #15803d;
+}
+
+html[data-theme="dark"] {
+    --bg: #0e1014;
+    --surface: #15181e;
+    --surface-sunken: #1b1f27;
+    --ink: #e7eaef;
+    --muted: #9aa3b2;
+    --hairline: #262b34;
+    --accent: #e0ae4a;
+    --accent-ink: #e8bd63;
+    --accent-soft: rgb(224 174 74 / 0.14);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 20px 44px -24px rgb(0 0 0 / 0.7);
+    --danger: #fca5a5;
+    --success: #86efac;
 }
 
 *,
@@ -21,224 +94,220 @@
 }
 
 body,
+h1,
 h2,
 h3,
 p,
 ul,
+ol,
 li,
+figure,
 blockquote,
 pre {
     margin: 0;
     padding: 0;
 }
 
+/* --------------------------------------------------------------------------
+   README-style document content
+   -------------------------------------------------------------------------- */
+
+.doc h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    margin-bottom: var(--space-21);
+}
+
+.doc h3 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    margin: var(--space-34) 0 var(--space-13);
+    padding-top: var(--space-13);
+    border-top: 1px solid var(--hairline);
+}
+
+.doc h3:first-of-type {
+    padding-top: 0;
+    border-top: 0;
+}
+
+.doc p {
+    margin: var(--space-13) 0;
+    color: var(--ink);
+}
+
+.doc ul {
+    list-style: none;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-13);
+    margin: var(--space-13) 0;
+}
+
+.doc ul li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-8);
+    padding: var(--space-8) var(--space-13);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    background: var(--surface);
+    font-size: 0.92rem;
+}
+
 body {
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-family: var(--font-body);
     line-height: 1.6;
-    color: var(--text-color);
-    background-color: var(--bg-color);
-    padding: 2rem;
+    color: var(--ink);
+    background-color: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    padding: var(--space-34) var(--space-21) var(--space-89);
 }
 
-h2 {
-    color: var(--heading-color);
-    margin-bottom: 2rem;
-    font-size: 2rem;
-    text-align: center;
-}
+/* --------------------------------------------------------------------------
+   Layout shell
+   -------------------------------------------------------------------------- */
 
-h3 {
-    color: var(--heading-color);
-    margin: 1.5rem 0 1rem;
-    font-size: 1.5rem;
-}
-
-p {
-    margin: 1rem 0;
-}
-
-ul {
-    list-style-position: inside;
-    margin: 1rem 0;
-}
-
-li {
-    margin: 0.5rem 0;
-}
-
-#root {
+.page {
     max-width: var(--content-width);
     margin: 0 auto;
-    background: var(--surface-color);
-    padding: 2rem;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px -1px var(--shadow-color);
 }
 
-.code-line {
-    margin: 0.5rem 0;
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-13);
+    margin-bottom: var(--space-34);
 }
 
-a {
-    color: var(--link-color);
-    text-decoration: none;
-    transition: color 0.2s;
+.brand {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--space-8);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
 }
 
-a:hover {
-    color: var(--link-hover-color);
-    text-decoration: underline;
+.brand strong {
+    color: var(--ink);
+    font-weight: 600;
 }
 
-a:focus-visible {
-    color: var(--link-hover-color);
-    text-decoration: underline;
-    outline: 2px solid var(--focus-color);
-    outline-offset: 2px;
-    border-radius: 2px;
+.brand-dot {
+    width: var(--space-8);
+    height: var(--space-8);
+    border-radius: 50%;
+    background: var(--accent);
+    align-self: center;
 }
 
-blockquote {
-    background: var(--code-bg);
-    padding: 1rem;
-    border-radius: 6px;
-    margin: 1rem 0;
-}
+/* --------------------------------------------------------------------------
+   Code
+   -------------------------------------------------------------------------- */
 
 pre {
-    background: var(--code-bg);
-    padding: 1rem;
-    border-radius: 6px;
+    background: var(--surface-sunken);
+    border: 1px solid var(--hairline);
+    padding: var(--space-13) var(--space-21);
+    border-radius: var(--radius-sm);
     overflow-x: auto;
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+    line-height: 1.7;
+    color: var(--ink);
 }
 
 code {
-    background: var(--code-bg);
-    padding: 0.2rem 0.4rem;
+    font-family: var(--font-mono);
+    font-size: 0.86em;
+}
+
+:not(pre) > code {
+    background: var(--accent-soft);
+    color: var(--accent-ink);
+    padding: 0.12em 0.4em;
     border-radius: 4px;
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
 }
 
 pre code {
     background: transparent;
+    color: inherit;
     padding: 0;
-    border-radius: 0;
+    font-size: inherit;
 }
 
-.clock-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 2rem auto;
-    max-width: var(--content-width);
+.io-note {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    margin: var(--space-8) 0 var(--space-5);
 }
 
-.digital-clock {
-    background: var(--clock-bg);
-    padding: 1.5rem 2.5rem;
-    border-radius: 10px;
-    box-shadow: 0 0 15px var(--shadow-color);
-    text-align: center;
+/* --------------------------------------------------------------------------
+   Links
+   -------------------------------------------------------------------------- */
+
+a {
+    color: var(--accent-ink);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+    text-decoration-thickness: 1px;
+    text-decoration-color: color-mix(in srgb, var(--accent-ink) 40%, transparent);
+    transition: color 0.15s ease, text-decoration-color 0.15s ease;
 }
 
-.time {
-    font-size: clamp(2rem, 8vw, 4rem);
-    font-weight: bold;
-    color: var(--heading-color);
-    font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+a:hover {
+    text-decoration-color: currentColor;
 }
 
-.colon {
-    animation: blink 1s infinite;
+a:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 2px;
 }
 
-@keyframes blink {
-    0%,
-    100% {
-        opacity: 1;
-    }
-    50% {
-        opacity: 0;
-    }
-}
-
-@media (prefers-color-scheme: dark) {
-    :root {
-        --primary-color: #93c5fd;
-        --text-color: #e5e7eb;
-        --bg-color: #111827;
-        --code-bg: #1f2937;
-        --surface-color: #0f172a;
-        --heading-color: #bfdbfe;
-        --link-color: #93c5fd;
-        --link-hover-color: #bfdbfe;
-        --focus-color: #93c5fd;
-        --shadow-color: rgb(0 0 0 / 0.45);
-        --clock-bg: #1f2937;
-    }
-}
-
-html[data-theme="light"] {
-    --primary-color: #113177;
-    --text-color: #1f2937;
-    --bg-color: #f8fafc;
-    --code-bg: #f1f5f9;
-    --surface-color: #ffffff;
-    --heading-color: #113177;
-    --link-color: #113177;
-    --link-hover-color: #1d4ed8;
-    --focus-color: #1d4ed8;
-    --shadow-color: rgb(0 0 0 / 0.1);
-    --clock-bg: #f8fafc;
-}
-
-html[data-theme="dark"] {
-    --primary-color: #93c5fd;
-    --text-color: #e5e7eb;
-    --bg-color: #111827;
-    --code-bg: #1f2937;
-    --surface-color: #0f172a;
-    --heading-color: #bfdbfe;
-    --link-color: #93c5fd;
-    --link-hover-color: #bfdbfe;
-    --focus-color: #93c5fd;
-    --shadow-color: rgb(0 0 0 / 0.45);
-    --clock-bg: #1f2937;
-}
-
-.theme-toggle-row {
-    display: flex;
-    justify-content: flex-end;
-    margin-bottom: 1rem;
-}
+/* --------------------------------------------------------------------------
+   Theme toggle (markup created by scripts/theme.js)
+   -------------------------------------------------------------------------- */
 
 .theme-toggle {
-    border: 1px solid var(--link-color);
-    background: transparent;
-    color: var(--link-color);
-    border-radius: 6px;
-    width: 2.5rem;
-    height: 2.5rem;
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    color: var(--ink);
+    border-radius: var(--radius-sm);
+    width: var(--space-34);
+    height: var(--space-34);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    font: inherit;
     cursor: pointer;
+    transition: border-color 0.15s ease, color 0.15s ease;
 }
 
 .theme-toggle:hover {
-    color: var(--link-hover-color);
-    border-color: var(--link-hover-color);
+    color: var(--accent-ink);
+    border-color: var(--accent);
 }
 
 .theme-toggle:focus-visible {
-    outline: 2px solid var(--focus-color);
+    outline: 2px solid var(--accent);
     outline-offset: 2px;
 }
 
 .theme-icon {
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1.1rem;
+    height: 1.1rem;
     fill: none;
     stroke: currentColor;
     stroke-width: 2;
@@ -259,31 +328,67 @@ html[data-theme="dark"] {
     display: block;
 }
 
+/* --------------------------------------------------------------------------
+   Fibonacci calculator page
+   -------------------------------------------------------------------------- */
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-5);
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-decoration: none;
+    color: var(--muted);
+    margin-bottom: var(--space-21);
+}
+
+.back-link::before {
+    content: "\2190";
+    color: var(--accent-ink);
+}
+
+.back-link:hover {
+    color: var(--accent-ink);
+    text-decoration: none;
+}
+
 .fibonacci-form {
-    margin-top: 1.25rem;
+    margin-top: var(--space-21);
     display: grid;
-    gap: 0.75rem;
-    max-width: 20rem;
+    gap: var(--space-13);
+    max-width: 22rem;
 }
 
 .fibonacci-form label {
-    font-weight: 600;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
 }
 
-.fibonacci-form input,
-.fibonacci-form button {
+.fibonacci-form input {
     font: inherit;
-    border-radius: 6px;
-    border: 1px solid var(--link-color);
-    background: transparent;
-    color: var(--text-color);
-    padding: 0.6rem 0.75rem;
+    font-family: var(--font-mono);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--hairline);
+    background: var(--surface);
+    color: var(--ink);
+    padding: var(--space-13);
+    width: 100%;
+}
+
+.fibonacci-form input:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+    border-color: var(--accent);
 }
 
 .input-with-loader {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: var(--space-8);
 }
 
 .input-with-loader input {
@@ -291,53 +396,102 @@ html[data-theme="dark"] {
 }
 
 .fibonacci-form button {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.95rem;
     cursor: pointer;
-    color: var(--link-color);
-    font-weight: 600;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--accent);
+    background: var(--accent);
+    color: #17140b;
+    padding: var(--space-13) var(--space-21);
+    justify-self: start;
+    transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.12s ease;
 }
 
-.fibonacci-form button:hover {
-    color: var(--link-hover-color);
-    border-color: var(--link-hover-color);
+.fibonacci-form button:hover:not(:disabled) {
+    background: var(--accent-ink);
+    border-color: var(--accent-ink);
+    transform: translateY(-1px);
+}
+
+.fibonacci-form button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
 }
 
 .fibonacci-form button:disabled {
-    opacity: 0.65;
+    opacity: 0.55;
     cursor: not-allowed;
 }
 
 .status-message,
 .error-message {
-    margin-top: 1rem;
+    margin-top: var(--space-13);
     min-height: 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.86rem;
+}
+
+.status-message {
+    color: var(--muted);
 }
 
 .error-message {
-    color: #b91c1c;
-}
-
-html[data-theme="dark"] .error-message {
-    color: #fca5a5;
+    color: var(--danger);
 }
 
 .result-panel {
-    margin-top: 1rem;
-    border: 1px solid var(--link-color);
-    border-radius: 6px;
-    padding: 1rem;
+    margin-top: var(--space-21);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    overflow: hidden;
 }
 
 .result-panel h3 {
-    margin-top: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: var(--space-13) var(--space-21);
+    border-bottom: 1px solid var(--hairline);
+    background: var(--surface-sunken);
+}
+
+.result-body {
+    padding: var(--space-21);
+}
+
+.result-row {
+    display: flex;
+    gap: var(--space-13);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    padding: var(--space-5) 0;
+}
+
+.result-row .result-key {
+    color: var(--muted);
+    min-width: 5.5rem;
+}
+
+.result-row .result-value {
+    color: var(--ink);
 }
 
 .result-fibonacci {
-    margin-top: 0.25rem;
-    margin-bottom: 0;
+    margin-top: var(--space-13);
     max-width: 100%;
-    background: var(--code-bg);
-    border-radius: 6px;
-    padding: 0.75rem;
+    background: var(--surface-sunken);
+    border: 1px solid var(--hairline);
+    border-radius: var(--radius-sm);
+    padding: var(--space-13);
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--accent-ink);
     overflow-wrap: anywhere;
     white-space: pre-wrap;
     word-break: break-word;
@@ -346,10 +500,11 @@ html[data-theme="dark"] .error-message {
 .checking-loader {
     width: 1rem;
     height: 1rem;
-    border: 2px solid var(--code-bg);
-    border-top-color: var(--link-color);
+    border: 2px solid var(--hairline);
+    border-top-color: var(--accent);
     border-radius: 50%;
     animation: spin 0.75s linear infinite;
+    flex: none;
 }
 
 .visually-hidden {
@@ -365,25 +520,25 @@ html[data-theme="dark"] .error-message {
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
+    to { transform: rotate(360deg); }
+}
 
-    to {
-        transform: rotate(360deg);
+/* --------------------------------------------------------------------------
+   Responsive & motion
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 600px) {
+    body {
+        padding: var(--space-21) var(--space-13) var(--space-55);
     }
 }
 
-@media (max-width: 640px) {
-    body {
-        padding: 1rem;
-    }
-
-    #root {
-        padding: 1.25rem;
-    }
-
-    .digital-clock {
-        padding: 1rem 1.25rem;
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
     }
 }
