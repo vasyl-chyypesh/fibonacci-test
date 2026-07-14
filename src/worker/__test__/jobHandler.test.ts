@@ -51,7 +51,7 @@ describe('JobHandler', () => {
       assert.strictEqual(mockGetValueFor.mock.calls[0].arguments[0], inputNumber);
       assert.strictEqual(mockUpdateRequestWithData.mock.callCount(), 1);
       assert.strictEqual(mockUpdateRequestWithData.mock.calls[0].arguments[0], ticket);
-      assert.deepEqual(mockUpdateRequestWithData.mock.calls[0].arguments[1], {
+      assert.deepStrictEqual(mockUpdateRequestWithData.mock.calls[0].arguments[1], {
         inputNumber,
         result: result.toString(),
       });

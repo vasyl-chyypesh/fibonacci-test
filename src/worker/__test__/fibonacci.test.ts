@@ -31,7 +31,7 @@ describe('Fibonacci', () => {
     test('should throw error for -1', async () => {
       const fibonacci = new Fibonacci();
 
-      assert.rejects(async () => {
+      await assert.rejects(async () => {
         await fibonacci.getValueFor(-1);
       }, /Invalid input fibonacci index: -1/);
     });
@@ -57,7 +57,7 @@ describe('Fibonacci', () => {
       const resultPrev = await fibonacci.getValueFor(7);
       const resultLast = await fibonacci.getValueFor(8);
 
-      assert.rejects(async () => {
+      await assert.rejects(async () => {
         await fibonacci.getValueForWithLastOptions(7, { lastIndex: 8, lastValues: [resultPrev, resultLast] });
       }, /Fibonacci index is less than or equal to last index/);
     });

@@ -1,50 +1,26 @@
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
 import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
+import { defineConfig } from 'eslint/config';
+import tseslint from 'typescript-eslint';
+import security from 'eslint-plugin-security';
+import eslintNodeTest from 'eslint-node-test';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-  baseDirectory: __dirname,
-  recommendedConfig: js.configs.recommended,
-  allConfig: js.configs.all,
-});
-
-export default [
-  {
-    ignores: ['**/dist', '**/node_modules'],
+export default defineConfig([{
+  files: ['**/*.{js,ts}'],
+  extends: [
+    js.configs.recommended,
+    tseslint.configs.recommended,
+    security.configs.recommended,
+    eslintNodeTest.configs.recommended,
+  ],
+  ignores: ['**/dist', '**/node_modules'],
+  rules: {
+    'no-console': 'error',
+    '@typescript-eslint/no-explicit-any': 'warn',
   },
-  ...compat.extends(
-    'eslint:recommended',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:security/recommended-legacy',
-  ),
-  {
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-    },
-    languageOptions: {
-      parser: tsParser,
-      ecmaVersion: 5,
-      sourceType: 'script',
-
-      parserOptions: {
-        project: ['./tsconfig.json', './infrastructure/tsconfig.json'],
-      },
-    },
-    rules: {
-      'no-console': 'error',
-      '@typescript-eslint/no-explicit-any': 'warn',
-    },
+}, {
+  files: ['**/*.test.ts'],
+  rules: {
+    '@typescript-eslint/no-explicit-any': 'off',
+    'node-test/prefer-context-mock': 'warn',
   },
-  // override for test files
-  {
-    files: ['**/*.test.ts'],
-    rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-    },
-  },
-];
+}]);
