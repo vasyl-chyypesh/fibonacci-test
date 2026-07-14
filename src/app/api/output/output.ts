@@ -7,7 +7,7 @@ import { CODES } from '../../utils/errors/codes.js';
 
 const output = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { ticket } = (<unknown>req.params) as TicketNumber;
+    const { ticket } = req.params as unknown as TicketNumber;
 
     const requestService = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
     const reqData = await requestService.getRequest(ticket);

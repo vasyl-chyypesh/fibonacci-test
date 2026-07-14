@@ -2,7 +2,7 @@
  * The Fibonacci class.
  */
 export class Fibonacci {
-  private readonly fibonacciNumbers: Array<bigint>;
+  private readonly fibonacciNumbers: bigint[];
 
   constructor() {
     this.fibonacciNumbers = [0n, 1n];

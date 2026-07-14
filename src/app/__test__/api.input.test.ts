@@ -14,6 +14,7 @@ describe('API Tests', () => {
       };
     } else if (className === ClassName.RequestService) {
       return {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
         addRequest: async () => {},
       };
     }

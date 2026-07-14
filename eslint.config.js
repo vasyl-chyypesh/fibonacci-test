@@ -9,6 +9,7 @@ export default defineConfig([{
   extends: [
     js.configs.recommended,
     tseslint.configs.recommended,
+    tseslint.configs.stylistic,
     security.configs.recommended,
     eslintNodeTest.configs.recommended,
   ],
@@ -16,11 +17,12 @@ export default defineConfig([{
   rules: {
     'no-console': 'error',
     '@typescript-eslint/no-explicit-any': 'warn',
+    '@typescript-eslint/consistent-type-definitions': 'off',
   },
 }, {
   files: ['**/*.test.ts'],
   rules: {
     '@typescript-eslint/no-explicit-any': 'off',
-    'node-test/prefer-context-mock': 'warn',
+    'node-test/prefer-context-mock': 'off',
   },
 }]);
