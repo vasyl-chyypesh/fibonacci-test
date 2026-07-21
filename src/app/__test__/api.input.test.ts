@@ -53,7 +53,7 @@ describe('API Tests', () => {
       assert.strictEqual(response.body.ticket, expectedTicket);
 
       // Verify ServiceFactory was called correctly
-      assert.strictEqual((ServiceFactory.getInstanceOfClass as any).mock.calls.length, 2);
+      assert.strictEqual((ServiceFactory.getInstanceOfClass as any).mock.callCount(), 2);
       assert.strictEqual(
         (ServiceFactory.getInstanceOfClass as any).mock.calls[0].arguments[0],
         ClassName.TicketService,
@@ -64,7 +64,7 @@ describe('API Tests', () => {
       );
 
       // Verify QueueHandler was called correctly
-      assert.strictEqual((QueueHandler.prototype.addJobToQueue as any).mock.calls.length, 1);
+      assert.strictEqual((QueueHandler.prototype.addJobToQueue as any).mock.callCount(), 1);
       const [queueName, jobData] = (QueueHandler.prototype.addJobToQueue as any).mock.calls[0].arguments;
       assert.strictEqual(queueName, 'fibonacci_queue');
       assert.strictEqual(jobData.ticket, expectedTicket);

@@ -42,14 +42,14 @@ describe('API Output Tests', () => {
       });
 
       // Verify ServiceFactory was called correctly
-      assert.strictEqual((ServiceFactory.getInstanceOfClass as any).mock.calls.length, 1);
+      assert.strictEqual((ServiceFactory.getInstanceOfClass as any).mock.callCount(), 1);
       assert.strictEqual(
         (ServiceFactory.getInstanceOfClass as any).mock.calls[0].arguments[0],
         ClassName.RequestService,
       );
 
       // Verify getRequest was called with the correct ticket
-      assert.strictEqual(mockGetRequest.mock.calls.length, 1);
+      assert.strictEqual(mockGetRequest.mock.callCount(), 1);
       const [actualTicket] = mockGetRequest.mock.calls[0].arguments;
       assert.strictEqual(actualTicket, ticket);
     });

@@ -26,7 +26,7 @@ describe('TicketService', () => {
       const result = await ticketService.getTicket();
 
       assert.strictEqual(result, 1);
-      assert.strictEqual(mockIncrement.mock.calls.length, 1);
+      assert.strictEqual(mockIncrement.mock.callCount(), 1);
     });
   });
 });

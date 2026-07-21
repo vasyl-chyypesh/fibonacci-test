@@ -30,7 +30,7 @@ describe('RequestService', () => {
 
       await requestService.addRequest(ticket, inputNumber);
 
-      assert.strictEqual(mockSet.mock.calls.length, 1);
+      assert.strictEqual(mockSet.mock.callCount(), 1);
       const [actualStorageId, actualData] = mockSet.mock.calls[0].arguments;
       assert.strictEqual(actualStorageId, expectedStorageId);
       assert.strictEqual(actualData, expectedData);
@@ -48,7 +48,7 @@ describe('RequestService', () => {
 
       const result = await requestService.getRequest(ticket);
 
-      assert.strictEqual(mockGet.mock.calls.length, 1);
+      assert.strictEqual(mockGet.mock.callCount(), 1);
       const [actualStorageId] = mockGet.mock.calls[0].arguments;
       assert.strictEqual(actualStorageId, expectedStorageId);
       assert.strictEqual(result, expectedData);
@@ -67,7 +67,7 @@ describe('RequestService', () => {
 
       await requestService.updateRequestWithData(ticket, { inputNumber, result: value });
 
-      assert.strictEqual(mockSet.mock.calls.length, 1);
+      assert.strictEqual(mockSet.mock.callCount(), 1);
 
       const [actualUpdateStorageId, actualUpdatedData] = mockSet.mock.calls[0].arguments;
 

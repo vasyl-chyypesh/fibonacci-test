@@ -11,7 +11,7 @@ describe('ServiceFactory', () => {
       const instance = await ServiceFactory.getInstanceOfClass<TicketService>(ClassName.TicketService);
 
       assert.ok(instance instanceof TicketService);
-      assert.strictEqual(getRedisClientMock.mock.calls.length, 1);
+      assert.strictEqual(getRedisClientMock.mock.callCount(), 1);
     });
 
     test('should return an instance of RequestService', async () => {
@@ -20,7 +20,7 @@ describe('ServiceFactory', () => {
       const instance = await ServiceFactory.getInstanceOfClass<RequestService>(ClassName.RequestService);
 
       assert.ok(instance instanceof RequestService);
-      assert.strictEqual(getRedisClientMock.mock.calls.length, 1);
+      assert.strictEqual(getRedisClientMock.mock.callCount(), 1);
     });
 
     test('should return an instance of RedisStorage', async () => {
@@ -32,7 +32,7 @@ describe('ServiceFactory', () => {
       const instance = await ServiceFactory.getInstanceOfClass<RedisStorage>(ClassName.RedisStorage);
 
       assert.ok(instance instanceof RedisStorage);
-      assert.strictEqual(getRedisClientMock.mock.calls.length, 1);
+      assert.strictEqual(getRedisClientMock.mock.callCount(), 1);
     });
 
     test('should throw an error for unknown class name', async () => {
