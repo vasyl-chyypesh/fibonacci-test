@@ -10,3 +10,4 @@ ignore:
     - dist
     - .husky
     - coverage
+    - infrastructure/node_modules
