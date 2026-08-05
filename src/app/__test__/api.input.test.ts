@@ -1,4 +1,4 @@
-import { describe, test, mock, after, afterEach } from 'node:test';
+import { describe, test, mock, afterEach } from 'node:test';
 import assert from 'node:assert';
 import request from 'supertest';
 import app from '../app.js';
@@ -22,16 +22,7 @@ describe('API Tests', () => {
   });
 
   // Mock QueueHandler
-  const originalQueueHandler = QueueHandler.prototype.addJobToQueue;
-  // Use type assertion to handle the mock function type
-  QueueHandler.prototype.addJobToQueue = mock.fn(
-    async () => true,
-  ) as unknown as typeof QueueHandler.prototype.addJobToQueue;
-
-  // Restore original implementation after tests
-  after(() => {
-    QueueHandler.prototype.addJobToQueue = originalQueueHandler;
-  });
+  mock.method(QueueHandler.prototype, 'addJobToQueue', async () => true);
 
   describe('POST /input', () => {
     afterEach(() => {
