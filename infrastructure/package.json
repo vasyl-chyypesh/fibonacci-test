@@ -9,10 +9,10 @@
     "cdk": "cdk"
   },
   "dependencies": {
-    "aws-cdk-lib": "2.262.0"
+    "aws-cdk-lib": "2.263.0"
   },
   "devDependencies": {
-    "@types/node": "^26.1.1",
+    "@types/node": "^26.1.2",
     "typescript": "~6.0.3"
   }
 }
