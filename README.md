@@ -77,3 +77,40 @@ flowchart LR
 ```
 
 A `POST /input` validates the payload, reserves a ticket by incrementing a Redis counter, stores the request under `fib_request_<ticket>`, publishes a durable job to RabbitMQ, and returns the ticket. The worker consumes that job, computes the value, and overwrites the same Redis key with the result. A later `GET /output/:ticket` reads the key directly and returns `404` until the worker has written a result.
+
+### Run project in Kubernetes locally with minikube
+
+#### Additional requirements
+- Minikube ([download](https://minikube.sigs.k8s.io/docs/start/))
+
+Start the cluster
+```bash
+minikube start
+```
+
+Build images inside Minikube
+```bash
+eval $(minikube docker-env)
+docker build -t fibonacci-api:latest -t fibonacci-worker:latest .
+```
+
+Deploy
+```bash
+kubectl apply -f ./k8s
+```
+
+Check pods
+```bash
+kubectl get pods
+```
+
+Access the API via port-forward (forwards the service to `http://localhost:3000`)
+```bash
+kubectl port-forward svc/api-service 3000:3000
+```
+
+Cleanup
+```bash
+kubectl delete -f ./k8s
+minikube stop
+```
