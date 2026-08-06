@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+  labels:
+    app: worker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+      - name: fibonacci-worker
+        image: fibonacci-worker:latest
+        command: ["node", "dist/worker/index.js"]
+        imagePullPolicy: Never
+        env:
+        - name: REDIS_URL
+          valueFrom:
+            configMapKeyRef:
+              name: redis-config
+              key: redis-url
+        - name: RABBIT_URL
+          valueFrom:
+            configMapKeyRef:
+              name: rabbitmq-config
+              key: rabbitmq-url
+# no need to have a service for the worker, because it works with rabbitmq and redis directly
