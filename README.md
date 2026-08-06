@@ -92,6 +92,7 @@ Build images inside Minikube
 ```bash
 eval $(minikube docker-env)
 docker build -t fibonacci-api:latest -t fibonacci-worker:latest .
+docker build -f Dockerfile.docs -t fibonacci-docs:latest .
 ```
 
 Deploy
@@ -104,9 +105,14 @@ Check pods
 kubectl get pods
 ```
 
-Access the API via port-forward (forwards the service to `http://localhost:3000`)
+Access the API via port-forward (`http://localhost:3000`)
 ```bash
 kubectl port-forward svc/api-service 3000:3000
+```
+
+Access the Docs page via port-forward (`http://localhost:8080`, run in separate terminal)
+```bash
+kubectl port-forward svc/docs-service 8080:8080
 ```
 
 Cleanup

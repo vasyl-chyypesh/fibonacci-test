@@ -1,0 +1,11 @@
+# official node images: https://hub.docker.com/_/node/
+# use --platform=linux/amd64 if npm install hangs on M3 Mac
+# base image
+FROM node:25-alpine AS base
+
+# final image
+FROM base AS runner
+WORKDIR /usr/app
+COPY docs ./docs
+EXPOSE 8080
+CMD ["npx", "--yes", "http-server", "docs", "-p", "8080", "-P", "http://api-service:3000"]
