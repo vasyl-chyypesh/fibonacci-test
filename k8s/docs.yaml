@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: docs-deployment
+  annotations:
+    ignore-check.kube-linter.io/latest-tag: "image is built directly into the minikube docker daemon, imagePullPolicy is Never"
   labels:
     app: docs
 spec:
@@ -20,6 +22,28 @@ spec:
         imagePullPolicy: Never
         ports:
         - containerPort: 8080
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000        # "node" user from the node:25-alpine image
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            memory: 256Mi
+        env:
+        - name: HOME             # "npx --yes http-server" caches under $HOME at startup
+          value: /home/node
+        volumeMounts:
+        - name: home
+          mountPath: /home/node
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: home
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: Service

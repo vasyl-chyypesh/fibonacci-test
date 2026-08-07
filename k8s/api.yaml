@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: api-deployment
+  annotations:
+    ignore-check.kube-linter.io/latest-tag: "image is built directly into the minikube docker daemon, imagePullPolicy is Never"
   labels:
     app: api
 spec:
@@ -20,6 +22,15 @@ spec:
         imagePullPolicy: Never
         ports:
         - containerPort: 3000
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000        # "node" user from the node:25-alpine image
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            memory: 256Mi
         env:
         - name: REDIS_URL
           valueFrom:

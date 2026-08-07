@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: worker-deployment
+  annotations:
+    ignore-check.kube-linter.io/latest-tag: "image is built directly into the minikube docker daemon, imagePullPolicy is Never"
   labels:
     app: worker
 spec:
@@ -19,6 +21,15 @@ spec:
         image: fibonacci-worker:latest
         command: ["node", "dist/worker/index.js"]
         imagePullPolicy: Never
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 1000        # "node" user from the node:25-alpine image
+          readOnlyRootFilesystem: true
+        resources:
+          requests:
+            cpu: 200m
+          limits:
+            memory: 512Mi
         env:
         - name: REDIS_URL
           valueFrom:
