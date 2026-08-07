@@ -19,6 +19,7 @@
     "lint:dockerfile": "docker run --rm -i hadolint/hadolint < Dockerfile",
     "lint:files": "ls-lint",
     "lint:docs": "redocly lint docs/openapi.yaml",
+    "lint:k8s": "docker run --rm -v $(pwd):/tmp stackrox/kube-linter lint /tmp/k8s",
     "build": "rm -rf dist && tsc --project tsconfig.build.json",
     "start": "node dist/app/index.js",
     "serve:docs": "npx http-server docs -p 8080 -P http://localhost:3000",
