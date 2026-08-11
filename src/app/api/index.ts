@@ -14,12 +14,12 @@ router.use((req: Request, res: Response, next: NextFunction) => {
   return next();
 });
 
-router.use(slowDownLimiter);
-router.use(rateLimiter);
-
 router.get('/health', (req: Request, res: Response) => {
   res.status(200).json({ message: 'OK', time: new Date().toISOString() });
 });
+
+router.use(slowDownLimiter);
+router.use(rateLimiter);
 
 router.use('/input', inputRouter);
 

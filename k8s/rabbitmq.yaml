@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rabbitmq-deployment
+  labels:
+    app: rabbitmq
+spec:
+  replicas: 1
+  strategy:
+    # single replica on an emptyDir: a rolling update would briefly run a second
+    # broker behind the same Service with an empty mnesia database
+    type: Recreate
+  selector:
+    matchLabels:
+      app: rabbitmq
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      automountServiceAccountToken: false
+      # pod-level defaults so anything added to this pod later inherits them;
+      # the container below still sets its own for the container-only fields
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 100
+        runAsGroup: 101
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: rabbitmq-fib
+        image: rabbitmq:4-alpine
+        ports:
+        - name: amqp
+          containerPort: 5672
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 100         # "rabbitmq" user from the rabbitmq:4-alpine image
+          runAsGroup: 101
+          readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+          seccompProfile:
+            type: RuntimeDefault
+        # rabbitmq-diagnostics spawns an erlang node per call and reads the cookie from
+        # $HOME (/var/lib/rabbitmq, the emptyDir below), so keep these probes infrequent
+        startupProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "-q", "ping"]
+          periodSeconds: 10
+          timeoutSeconds: 10
+          failureThreshold: 30   # the broker can take a couple of minutes on a cold node
+        livenessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "-q", "ping"]
+          periodSeconds: 30
+          timeoutSeconds: 10
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command: ["rabbitmq-diagnostics", "-q", "check_port_connectivity"]
+          periodSeconds: 30
+          timeoutSeconds: 10
+        # no maxmemory-style flag needed: rabbitmq reads the cgroup limit and
+        # applies its default 0.6 vm_memory_high_watermark on top of it
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 500m
+            memory: 1Gi
+        # do NOT mount over /etc/rabbitmq: the image ships conf.d/10-defaults.conf there,
+        # which sets "loopback_users.guest = false" and "log.console = true"
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/rabbitmq   # mnesia database and .erlang.cookie
+        - name: tmp
+          mountPath: /tmp
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: tmp
+        emptyDir: {}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service
+spec:
+  selector:
+    app: rabbitmq
+  ports:
+  - protocol: TCP
+    port: 5672
+    targetPort: 5672
