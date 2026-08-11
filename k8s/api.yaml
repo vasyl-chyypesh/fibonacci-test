@@ -29,8 +29,10 @@ spec:
         resources:
           requests:
             cpu: 200m
-          limits:
             memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
         env:
         - name: REDIS_URL
           valueFrom:

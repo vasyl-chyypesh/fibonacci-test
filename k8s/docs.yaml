@@ -28,8 +28,10 @@ spec:
           readOnlyRootFilesystem: true
         resources:
           requests:
-            cpu: 200m
+            cpu: 100m
+            memory: 64Mi
           limits:
+            cpu: 200m
             memory: 256Mi
         env:
         - name: HOME             # "npx --yes http-server" caches under $HOME at startup

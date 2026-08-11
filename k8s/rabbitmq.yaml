@@ -23,10 +23,14 @@ spec:
           runAsNonRoot: true
           runAsUser: 100         # "rabbitmq" user from the rabbitmq:4-alpine image
           readOnlyRootFilesystem: true
+        # no maxmemory-style flag needed: rabbitmq reads the cgroup limit and
+        # applies its default 0.6 vm_memory_high_watermark on top of it
         resources:
           requests:
             cpu: 200m
+            memory: 512Mi
           limits:
+            cpu: 500m
             memory: 1Gi
         # do NOT mount over /etc/rabbitmq: the image ships conf.d/10-defaults.conf there,
         # which sets "loopback_users.guest = false" and "log.console = true"

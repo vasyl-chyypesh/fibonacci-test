@@ -17,6 +17,9 @@ spec:
       containers:
       - name: redis-fib
         image: redis:8-alpine
+        # redis does not read the cgroup limit, so cap it explicitly at ~75% of
+        # limits.memory: the rest is headroom for the RDB fork and copy-on-write
+        args: ["--maxmemory", "768mb", "--maxmemory-policy", "allkeys-lru"]
         ports:
         - containerPort: 6379
         securityContext:
@@ -26,7 +29,9 @@ spec:
         resources:
           requests:
             cpu: 200m
+            memory: 256Mi
           limits:
+            cpu: 500m
             memory: 1Gi
         volumeMounts:
         - name: data
