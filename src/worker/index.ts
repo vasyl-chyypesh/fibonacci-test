@@ -22,4 +22,8 @@ startConsume()
   .catch((err) => {
     Logger.log('Error on starting consuming');
     Logger.error(err);
+    // the worker has no consumer attached at this point and would otherwise sit
+    // "Running" forever with an idle queue: exit non-zero so the restartPolicy
+    // retries with backoff (rabbitmq is commonly not up yet on a fresh rollout)
+    process.exit(1);
   });

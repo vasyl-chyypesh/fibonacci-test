@@ -6,6 +6,10 @@ metadata:
     app: redis
 spec:
   replicas: 1
+  strategy:
+    # single replica on an emptyDir: a rolling update would briefly run a second
+    # redis behind the same Service with an empty dataset
+    type: Recreate
   selector:
     matchLabels:
       app: redis
@@ -14,6 +18,15 @@ spec:
       labels:
         app: redis
     spec:
+      automountServiceAccountToken: false
+      # pod-level defaults so anything added to this pod later inherits them;
+      # the container below still sets its own for the container-only fields
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 999
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: redis-fib
         image: redis:8-alpine
@@ -21,11 +34,29 @@ spec:
         # limits.memory: the rest is headroom for the RDB fork and copy-on-write
         args: ["--maxmemory", "768mb", "--maxmemory-policy", "allkeys-lru"]
         ports:
-        - containerPort: 6379
+        - name: redis
+          containerPort: 6379
         securityContext:
           runAsNonRoot: true
           runAsUser: 999         # "redis" user from the redis:8-alpine image
+          runAsGroup: 1000
           readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+          seccompProfile:
+            type: RuntimeDefault
+        livenessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          exec:
+            command: ["redis-cli", "ping"]
+          periodSeconds: 10
+          timeoutSeconds: 3
         resources:
           requests:
             cpu: 200m

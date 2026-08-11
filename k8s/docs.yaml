@@ -16,16 +16,53 @@ spec:
       labels:
         app: docs
     spec:
+      automountServiceAccountToken: false
+      # pod-level defaults so anything added to this pod later inherits them;
+      # the container below still sets its own for the container-only fields
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: fibonacci-docs
         image: fibonacci-docs:latest
         imagePullPolicy: Never
         ports:
-        - containerPort: 8080
+        - name: http
+          containerPort: 8080
         securityContext:
           runAsNonRoot: true
           runAsUser: 1000        # "node" user from the node:25-alpine image
+          runAsGroup: 1000
           readOnlyRootFilesystem: true
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop: [ALL]
+          seccompProfile:
+            type: RuntimeDefault
+        # "npx --yes http-server" resolves and caches the package before it binds,
+        # so give the first probe a generous window before liveness starts killing
+        startupProbe:
+          httpGet:
+            path: /index.html
+            port: http
+          periodSeconds: 5
+          failureThreshold: 30
+        livenessProbe:
+          httpGet:
+            path: /index.html
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /index.html
+            port: http
+          periodSeconds: 10
+          timeoutSeconds: 3
         resources:
           requests:
             cpu: 100m
