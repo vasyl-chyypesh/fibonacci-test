@@ -3,7 +3,7 @@ import assert from 'node:assert';
 import { Fibonacci } from '../fibonacci.js';
 
 describe('Fibonacci', () => {
-  describe('getValueFor', () => {
+  describe('getValueFor (iterative)', () => {
     test('should return 1 for 1', async () => {
       const fibonacci = new Fibonacci();
 
@@ -60,6 +60,46 @@ describe('Fibonacci', () => {
       await assert.rejects(async () => {
         await fibonacci.getValueForWithLastOptions(7, { lastIndex: 8, lastValues: [resultPrev, resultLast] });
       }, /Fibonacci index is less than or equal to last index/);
+    });
+  });
+
+  describe('getValueFor (recursive)', () => {
+    test('should return 1 for 1', async () => {
+      const fibonacci = new Fibonacci('recursive');
+
+      const result = await fibonacci.getValueFor(1);
+
+      assert.strictEqual(result, 1n);
+    });
+    test('should return 13 for 7', async () => {
+      const fibonacci = new Fibonacci('recursive');
+
+      const result = await fibonacci.getValueFor(7);
+
+      assert.strictEqual(result, 13n);
+    });
+
+    test('should return 34 for 9', async () => {
+      const fibonacci = new Fibonacci('recursive');
+
+      const result = await fibonacci.getValueFor(9);
+
+      assert.strictEqual(result, 34n);
+    });
+
+    test('should throw error for -1', async () => {
+      const fibonacci = new Fibonacci('recursive');
+
+      await assert.rejects(async () => {
+        await fibonacci.getValueFor(-1);
+      }, /Invalid input fibonacci index: -1/);
+    });
+
+    test('should match iterative for 30', async () => {
+      const recursive = new Fibonacci('recursive');
+      const iterative = new Fibonacci('iterative');
+
+      assert.strictEqual(await recursive.getValueFor(30), await iterative.getValueFor(30));
     });
   });
 });

@@ -1,11 +1,14 @@
 /**
  * The Fibonacci class.
+ * It can be used to calculate the Fibonacci number for a given index using either an iterative or a recursive approach.
  */
 export class Fibonacci {
   private readonly fibonacciNumbers: bigint[];
+  private readonly method: 'iterative' | 'recursive';
 
-  constructor() {
+  constructor(method: 'iterative' | 'recursive' = 'iterative') {
     this.fibonacciNumbers = [0n, 1n];
+    this.method = method;
   }
 
   /**
@@ -24,10 +27,12 @@ export class Fibonacci {
       return Promise.resolve(alreadyCalculated);
     }
 
-    return this.calculateValue(fibonacciIndex);
+    return this.method === 'recursive'
+      ? this.calculateRecursively(BigInt(fibonacciIndex))
+      : this.calculateIteratively(fibonacciIndex);
   }
 
-  private async calculateValue(inputNumber: number): Promise<bigint> {
+  private async calculateIteratively(inputNumber: number): Promise<bigint> {
     let [previous, current] = [0n, 1n];
     let i = 2;
     while (i <= inputNumber) {
@@ -65,5 +70,22 @@ export class Fibonacci {
     }
 
     return current;
+  }
+
+  private calculateRecursively(fibonacciIndex: bigint): Promise<bigint> {
+    if (fibonacciIndex < 2n) {
+      return Promise.resolve(fibonacciIndex);
+    }
+
+    return new Promise((resolve, reject) => {
+      setImmediate(() => {
+        void (async () => {
+          const left = await this.calculateRecursively(fibonacciIndex - 1n);
+          const right = await this.calculateRecursively(fibonacciIndex - 2n);
+          const result = left + right;
+          resolve(result);
+        })().catch(reject);
+      });
+    });
   }
 }
