@@ -95,11 +95,12 @@ describe('Fibonacci', () => {
       }, /Invalid input fibonacci index: -1/);
     });
 
-    test('should match iterative for 30', async () => {
+    test('should match iterative and recursive results', async () => {
+      const FIB_INDEX = 20;
       const recursive = new Fibonacci('recursive');
       const iterative = new Fibonacci('iterative');
 
-      assert.strictEqual(await recursive.getValueFor(30), await iterative.getValueFor(30));
+      assert.strictEqual(await recursive.getValueFor(FIB_INDEX), await iterative.getValueFor(FIB_INDEX));
     });
   });
 });

@@ -13,8 +13,8 @@
     "scan:secrets:precommit": "ggshield secret scan pre-commit",
     "scan:security": "docker run --rm -v $(pwd):/tmp/scan bearer/bearer:latest scan /tmp/scan --severity critical,high,medium",
     "scan:security:report": "docker run --rm -v $(pwd):/tmp/scan bearer/bearer:latest scan /tmp/scan --format html --output /tmp/scan/scan-report.html",
-    "prettier": "prettier --write 'src/**/*.ts' 'test/**/*.ts'",
-    "lint": "eslint src/",
+    "prettier": "prettier --write 'src/**/*.ts' 'test/**/*.ts' 'benchmarks/**/*.ts'",
+    "lint": "eslint src/ test/ benchmarks/",
     "lint:branch": "validate-branch-name",
     "lint:dockerfile": "docker run --rm -i hadolint/hadolint < Dockerfile",
     "lint:files": "ls-lint",
@@ -30,6 +30,7 @@
     "test:integration:docker:clear": "docker compose -f docker-compose.test.yml down",
     "test:coverage": "c8 --all --src src/ node --import tsx --test 'src/**/*.test.ts'",
     "test:coverage:report": "c8 --all --src src/ --reporter html node --import tsx --test 'src/**/*.test.ts'",
+    "bench": "node --experimental-bench --import tsx --bench 'benchmarks/**/*.ts'",
     "check:deps": "npx npm-check-updates"
   },
   "repository": {
