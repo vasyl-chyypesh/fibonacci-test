@@ -2,23 +2,25 @@ import { suite, bench, BenchContext } from 'node:bench';
 import { Fibonacci } from '../src/worker/fibonacci.js';
 
 const FIBONACCI_INDEX = 25;
-const WARMUP = 2;
-const SAMPLES = 30;
+const BENCH_OPTS = {
+  warmup: 3,
+  samples: 50
+};
 
 suite('Fibonacci', () => {
-  bench('Fibonacci.getValueFor (iterative)', { warmup: WARMUP, samples: SAMPLES }, async (context: BenchContext) => {
+  bench('Iterative', BENCH_OPTS, async (context: BenchContext) => {
     const fibonacci = new Fibonacci('iterative');
 
     context.start();
     const result = await fibonacci.getValueFor(FIBONACCI_INDEX);
-    context.end(FIBONACCI_INDEX, { detail: result.toString() });
+    context.end(1, { detail: result.toString() });
   });
 
-  bench('Fibonacci.getValueFor (recursive)', { warmup: WARMUP, samples: SAMPLES }, async (context: BenchContext) => {
+  bench('Recursive', BENCH_OPTS, async (context: BenchContext) => {
     const fibonacci = new Fibonacci('recursive');
 
     context.start();
     const result = await fibonacci.getValueFor(FIBONACCI_INDEX);
-    context.end(FIBONACCI_INDEX, { detail: result.toString() });
+    context.end(1, { detail: result.toString() });
   });
 });

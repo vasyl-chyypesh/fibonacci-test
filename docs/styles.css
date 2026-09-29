@@ -664,10 +664,6 @@ a:focus-visible {
         gap: var(--space-8) var(--space-13);
     }
 
-    .brand-suffix {
-        display: none;
-    }
-
     /* Row 1: brand + actions. Row 2: full-width, wrapping nav. */
     .site-header-actions {
         order: 2;
