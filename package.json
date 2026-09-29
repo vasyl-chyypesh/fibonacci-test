@@ -4,7 +4,7 @@
   "description": "test project for fibonacci numbers",
   "main": "dist/app/index.js",
   "engines": {
-    "node": ">=25"
+    "node": ">=26"
   },
   "type": "module",
   "scripts": {
