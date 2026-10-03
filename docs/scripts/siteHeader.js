@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
         { href: 'index.html', label: 'Docs', match: 'index.html' },
         { href: 'fibonacci.html', label: 'Calculator', match: 'fibonacci.html' },
         { href: 'api-docs.html', label: 'API docs', match: 'api-docs.html' },
-        { href: 'coverage/index.html', label: 'Coverage', newTab: true }
+        { href: 'coverage/index.html', label: 'Coverage', newTab: true },
+        { href: 'benchmarks/report.html', label: 'Benchmarks', newTab: true }
     ];
 
     function currentFile() {
@@ -33,14 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const brandName = document.createElement('strong');
     brandName.textContent = 'Fibonacci';
 
-    const brandSuffix = document.createElement('span');
-    brandSuffix.className = 'brand-suffix';
-    brandSuffix.textContent = ' · REST API';
-
     const brand = document.createElement('a');
     brand.className = 'brand';
     brand.href = 'index.html';
-    brand.append(brandDot, ' ', brandName, brandSuffix);
+    brand.append(brandDot, ' ', brandName);
 
     const nav = document.createElement('nav');
     nav.className = 'site-nav';

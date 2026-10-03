@@ -55,7 +55,7 @@ services:
       - fib_network
 
   docs:
-    image: node:25-alpine
+    image: node:26-alpine
     container_name: fib_docs
     restart: unless-stopped
     working_dir: /usr/app

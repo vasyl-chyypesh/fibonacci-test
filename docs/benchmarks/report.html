@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchmark Report</title>
+<style>
+  :root {
+    color-scheme: light;
+    --page: #f9f9f7;
+    --surface: #fcfcfb;
+    --text-primary: #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted: #898781;
+    --grid: #e1e0d9;
+    --axis: #c3c2b7;
+    --border: rgba(11, 11, 11, 0.1);
+    --series-1: #2a78d6;
+    --series-2: #eb6834;
+    --series-3: #1baf7a;
+    --series-4: #eda100;
+    --good: #006300;
+    --warning: #fab219;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --page: #0d0d0d;
+      --surface: #1a1a19;
+      --text-primary: #ffffff;
+      --text-secondary: #c3c2b7;
+      --text-muted: #898781;
+      --grid: #2c2c2a;
+      --axis: #383835;
+      --border: rgba(255, 255, 255, 0.1);
+      --series-1: #3987e5;
+      --series-2: #d95926;
+      --series-3: #199e70;
+      --series-4: #c98500;
+      --good: #0ca30c;
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --text-primary: #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255, 255, 255, 0.1);
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --good: #0ca30c;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--page);
+    color: var(--text-primary);
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
+  header h1 { font-size: 26px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
+  header p { margin: 0; color: var(--text-secondary); }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
+  .meta b { color: var(--text-primary); font-weight: 600; }
+  .back-link { display: inline-block; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary); text-decoration: none; }
+  .back-link[hidden] { display: none; }
+  .back-link:hover { color: var(--text-primary); text-decoration: underline; }
+  .meta + .meta { margin-top: 4px; }
+  .units-card { display: inline-block; max-width: 100%; margin-top: 14px; padding: 10px 14px; overflow-x: auto; }
+  table.units { width: auto; font-size: 12px; }
+  table.units caption { text-align: left; font-size: 12px; font-weight: 600; color: var(--text-secondary); padding: 0 8px 4px; }
+  table.units th, table.units td { text-align: left; padding: 4px 8px; }
+  table.units th { font-size: 11px; color: var(--text-muted); }
+  table.units td { color: var(--text-secondary); }
+  table.units td:first-child { font-weight: 600; color: var(--text-primary); }
+  .status-icon { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+
+  section { margin-top: 32px; }
+  h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
+  .sub { margin: 0 0 14px; color: var(--text-secondary); font-size: 13px; }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+  }
+  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
+  .tile .label { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
+  .tile .value { font-size: 30px; font-weight: 600; margin-top: 4px; letter-spacing: -0.01em; }
+  .tile .note { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
+  .tile.hero .value { font-size: clamp(32px, 7vw, 44px); }
+  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: none; }
+  .line-key { display: inline-block; width: 14px; height: 2px; border-radius: 1px; vertical-align: middle; }
+
+  .chart { position: relative; width: 100%; }
+  .chart svg { display: block; width: 100%; overflow: visible; }
+  .chart text { font-size: 12px; fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+  .chart .row-label { fill: var(--text-primary); font-size: 13px; font-weight: 500; font-variant-numeric: normal; }
+  .chart .value-label { fill: var(--text-secondary); font-size: 12px; }
+  .grid line { stroke: var(--grid); stroke-width: 1; }
+  .baseline { stroke: var(--axis); stroke-width: 1; }
+  .hit { fill: transparent; cursor: default; }
+  .hit:focus { outline: none; }
+  .hit:focus-visible + .focus-ring, .focus-ring.active { opacity: 1; }
+  .focus-ring { opacity: 0; fill: none; stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 0; }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--text-secondary); margin-top: 10px; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+
+  .multiples { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .multiples h3 { font-size: 14px; font-weight: 600; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; }
+  .multiples .sub { margin-bottom: 8px; }
+
+  .tooltip {
+    position: absolute;
+    pointer-events: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    padding: 8px 10px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+    opacity: 0;
+    transition: opacity 80ms;
+    z-index: 2;
+  }
+  .tooltip.show { opacity: 1; }
+  .tooltip strong { display: block; color: var(--text-primary); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { padding: 8px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--grid); }
+  th { font-weight: 500; color: var(--text-secondary); font-size: 12px; }
+  td { font-variant-numeric: tabular-nums; }
+  th:first-child, td:first-child { text-align: left; }
+  tbody tr:last-child td { border-bottom: 0; }
+  .name-cell { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
+  .flag { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; font-size: 11px; color: var(--text-secondary); }
+  .flag::before { content: "!"; display: inline-grid; place-items: center; width: 14px; height: 14px; border-radius: 50%; background: var(--warning); color: #0b0b0b; font-size: 10px; font-weight: 700; }
+  footer { margin-top: 32px; font-size: 12px; color: var(--text-muted); }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <a class="back-link" id="docs-link" hidden>← Docs</a>
+    <h1>Benchmark Report</h1>
+    <p id="subtitle"></p>
+    <div class="meta" id="meta"></div>
+    <div class="meta" id="environment"></div>
+    <div class="card units-card">
+      <table class="units">
+        <caption>Units used in this report</caption>
+        <thead><tr><th scope="col">Symbol</th><th scope="col">Name</th><th scope="col">Equals</th></tr></thead>
+        <tbody id="units"></tbody>
+      </table>
+    </div>
+  </header>
+
+  <section>
+    <div class="tiles" id="tiles"></div>
+  </section>
+
+  <section>
+    <h2>Time per operation</h2>
+    <p class="sub">Median with its 95% confidence interval and the full min–max range. Log scale — each gridline is 10× the previous one.</p>
+    <div class="card">
+      <div class="chart" id="comparison"></div>
+      <div class="legend" id="comparison-legend"></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Samples</h2>
+    <p class="sub">Every measured sample in run order. The band is the median's 95% confidence interval; spikes are usually GC or event-loop jitter.</p>
+    <div class="multiples" id="samples"></div>
+  </section>
+
+  <section>
+    <h2>Statistics</h2>
+    <p class="sub">Rates are operations per second as reported by <code>node:bench</code>. A coefficient of variation above 5% is flagged as noisy.</p>
+    <div class="card table-wrap"><table id="stats"></table></div>
+  </section>
+
+  <footer id="footer"></footer>
+</main>
+
+<script type="application/json" id="bench-data">{"source":"benchmarks/report.json","runAt":"2026-09-29T15:15:45.631Z","generatedAt":"2026-09-29T15:15:45.703Z","commit":{"sha":"78ada2c","dirty":true},"environment":{"node":"v26.10.0","os":"Darwin 27.0.0 (arm64)","cpu":"Apple M3 Pro"},"docsLink":"../index.html","run":{"success":true,"counts":{"completed":2,"failed":0,"skipped":0,"total":2},"durationNs":81094595167},"benches":[{"name":"Iterative","namePath":["Fibonacci","Iterative"],"warmup":3,"plannedSamples":50,"samples":[{"index":0,"operations":1,"durationNs":496000,"rate":2016.1290322580644},{"index":1,"operations":1,"durationNs":1522625,"rate":656.7605286922255},{"index":2,"operations":1,"durationNs":647958,"rate":1543.3099058889618},{"index":3,"operations":1,"durationNs":733958,"rate":1362.475781992975},{"index":4,"operations":1,"durationNs":561375,"rate":1781.340458695168},{"index":5,"operations":1,"durationNs":502875,"rate":1988.5657469550088},{"index":6,"operations":1,"durationNs":1125125,"rate":888.7901344295078},{"index":7,"operations":1,"durationNs":844208,"rate":1184.542198131266},{"index":8,"operations":1,"durationNs":357833,"rate":2794.599715509749},{"index":9,"operations":1,"durationNs":383417,"rate":2608.126400237861},{"index":10,"operations":1,"durationNs":327250,"rate":3055.7677616501146},{"index":11,"operations":1,"durationNs":350542,"rate":2852.7252083915764},{"index":12,"operations":1,"durationNs":358375,"rate":2790.3732124171606},{"index":13,"operations":1,"durationNs":343958,"rate":2907.3317091040185},{"index":14,"operations":1,"durationNs":339042,"rate":2949.4870841960583},{"index":15,"operations":1,"durationNs":320667,"rate":3118.499876819255},{"index":16,"operations":1,"durationNs":321791,"rate":3107.607111448114},{"index":17,"operations":1,"durationNs":333458,"rate":2998.8784194711175},{"index":18,"operations":1,"durationNs":322875,"rate":3097.173828881146},{"index":19,"operations":1,"durationNs":305542,"rate":3272.872469251363},{"index":20,"operations":1,"durationNs":314584,"rate":3178.8012104875006},{"index":21,"operations":1,"durationNs":307083,"rate":3256.44858230511},{"index":22,"operations":1,"durationNs":298083,"rate":3354.770315650339},{"index":23,"operations":1,"durationNs":297083,"rate":3366.0626828192794},{"index":24,"operations":1,"durationNs":311833,"rate":3206.844689304852},{"index":25,"operations":1,"durationNs":408916,"rate":2445.490027291669},{"index":26,"operations":1,"durationNs":291167,"rate":3434.455140864178},{"index":27,"operations":1,"durationNs":305500,"rate":3273.3224222585923},{"index":28,"operations":1,"durationNs":311458,"rate":3210.7057773439756},{"index":29,"operations":1,"durationNs":296083,"rate":3377.431328377516},{"index":30,"operations":1,"durationNs":298375,"rate":3351.4872224549645},{"index":31,"operations":1,"durationNs":294875,"rate":3391.267486222976},{"index":32,"operations":1,"durationNs":299750,"rate":3336.1134278565473},{"index":33,"operations":1,"durationNs":300583,"rate":3326.8681196208704},{"index":34,"operations":1,"durationNs":300959,"rate":3322.71173149831},{"index":35,"operations":1,"durationNs":308792,"rate":3238.4258659550765},{"index":36,"operations":1,"durationNs":310500,"rate":3220.6119162640903},{"index":37,"operations":1,"durationNs":297000,"rate":3367.0033670033667},{"index":38,"operations":1,"durationNs":290916,"rate":3437.418361313919},{"index":39,"operations":1,"durationNs":294209,"rate":3398.944287904177},{"index":40,"operations":1,"durationNs":302500,"rate":3305.785123966942},{"index":41,"operations":1,"durationNs":300833,"rate":3324.10340620876},{"index":42,"operations":1,"durationNs":301875,"rate":3312.6293995859214},{"index":43,"operations":1,"durationNs":305709,"rate":3271.084593518673},{"index":44,"operations":1,"durationNs":306959,"rate":3257.764066210797},{"index":45,"operations":1,"durationNs":311917,"rate":3205.981078299676},{"index":46,"operations":1,"durationNs":314292,"rate":3181.7545467272475},{"index":47,"operations":1,"durationNs":309958,"rate":3226.2435555784978},{"index":48,"operations":1,"durationNs":334042,"rate":2993.635530861389},{"index":49,"operations":1,"durationNs":332416,"rate":3008.2787832113977}],"summary":{"mean":2891.156012627747,"median":3206.4128838022643,"min":656.7605286922255,"max":3437.418361313919,"stddev":696.11315379092,"coefficientOfVariation":0.24077329301860426,"confidenceInterval":{"lower":2691.314107272153,"upper":3090.99791798334},"medianConfidenceInterval":{"lower":3008.282623,"upper":3271.098367},"skewness":-1.832883775895568}},{"name":"Recursive","namePath":["Fibonacci","Recursive"],"warmup":3,"plannedSamples":50,"samples":[{"index":0,"operations":1,"durationNs":1535553250,"rate":0.6512310790915261},{"index":1,"operations":1,"durationNs":1528769083,"rate":0.6541210252876366},{"index":2,"operations":1,"durationNs":1513413375,"rate":0.6607580034106676},{"index":3,"operations":1,"durationNs":1523433417,"rate":0.6564120156752477},{"index":4,"operations":1,"durationNs":1527173792,"rate":0.6548043223622843},{"index":5,"operations":1,"durationNs":1525701958,"rate":0.6554360075088794},{"index":6,"operations":1,"durationNs":1526536459,"rate":0.6550777048948295},{"index":7,"operations":1,"durationNs":1526229084,"rate":0.6552096343093932},{"index":8,"operations":1,"durationNs":1523524916,"rate":0.6563725932526856},{"index":9,"operations":1,"durationNs":1525400208,"rate":0.6555656638536397},{"index":10,"operations":1,"durationNs":1528637458,"rate":0.6541773490938491},{"index":11,"operations":1,"durationNs":1522936292,"rate":0.6566262851919744},{"index":12,"operations":1,"durationNs":1526299959,"rate":0.6551792091085289},{"index":13,"operations":1,"durationNs":1524636083,"rate":0.6558942236447122},{"index":14,"operations":1,"durationNs":1526014208,"rate":0.6553018934932485},{"index":15,"operations":1,"durationNs":1526364000,"rate":0.6551517200353257},{"index":16,"operations":1,"durationNs":1523224208,"rate":0.6565021713467936},{"index":17,"operations":1,"durationNs":1526039083,"rate":0.6552912118306475},{"index":18,"operations":1,"durationNs":1521867458,"rate":0.6570874452589813},{"index":19,"operations":1,"durationNs":1543772750,"rate":0.6477637333603666},{"index":20,"operations":1,"durationNs":1534291333,"rate":0.6517667006856513},{"index":21,"operations":1,"durationNs":1527900333,"rate":0.6544929524535943},{"index":22,"operations":1,"durationNs":1528932167,"rate":0.6540512532757773},{"index":23,"operations":1,"durationNs":1524918625,"rate":0.6557726973791799},{"index":24,"operations":1,"durationNs":1526775917,"rate":0.6549749631661239},{"index":25,"operations":1,"durationNs":1531875166,"rate":0.652794706902377},{"index":26,"operations":1,"durationNs":1523825750,"rate":0.6562430120373015},{"index":27,"operations":1,"durationNs":1528896083,"rate":0.6540666897633748},{"index":28,"operations":1,"durationNs":1524734167,"rate":0.6558520308937236},{"index":29,"operations":1,"durationNs":1526443666,"rate":0.6551175272785992},{"index":30,"operations":1,"durationNs":1525896792,"rate":0.6553523182189114},{"index":31,"operations":1,"durationNs":1510507375,"rate":0.6620292072390577},{"index":32,"operations":1,"durationNs":1516126542,"rate":0.6595755514449664},{"index":33,"operations":1,"durationNs":1512121666,"rate":0.6613224467878235},{"index":34,"operations":1,"durationNs":1508104959,"rate":0.6630838218734351},{"index":35,"operations":1,"durationNs":1510705917,"rate":0.6619422011570767},{"index":36,"operations":1,"durationNs":1506707042,"rate":0.6636990284936891},{"index":37,"operations":1,"durationNs":1536697417,"rate":0.6507461969658532},{"index":38,"operations":1,"durationNs":1503759167,"rate":0.6650001023734408},{"index":39,"operations":1,"durationNs":1504202458,"rate":0.6648041257222836},{"index":40,"operations":1,"durationNs":1507180916,"rate":0.6634903543324855},{"index":41,"operations":1,"durationNs":1511664041,"rate":0.6615226484705407},{"index":42,"operations":1,"durationNs":1510099041,"rate":0.662208221348046},{"index":43,"operations":1,"durationNs":1574576916,"rate":0.6350912361527342},{"index":44,"operations":1,"durationNs":1507990792,"rate":0.6631340226379844},{"index":45,"operations":1,"durationNs":1508227541,"rate":0.6630299293811928},{"index":46,"operations":1,"durationNs":1508331333,"rate":0.662984304656091},{"index":47,"operations":1,"durationNs":1507581209,"rate":0.6633141843571493},{"index":48,"operations":1,"durationNs":1506076292,"rate":0.6639769879599168},{"index":49,"operations":1,"durationNs":1512961500,"rate":0.6609553514745748}],"summary":{"mean":0.6571271613378835,"median":0.6558731272692179,"min":0.6350912361527342,"max":0.6650001023734408,"stddev":0.005227464706168908,"coefficientOfVariation":0.00795502760154672,"confidenceInterval":{"lower":0.6556263836877538,"upper":0.6586279389880134},"medianConfidenceInterval":{"lower":0.655211,"upper":0.659579},"skewness":-1.2508418562662653}}]}</script>
+<script>
+(() => {
+  const data = JSON.parse(document.getElementById('bench-data').textContent);
+  const SVG_NS = 'http://www.w3.org/2000/svg';
+  const NOISY_CV = 0.05;
+  const colorOf = (i) => `var(--series-${(i % 4) + 1})`;
+
+  // ---------- formatting ----------
+  // Every unit the formatters emit, in display order; `usedUnits` collects the ones actually rendered.
+  const UNITS = {
+    ns: ['nanosecond', '0.000000001 s'],
+    'µs': ['microsecond', '0.000001 s'],
+    ms: ['millisecond', '0.001 s'],
+    s: ['second', 'base unit of time'],
+    'ops/s': ['operations per second', 'one operation = one call'],
+    K: ['thousand', '× 1,000'],
+    M: ['million', '× 1,000,000'],
+  };
+  const usedUnits = new Set();
+  const unit = (value, u) => {
+    usedUnits.add(u);
+    return value;
+  };
+  const sig = (n) => (n >= 100 ? n.toFixed(0) : n >= 10 ? n.toFixed(1) : n.toFixed(2));
+  const fmtTime = (ns) => {
+    if (ns < 1e3) return unit(`${sig(ns)} ns`, 'ns');
+    if (ns < 1e6) return unit(`${sig(ns / 1e3)} µs`, 'µs');
+    if (ns < 1e9) return unit(`${sig(ns / 1e6)} ms`, 'ms');
+    return unit(`${sig(ns / 1e9)} s`, 's');
+  };
+  // Fixed millisecond unit so values in one column compare directly.
+  const fmtMs = (ns) => {
+    const ms = ns / 1e6;
+    const digits = ms < 1 ? 3 : ms < 100 ? 2 : 1;
+    return unit(`${ms.toLocaleString('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits })} ms`, 'ms');
+  };
+  const fmtRate = (r) => {
+    usedUnits.add('ops/s');
+    if (r >= 1e6) return unit(`${sig(r / 1e6)}M`, 'M');
+    if (r >= 1e4) return unit(`${sig(r / 1e3)}K`, 'K');
+    return r.toLocaleString('en-US', { maximumFractionDigits: r < 100 ? 2 : 0 });
+  };
+  const fmtRatio = (x) => `${x.toLocaleString('en-US', { maximumFractionDigits: x < 10 ? 1 : 0 })}×`;
+  const fmtDate = (iso) => new Date(iso).toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'short' });
+
+  // node:bench summarises rates (ops/s); convert to time per operation for display.
+  const nsPerOp = (rate) => 1e9 / rate;
+  const benches = data.benches.map((b, i) => ({
+    ...b,
+    color: colorOf(i),
+    label: b.namePath.join(' › '),
+    medianNs: nsPerOp(b.summary.median),
+    ciLowNs: nsPerOp(b.summary.medianConfidenceInterval.upper),
+    ciHighNs: nsPerOp(b.summary.medianConfidenceInterval.lower),
+    minNs: nsPerOp(b.summary.max),
+    maxNs: nsPerOp(b.summary.min),
+    points: b.samples.map((s) => ({ ...s, nsPerOp: s.durationNs / s.operations })),
+  }));
+
+  // ---------- DOM helpers ----------
+  const el = (tag, attrs = {}, text) => {
+    const node = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+  const svgEl = (tag, attrs = {}, text) => {
+    const node = document.createElementNS(SVG_NS, tag);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, v);
+    if (text !== undefined) node.textContent = text;
+    return node;
+  };
+  const swatch = (color, cls = 'swatch') => {
+    const s = el('span', { class: cls });
+    s.style.background = color;
+    return s;
+  };
+
+  const tooltip = (container) => {
+    const tip = el('div', { class: 'tooltip', role: 'status' });
+    container.append(tip);
+    return {
+      show(x, y, value, lines) {
+        tip.replaceChildren(el('strong', {}, value), ...lines.map((l) => el('div', {}, l)));
+        tip.classList.add('show');
+        const w = tip.offsetWidth;
+        const max = container.clientWidth - w;
+        tip.style.left = `${Math.max(0, Math.min(max, x - w / 2))}px`;
+        tip.style.top = `${y - tip.offsetHeight - 12}px`;
+      },
+      hide() { tip.classList.remove('show'); },
+    };
+  };
+
+  // ---------- header ----------
+  const run = data.run;
+  const suites = [...new Set(benches.map((b) => b.namePath.slice(0, -1).join(' › ')).filter(Boolean))];
+  document.getElementById('subtitle').textContent =
+    `${suites.join(', ') || 'Benchmarks'} · ${benches.length} benchmark${benches.length === 1 ? '' : 's'}`;
+  const addMeta = (label, value, icon, target = document.getElementById('meta')) => {
+    const item = el('span');
+    if (icon) {
+      const dot = el('span', { class: 'status-icon' });
+      dot.style.background = icon;
+      item.append(dot);
+    }
+    item.append(`${label} `, el('b', {}, value));
+    target.append(item);
+  };
+  if (run) {
+    const failed = run.counts.failed ?? 0;
+    addMeta('Status', run.success ? 'Passed' : `${failed} failed`, run.success ? 'var(--good)' : '#d03b3b');
+    addMeta('Completed', `${run.counts.completed} / ${run.counts.total}`);
+    addMeta('Total time', fmtTime(run.durationNs));
+  }
+  const first = benches[0];
+  if (first.plannedSamples !== null) addMeta('Samples', `${first.plannedSamples} + ${first.warmup} warmup`);
+  addMeta('Run', fmtDate(data.runAt));
+
+  // Where the numbers came from — matters for a committed snapshot that can go stale.
+  const envRow = document.getElementById('environment');
+  if (data.commit) {
+    addMeta('Commit', `${data.commit.sha}${data.commit.dirty ? ' (modified)' : ''}`, undefined, envRow);
+  }
+  if (data.environment) {
+    addMeta('Node', data.environment.node, undefined, envRow);
+    addMeta('OS', data.environment.os, undefined, envRow);
+    addMeta('CPU', data.environment.cpu, undefined, envRow);
+  }
+  if (data.docsLink) {
+    const back = document.getElementById('docs-link');
+    back.href = data.docsLink;
+    back.hidden = false;
+  }
+
+  // ---------- tiles ----------
+  const tiles = document.getElementById('tiles');
+  const sorted = [...benches].sort((a, b) => a.medianNs - b.medianNs);
+  if (sorted.length >= 2) {
+    const fastest = sorted[0];
+    const slowest = sorted[sorted.length - 1];
+    const tile = el('div', { class: 'card tile hero' });
+    tile.append(
+      el('div', { class: 'label' }, `${fastest.name} vs ${slowest.name}`),
+      el('div', { class: 'value' }, `${fmtRatio(slowest.medianNs / fastest.medianNs)} faster`),
+      el('div', { class: 'note' }, 'Ratio of median time per operation'),
+    );
+    tiles.append(tile);
+  }
+  for (const b of benches) {
+    const tile = el('div', { class: 'card tile' });
+    const label = el('div', { class: 'label' });
+    label.append(swatch(b.color), b.name);
+    const cv = b.summary.coefficientOfVariation;
+    tile.append(
+      label,
+      el('div', { class: 'value' }, fmtTime(b.medianNs)),
+      el('div', { class: 'note' }, `median per op · ${fmtRate(b.summary.median)} ops/s · CV ${(cv * 100).toFixed(1)}%`),
+    );
+    tiles.append(tile);
+  }
+
+  // ---------- comparison: log-scale dot plot ----------
+  const renderComparison = () => {
+    const container = document.getElementById('comparison');
+    container.replaceChildren();
+    const tip = tooltip(container);
+    const width = container.clientWidth;
+    const labelW = Math.min(140, width * 0.28);
+    const margin = { top: 8, right: 24, bottom: 28, left: labelW };
+    const rowH = 44;
+    const height = margin.top + benches.length * rowH + margin.bottom;
+    const lo = Math.floor(Math.log10(Math.min(...benches.map((b) => b.minNs))));
+    const hi = Math.ceil(Math.log10(Math.max(...benches.map((b) => b.maxNs))));
+    const plotW = width - margin.left - margin.right;
+    const x = (ns) => margin.left + ((Math.log10(ns) - lo) / Math.max(1, hi - lo)) * plotW;
+
+    const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, height, role: 'img', 'aria-label': 'Median time per operation, log scale' });
+    const grid = svgEl('g', { class: 'grid' });
+    const labelEvery = Math.ceil(64 / (plotW / Math.max(1, hi - lo)));
+    for (let e = lo; e <= hi; e++) {
+      const gx = x(10 ** e);
+      grid.append(svgEl('line', { x1: gx, x2: gx, y1: margin.top, y2: height - margin.bottom }));
+      if ((e - lo) % labelEvery === 0) svg.append(svgEl('text', { x: gx, y: height - 8, 'text-anchor': 'middle' }, fmtTime(10 ** e)));
+    }
+    svg.prepend(grid);
+
+    benches.forEach((b, i) => {
+      const cy = margin.top + i * rowH + rowH / 2;
+      const g = svgEl('g');
+      g.append(
+        svgEl('text', { class: 'row-label', x: 0, y: cy + 4 }, b.name),
+        svgEl('line', { x1: x(b.minNs), x2: x(b.maxNs), y1: cy, y2: cy, stroke: 'var(--axis)', 'stroke-width': 2, 'stroke-linecap': 'round' }),
+        svgEl('rect', { x: x(b.ciLowNs), y: cy - 6, width: Math.max(2, x(b.ciHighNs) - x(b.ciLowNs)), height: 12, rx: 3, fill: b.color, opacity: 0.3 }),
+        svgEl('circle', { cx: x(b.medianNs), cy, r: 6, fill: b.color, stroke: 'var(--surface)', 'stroke-width': 2 }),
+      );
+      const labelX = x(b.maxNs) + 10;
+      const fitsRight = labelX + 70 < width;
+      g.append(svgEl('text', {
+        class: 'value-label',
+        x: fitsRight ? labelX : x(b.minNs) - 10,
+        y: cy + 4,
+        'text-anchor': fitsRight ? 'start' : 'end',
+      }, fmtTime(b.medianNs)));
+
+      const hit = svgEl('rect', { class: 'hit', x: margin.left, y: cy - rowH / 2, width: plotW, height: rowH, tabindex: 0, 'aria-label': `${b.name}: median ${fmtTime(b.medianNs)} per op` });
+      const ring = svgEl('rect', { class: 'focus-ring', x: margin.left - 4, y: cy - rowH / 2 + 2, width: plotW + 8, height: rowH - 4, rx: 6 });
+      const show = () => {
+        ring.classList.add('active');
+        tip.show(x(b.medianNs), cy - 6, `${fmtTime(b.medianNs)} median`, [
+          b.name,
+          `95% CI ${fmtTime(b.ciLowNs)} – ${fmtTime(b.ciHighNs)}`,
+          `range ${fmtTime(b.minNs)} – ${fmtTime(b.maxNs)}`,
+        ]);
+      };
+      const hide = () => { ring.classList.remove('active'); tip.hide(); };
+      hit.addEventListener('pointerenter', show);
+      hit.addEventListener('pointerleave', hide);
+      hit.addEventListener('focus', show);
+      hit.addEventListener('blur', hide);
+      g.append(hit, ring);
+      svg.append(g);
+    });
+    svg.append(svgEl('line', { class: 'baseline', x1: margin.left, x2: width - margin.right, y1: height - margin.bottom, y2: height - margin.bottom }));
+    container.append(svg);
+  };
+
+  const legend = document.getElementById('comparison-legend');
+  const legendItem = (node, text) => { const s = el('span'); s.append(node, text); legend.append(s); };
+  for (const b of benches) legendItem(swatch(b.color), b.name);
+  const dotKey = swatch('var(--text-muted)'); dotKey.style.borderRadius = '50%';
+  legendItem(dotKey, 'Median');
+  const ciKey = swatch('var(--text-muted)'); ciKey.style.opacity = '0.4'; ciKey.style.width = '18px';
+  legendItem(ciKey, '95% CI of median');
+  legendItem(swatch('var(--axis)', 'line-key'), 'Min – max');
+
+  // Round tick values (1/2/5 × 10^k steps) inside [min, max].
+  const niceTicks = (min, max, count) => {
+    const raw = (max - min) / count;
+    const mag = 10 ** Math.floor(Math.log10(raw));
+    const step = [1, 2, 5, 10].map((f) => f * mag).find((s) => s >= raw);
+    const ticks = [];
+    for (let v = Math.ceil(min / step) * step; v <= max; v += step) ticks.push(v);
+    return ticks;
+  };
+
+  // ---------- per-sample small multiples ----------
+  const renderSamples = () => {
+    const root = document.getElementById('samples');
+    root.replaceChildren();
+    const cards = benches.map((b) => {
+      const card = el('div', { class: 'card' });
+      const title = el('h3');
+      title.append(swatch(b.color, 'line-key'), b.label);
+      const slowest = b.points.reduce((m, p) => (p.nsPerOp > m.nsPerOp ? p : m));
+      card.append(title, el('p', { class: 'sub' }, `${b.points.length} samples · median ${fmtTime(b.medianNs)} · slowest #${slowest.index} at ${fmtTime(slowest.nsPerOp)}`));
+      const chart = el('div', { class: 'chart' });
+      card.append(chart);
+      root.append(card);
+      return { b, chart, slowest };
+    });
+    // Measure only after every card is in the grid, so each chart gets its final column width.
+    for (const { b, chart, slowest } of cards) {
+      const tip = tooltip(chart);
+      const width = chart.clientWidth;
+      const height = 180;
+      const m = { top: 12, right: 12, bottom: 24, left: 58 };
+      const values = b.points.map((p) => p.nsPerOp);
+      let yMin = Math.min(...values, b.ciLowNs);
+      let yMax = Math.max(...values, b.ciHighNs);
+      const pad = (yMax - yMin) * 0.12 || yMax * 0.05;
+      yMin -= pad; yMax += pad;
+      const n = b.points.length;
+      const x = (i) => m.left + (n === 1 ? 0.5 : i / (n - 1)) * (width - m.left - m.right);
+      const y = (v) => m.top + (1 - (v - yMin) / (yMax - yMin)) * (height - m.top - m.bottom);
+
+      const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, height, role: 'img', 'aria-label': `${b.label} samples` });
+      const grid = svgEl('g', { class: 'grid' });
+      for (const v of niceTicks(yMin, yMax, 4)) {
+        grid.append(svgEl('line', { x1: m.left, x2: width - m.right, y1: y(v), y2: y(v) }));
+        svg.append(svgEl('text', { x: m.left - 8, y: y(v) + 4, 'text-anchor': 'end' }, fmtTime(v)));
+      }
+      svg.prepend(grid);
+      const ticks = n <= 10 ? b.points.map((p) => p.index) : [0, Math.round((n - 1) / 2), n - 1];
+      for (const i of ticks) svg.append(svgEl('text', { x: x(i), y: height - 6, 'text-anchor': 'middle' }, `#${i}`));
+
+      svg.append(svgEl('rect', { x: m.left, y: y(b.ciHighNs), width: width - m.left - m.right, height: Math.max(1, y(b.ciLowNs) - y(b.ciHighNs)), fill: b.color, opacity: 0.1 }));
+      svg.append(svgEl('line', { x1: m.left, x2: width - m.right, y1: y(b.medianNs), y2: y(b.medianNs), stroke: b.color, 'stroke-width': 1, opacity: 0.6 }));
+      svg.append(svgEl('path', {
+        d: b.points.map((p, i) => `${i ? 'L' : 'M'}${x(i)},${y(p.nsPerOp)}`).join(''),
+        fill: 'none', stroke: b.color, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round',
+      }));
+      svg.append(svgEl('circle', { cx: x(slowest.index), cy: y(slowest.nsPerOp), r: 4, fill: b.color, stroke: 'var(--surface)', 'stroke-width': 2 }));
+
+      const cross = svgEl('line', { x1: 0, x2: 0, y1: m.top, y2: height - m.bottom, stroke: 'var(--axis)', 'stroke-width': 1, visibility: 'hidden' });
+      const dot = svgEl('circle', { r: 5, fill: b.color, stroke: 'var(--surface)', 'stroke-width': 2, visibility: 'hidden' });
+      const hit = svgEl('rect', { class: 'hit', x: m.left, y: m.top, width: width - m.left - m.right, height: height - m.top - m.bottom, tabindex: 0, 'aria-label': `${b.label} samples; use arrow keys to step through` });
+      svg.append(cross, dot, hit);
+      chart.append(svg);
+
+      let current = -1;
+      const showAt = (i) => {
+        current = Math.max(0, Math.min(n - 1, i));
+        const p = b.points[current];
+        const px = x(current);
+        const py = y(p.nsPerOp);
+        cross.setAttribute('x1', px); cross.setAttribute('x2', px);
+        dot.setAttribute('cx', px); dot.setAttribute('cy', py);
+        cross.setAttribute('visibility', 'visible'); dot.setAttribute('visibility', 'visible');
+        const vsMedian = ((p.nsPerOp / b.medianNs - 1) * 100).toFixed(1);
+        tip.show(px, py, fmtTime(p.nsPerOp), [
+          `Sample #${p.index} · ${vsMedian > 0 ? '+' : ''}${vsMedian}% vs median`,
+          `${fmtRate(p.rate)} ops/s · ${p.operations} op${p.operations === 1 ? '' : 's'}`,
+        ]);
+      };
+      const hide = () => {
+        cross.setAttribute('visibility', 'hidden'); dot.setAttribute('visibility', 'hidden'); tip.hide();
+      };
+      hit.addEventListener('pointermove', (e) => {
+        const r = svg.getBoundingClientRect();
+        const px = ((e.clientX - r.left) / r.width) * width;
+        showAt(Math.round(((px - m.left) / (width - m.left - m.right)) * (n - 1)));
+      });
+      hit.addEventListener('pointerleave', hide);
+      hit.addEventListener('focus', () => showAt(current < 0 ? 0 : current));
+      hit.addEventListener('blur', hide);
+      hit.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+          e.preventDefault();
+          showAt(current + (e.key === 'ArrowRight' ? 1 : -1));
+        }
+      });
+    }
+  };
+
+  // ---------- stats table ----------
+  const table = document.getElementById('stats');
+  const head = el('thead');
+  const headRow = el('tr');
+  for (const h of ['Benchmark', 'Samples', 'Median / op', 'Median ops/s', 'Mean ops/s', '95% CI (mean)', 'Min ops/s', 'Max ops/s', 'Std dev', 'CV', 'Skewness']) {
+    headRow.append(el('th', { scope: 'col' }, h));
+  }
+  head.append(headRow);
+  const body = el('tbody');
+  for (const b of benches) {
+    const s = b.summary;
+    const row = el('tr');
+    const nameCell = el('td');
+    const name = el('span', { class: 'name-cell' });
+    name.append(swatch(b.color), b.name);
+    nameCell.append(name);
+    const cvCell = el('td', {}, `${(s.coefficientOfVariation * 100).toFixed(1)}%`);
+    if (s.coefficientOfVariation > NOISY_CV) cvCell.append(el('span', { class: 'flag' }, 'noisy'));
+    row.append(
+      nameCell,
+      el('td', {}, String(b.points.length)),
+      el('td', {}, fmtMs(b.medianNs)),
+      el('td', {}, fmtRate(s.median)),
+      el('td', {}, fmtRate(s.mean)),
+      el('td', {}, `${fmtRate(s.confidenceInterval.lower)} – ${fmtRate(s.confidenceInterval.upper)}`),
+      el('td', {}, fmtRate(s.min)),
+      el('td', {}, fmtRate(s.max)),
+      el('td', {}, fmtRate(s.stddev)),
+      cvCell,
+      el('td', {}, s.skewness.toFixed(2)),
+    );
+    body.append(row);
+  }
+  table.append(head, body);
+
+  document.getElementById('footer').textContent = `Generated ${fmtDate(data.generatedAt)} from ${data.source}.`;
+
+  // ---------- render + resize ----------
+  // Runs last, after every formatter call, so it lists exactly the units on the page.
+  const renderUnits = () => {
+    const rows = Object.entries(UNITS)
+      .filter(([symbol]) => usedUnits.has(symbol))
+      .map(([symbol, [name, meaning]]) => {
+        const row = el('tr');
+        row.append(el('td', {}, symbol), el('td', {}, name), el('td', {}, meaning));
+        return row;
+      });
+    document.getElementById('units').replaceChildren(...rows);
+  };
+  const render = () => { renderComparison(); renderSamples(); renderUnits(); };
+  render();
+  let lastWidth = document.querySelector('main').clientWidth;
+  new ResizeObserver(() => {
+    const w = document.querySelector('main').clientWidth;
+    if (w !== lastWidth) { lastWidth = w; render(); }
+  }).observe(document.querySelector('main'));
+})();
+</script>
+</body>
+</html>

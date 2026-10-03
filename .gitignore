@@ -117,3 +117,6 @@ dist
 reports/
 .dccache
 scan-report.html
+
+# Benchmarks results
+/benchmarks/report.json
