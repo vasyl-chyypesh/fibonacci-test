@@ -11,6 +11,9 @@ const TEMPLATE_PATH = path.join(REPORT_DIR, 'template.html');
 const DATA_PLACEHOLDER = '"__BENCH_DATA__"';
 const SITE_ROOT_PLACEHOLDER = '__SITE_ROOT__';
 
+// this render is used only in npm scripts with file names as input args
+/* eslint-disable security/detect-non-literal-fs-filename */
+
 // Usage: render.ts [input.json] [output.html] [--site-root <path>]
 // The page uses the docs site's stylesheet, scripts and header, so `--site-root` is the
 // path from the output file to docs/ (default fits docs/benchmarks/report.html).
