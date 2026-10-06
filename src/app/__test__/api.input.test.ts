@@ -17,6 +17,11 @@ describe('API Tests', () => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         addRequest: async () => {},
       };
+    } else if (className === ClassName.IdempotencyService) {
+      return {
+        getIdempotency: async () => null,
+        setIdempotency: async () => 'ok',
+      };
     }
     throw new Error('Unknown class');
   });
@@ -44,13 +49,17 @@ describe('API Tests', () => {
       assert.strictEqual(response.body.ticket, expectedTicket);
 
       // Verify ServiceFactory was called correctly
-      assert.strictEqual((ServiceFactory.getInstanceOfClass as any).mock.callCount(), 2);
+      assert.strictEqual((ServiceFactory.getInstanceOfClass as any).mock.callCount(), 3);
       assert.strictEqual(
         (ServiceFactory.getInstanceOfClass as any).mock.calls[0].arguments[0],
-        ClassName.TicketService,
+        ClassName.IdempotencyService,
       );
       assert.strictEqual(
         (ServiceFactory.getInstanceOfClass as any).mock.calls[1].arguments[0],
+        ClassName.TicketService,
+      );
+      assert.strictEqual(
+        (ServiceFactory.getInstanceOfClass as any).mock.calls[2].arguments[0],
         ClassName.RequestService,
       );
 

@@ -1,5 +1,5 @@
-import { IStorage } from '../types/IStorage.js';
-import { RedisClient } from './redisClient.js';
+import { IStorage, IStorageSetOptions } from '../types/IStorage.js';
+import { RedisClient, RedisSetOptions } from './redisClient.js';
 
 export class RedisStorage implements IStorage {
   private readonly redisClient: RedisClient;
@@ -8,12 +8,20 @@ export class RedisStorage implements IStorage {
     this.redisClient = redisClient;
   }
 
-  async set(key: string, value: string): Promise<string> {
-    const setResult = await this.redisClient.set(key, value);
+  async set(key: string, value: string, options?: IStorageSetOptions): Promise<string> {
+    const setResult = await this.redisClient.set(key, value, this.convertSetOptions(options));
     if (!setResult) {
       throw new Error(`RedisStorage has not set value: ${value} for key: ${key}`);
     }
     return setResult;
+  }
+
+  private convertSetOptions(options?: IStorageSetOptions): RedisSetOptions {
+    const setOptions: RedisSetOptions = {};
+    if (options?.expirationMilliseconds) {
+      setOptions.expiration = { type: 'EX', value: options.expirationMilliseconds };
+    }
+    return setOptions;
   }
 
   get(key: string): Promise<string | null> {
