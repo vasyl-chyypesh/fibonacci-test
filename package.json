@@ -32,7 +32,7 @@
     "test:coverage:report": "c8 --all --src src/ --reporter html node --import tsx --test 'src/**/*.test.ts'",
     "bench": "node --experimental-bench --import tsx --bench-reporter=spec --bench 'benchmarks/*.ts'",
     "bench:report": "node --experimental-bench --import tsx --bench-reporter=json --bench-reporter-destination=benchmarks/report.json --bench 'benchmarks/*.ts'",
-    "bench:html": "npm run bench:report && node --import tsx benchmarks/report/render.ts benchmarks/report.json docs/benchmarks/report.html --docs-link ../index.html",
+    "bench:report:html": "npm run bench:report && node --import tsx benchmarks/report/render.ts benchmarks/report.json docs/benchmarks/report.html --site-root ../",
     "check:deps": "npx npm-check-updates"
   },
   "repository": {

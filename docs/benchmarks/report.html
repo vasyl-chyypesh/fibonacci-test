@@ -1,202 +1,70 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Benchmark Report</title>
-<style>
-  :root {
-    color-scheme: light;
-    --page: #f9f9f7;
-    --surface: #fcfcfb;
-    --text-primary: #0b0b0b;
-    --text-secondary: #52514e;
-    --text-muted: #898781;
-    --grid: #e1e0d9;
-    --axis: #c3c2b7;
-    --border: rgba(11, 11, 11, 0.1);
-    --series-1: #2a78d6;
-    --series-2: #eb6834;
-    --series-3: #1baf7a;
-    --series-4: #eda100;
-    --good: #006300;
-    --warning: #fab219;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      color-scheme: dark;
-      --page: #0d0d0d;
-      --surface: #1a1a19;
-      --text-primary: #ffffff;
-      --text-secondary: #c3c2b7;
-      --text-muted: #898781;
-      --grid: #2c2c2a;
-      --axis: #383835;
-      --border: rgba(255, 255, 255, 0.1);
-      --series-1: #3987e5;
-      --series-2: #d95926;
-      --series-3: #199e70;
-      --series-4: #c98500;
-      --good: #0ca30c;
-    }
-  }
-  :root[data-theme="dark"] {
-    color-scheme: dark;
-    --page: #0d0d0d;
-    --surface: #1a1a19;
-    --text-primary: #ffffff;
-    --text-secondary: #c3c2b7;
-    --text-muted: #898781;
-    --grid: #2c2c2a;
-    --axis: #383835;
-    --border: rgba(255, 255, 255, 0.1);
-    --series-1: #3987e5;
-    --series-2: #d95926;
-    --series-3: #199e70;
-    --series-4: #c98500;
-    --good: #0ca30c;
-  }
-
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--page);
-    color: var(--text-primary);
-    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
-  }
-  main { max-width: 1040px; margin: 0 auto; padding: 32px 16px 64px; }
-  header h1 { font-size: 26px; font-weight: 600; margin: 0 0 4px; letter-spacing: -0.01em; }
-  header p { margin: 0; color: var(--text-secondary); }
-  .meta { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 12px; font-size: 13px; color: var(--text-secondary); }
-  .meta b { color: var(--text-primary); font-weight: 600; }
-  .back-link { display: inline-block; margin-bottom: 12px; font-size: 13px; color: var(--text-secondary); text-decoration: none; }
-  .back-link[hidden] { display: none; }
-  .back-link:hover { color: var(--text-primary); text-decoration: underline; }
-  .meta + .meta { margin-top: 4px; }
-  .units-card { display: inline-block; max-width: 100%; margin-top: 14px; padding: 10px 14px; overflow-x: auto; }
-  table.units { width: auto; font-size: 12px; }
-  table.units caption { text-align: left; font-size: 12px; font-weight: 600; color: var(--text-secondary); padding: 0 8px 4px; }
-  table.units th, table.units td { text-align: left; padding: 4px 8px; }
-  table.units th { font-size: 11px; color: var(--text-muted); }
-  table.units td { color: var(--text-secondary); }
-  table.units td:first-child { font-weight: 600; color: var(--text-primary); }
-  .status-icon { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
-
-  section { margin-top: 32px; }
-  h2 { font-size: 17px; font-weight: 600; margin: 0 0 4px; }
-  .sub { margin: 0 0 14px; color: var(--text-secondary); font-size: 13px; }
-
-  .card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 20px;
-  }
-  .tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 12px; }
-  .tile .label { font-size: 13px; color: var(--text-secondary); display: flex; align-items: center; gap: 8px; }
-  .tile .value { font-size: 30px; font-weight: 600; margin-top: 4px; letter-spacing: -0.01em; }
-  .tile .note { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-  .tile.hero .value { font-size: clamp(32px, 7vw, 44px); }
-  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; flex: none; }
-  .line-key { display: inline-block; width: 14px; height: 2px; border-radius: 1px; vertical-align: middle; }
-
-  .chart { position: relative; width: 100%; }
-  .chart svg { display: block; width: 100%; overflow: visible; }
-  .chart text { font-size: 12px; fill: var(--text-muted); font-variant-numeric: tabular-nums; }
-  .chart .row-label { fill: var(--text-primary); font-size: 13px; font-weight: 500; font-variant-numeric: normal; }
-  .chart .value-label { fill: var(--text-secondary); font-size: 12px; }
-  .grid line { stroke: var(--grid); stroke-width: 1; }
-  .baseline { stroke: var(--axis); stroke-width: 1; }
-  .hit { fill: transparent; cursor: default; }
-  .hit:focus { outline: none; }
-  .hit:focus-visible + .focus-ring, .focus-ring.active { opacity: 1; }
-  .focus-ring { opacity: 0; fill: none; stroke: var(--text-muted); stroke-width: 1; stroke-dasharray: 0; }
-
-  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--text-secondary); margin-top: 10px; }
-  .legend span { display: inline-flex; align-items: center; gap: 6px; }
-
-  .multiples { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
-  .multiples h3 { font-size: 14px; font-weight: 600; margin: 0 0 2px; display: flex; align-items: center; gap: 8px; }
-  .multiples .sub { margin-bottom: 8px; }
-
-  .tooltip {
-    position: absolute;
-    pointer-events: none;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-    padding: 8px 10px;
-    font-size: 12px;
-    color: var(--text-secondary);
-    white-space: nowrap;
-    opacity: 0;
-    transition: opacity 80ms;
-    z-index: 2;
-  }
-  .tooltip.show { opacity: 1; }
-  .tooltip strong { display: block; color: var(--text-primary); font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
-
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { padding: 8px 10px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--grid); }
-  th { font-weight: 500; color: var(--text-secondary); font-size: 12px; }
-  td { font-variant-numeric: tabular-nums; }
-  th:first-child, td:first-child { text-align: left; }
-  tbody tr:last-child td { border-bottom: 0; }
-  .name-cell { display: inline-flex; align-items: center; gap: 8px; font-weight: 500; }
-  .flag { display: inline-flex; align-items: center; gap: 4px; margin-left: 6px; font-size: 11px; color: var(--text-secondary); }
-  .flag::before { content: "!"; display: inline-grid; place-items: center; width: 14px; height: 14px; border-radius: 50%; background: var(--warning); color: #0b0b0b; font-size: 10px; font-weight: 700; }
-  footer { margin-top: 32px; font-size: 12px; color: var(--text-muted); }
-  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.92em; }
-</style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Benchmark Report</title>
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap">
+    <link rel="stylesheet" href="../styles.css">
+    <script src="../scripts/theme.js" defer></script>
+    <script src="../scripts/siteHeader.js" defer></script>
 </head>
+
 <body>
-<main>
-  <header>
-    <a class="back-link" id="docs-link" hidden>← Docs</a>
-    <h1>Benchmark Report</h1>
-    <p id="subtitle"></p>
-    <div class="meta" id="meta"></div>
-    <div class="meta" id="environment"></div>
-    <div class="card units-card">
-      <table class="units">
-        <caption>Units used in this report</caption>
-        <thead><tr><th scope="col">Symbol</th><th scope="col">Name</th><th scope="col">Equals</th></tr></thead>
-        <tbody id="units"></tbody>
-      </table>
+    <header id="site-header" data-root="../"></header>
+    <div class="page">
+        <article class="doc bench" id="root">
+            <h2>Benchmark Report</h2>
+            <p class="bench-subtitle" id="subtitle"></p>
+            <ul class="bench-meta" id="meta"></ul>
+            <ul class="bench-meta" id="environment"></ul>
+
+            <div class="bench-tiles" id="tiles"></div>
+
+            <h3>Time per operation</h3>
+            <p class="bench-lead">Median with its 95% confidence interval and the full min–max range. Log scale — each
+                gridline is 10× the previous one.</p>
+            <div class="bench-panel">
+                <div class="bench-panel-title">Median per operation</div>
+                <div class="bench-panel-body">
+                    <div class="bench-chart" id="comparison"></div>
+                    <div class="bench-legend" id="comparison-legend"></div>
+                </div>
+            </div>
+
+            <h3>Samples</h3>
+            <p class="bench-lead">Every measured sample in run order. The band is the median's 95% confidence interval;
+                spikes are usually GC or event-loop jitter.</p>
+            <div class="bench-multiples" id="samples"></div>
+
+            <h3>Statistics</h3>
+            <p class="bench-lead">Rates are operations per second as reported by <code>node:bench</code>. A coefficient
+                of variation above 5% is flagged as noisy.</p>
+            <div class="bench-panel">
+                <div class="bench-panel-title">Summary per benchmark</div>
+                <div class="bench-table-wrap"><table class="bench-table" id="stats"></table></div>
+            </div>
+
+            <div class="bench-panel bench-units">
+                <div class="bench-panel-title">Units used in this report</div>
+                <div class="bench-table-wrap">
+                    <table class="bench-table bench-units-table">
+                        <thead><tr><th scope="col">Symbol</th><th scope="col">Name</th><th scope="col">Equals</th></tr></thead>
+                        <tbody id="units"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <p class="bench-footer" id="footer"></p>
+        </article>
     </div>
-  </header>
 
-  <section>
-    <div class="tiles" id="tiles"></div>
-  </section>
-
-  <section>
-    <h2>Time per operation</h2>
-    <p class="sub">Median with its 95% confidence interval and the full min–max range. Log scale — each gridline is 10× the previous one.</p>
-    <div class="card">
-      <div class="chart" id="comparison"></div>
-      <div class="legend" id="comparison-legend"></div>
-    </div>
-  </section>
-
-  <section>
-    <h2>Samples</h2>
-    <p class="sub">Every measured sample in run order. The band is the median's 95% confidence interval; spikes are usually GC or event-loop jitter.</p>
-    <div class="multiples" id="samples"></div>
-  </section>
-
-  <section>
-    <h2>Statistics</h2>
-    <p class="sub">Rates are operations per second as reported by <code>node:bench</code>. A coefficient of variation above 5% is flagged as noisy.</p>
-    <div class="card table-wrap"><table id="stats"></table></div>
-  </section>
-
-  <footer id="footer"></footer>
-</main>
-
-<script type="application/json" id="bench-data">{"source":"benchmarks/report.json","runAt":"2026-09-29T15:15:45.631Z","generatedAt":"2026-09-29T15:15:45.703Z","commit":{"sha":"78ada2c","dirty":true},"environment":{"node":"v26.10.0","os":"Darwin 27.0.0 (arm64)","cpu":"Apple M3 Pro"},"docsLink":"../index.html","run":{"success":true,"counts":{"completed":2,"failed":0,"skipped":0,"total":2},"durationNs":81094595167},"benches":[{"name":"Iterative","namePath":["Fibonacci","Iterative"],"warmup":3,"plannedSamples":50,"samples":[{"index":0,"operations":1,"durationNs":496000,"rate":2016.1290322580644},{"index":1,"operations":1,"durationNs":1522625,"rate":656.7605286922255},{"index":2,"operations":1,"durationNs":647958,"rate":1543.3099058889618},{"index":3,"operations":1,"durationNs":733958,"rate":1362.475781992975},{"index":4,"operations":1,"durationNs":561375,"rate":1781.340458695168},{"index":5,"operations":1,"durationNs":502875,"rate":1988.5657469550088},{"index":6,"operations":1,"durationNs":1125125,"rate":888.7901344295078},{"index":7,"operations":1,"durationNs":844208,"rate":1184.542198131266},{"index":8,"operations":1,"durationNs":357833,"rate":2794.599715509749},{"index":9,"operations":1,"durationNs":383417,"rate":2608.126400237861},{"index":10,"operations":1,"durationNs":327250,"rate":3055.7677616501146},{"index":11,"operations":1,"durationNs":350542,"rate":2852.7252083915764},{"index":12,"operations":1,"durationNs":358375,"rate":2790.3732124171606},{"index":13,"operations":1,"durationNs":343958,"rate":2907.3317091040185},{"index":14,"operations":1,"durationNs":339042,"rate":2949.4870841960583},{"index":15,"operations":1,"durationNs":320667,"rate":3118.499876819255},{"index":16,"operations":1,"durationNs":321791,"rate":3107.607111448114},{"index":17,"operations":1,"durationNs":333458,"rate":2998.8784194711175},{"index":18,"operations":1,"durationNs":322875,"rate":3097.173828881146},{"index":19,"operations":1,"durationNs":305542,"rate":3272.872469251363},{"index":20,"operations":1,"durationNs":314584,"rate":3178.8012104875006},{"index":21,"operations":1,"durationNs":307083,"rate":3256.44858230511},{"index":22,"operations":1,"durationNs":298083,"rate":3354.770315650339},{"index":23,"operations":1,"durationNs":297083,"rate":3366.0626828192794},{"index":24,"operations":1,"durationNs":311833,"rate":3206.844689304852},{"index":25,"operations":1,"durationNs":408916,"rate":2445.490027291669},{"index":26,"operations":1,"durationNs":291167,"rate":3434.455140864178},{"index":27,"operations":1,"durationNs":305500,"rate":3273.3224222585923},{"index":28,"operations":1,"durationNs":311458,"rate":3210.7057773439756},{"index":29,"operations":1,"durationNs":296083,"rate":3377.431328377516},{"index":30,"operations":1,"durationNs":298375,"rate":3351.4872224549645},{"index":31,"operations":1,"durationNs":294875,"rate":3391.267486222976},{"index":32,"operations":1,"durationNs":299750,"rate":3336.1134278565473},{"index":33,"operations":1,"durationNs":300583,"rate":3326.8681196208704},{"index":34,"operations":1,"durationNs":300959,"rate":3322.71173149831},{"index":35,"operations":1,"durationNs":308792,"rate":3238.4258659550765},{"index":36,"operations":1,"durationNs":310500,"rate":3220.6119162640903},{"index":37,"operations":1,"durationNs":297000,"rate":3367.0033670033667},{"index":38,"operations":1,"durationNs":290916,"rate":3437.418361313919},{"index":39,"operations":1,"durationNs":294209,"rate":3398.944287904177},{"index":40,"operations":1,"durationNs":302500,"rate":3305.785123966942},{"index":41,"operations":1,"durationNs":300833,"rate":3324.10340620876},{"index":42,"operations":1,"durationNs":301875,"rate":3312.6293995859214},{"index":43,"operations":1,"durationNs":305709,"rate":3271.084593518673},{"index":44,"operations":1,"durationNs":306959,"rate":3257.764066210797},{"index":45,"operations":1,"durationNs":311917,"rate":3205.981078299676},{"index":46,"operations":1,"durationNs":314292,"rate":3181.7545467272475},{"index":47,"operations":1,"durationNs":309958,"rate":3226.2435555784978},{"index":48,"operations":1,"durationNs":334042,"rate":2993.635530861389},{"index":49,"operations":1,"durationNs":332416,"rate":3008.2787832113977}],"summary":{"mean":2891.156012627747,"median":3206.4128838022643,"min":656.7605286922255,"max":3437.418361313919,"stddev":696.11315379092,"coefficientOfVariation":0.24077329301860426,"confidenceInterval":{"lower":2691.314107272153,"upper":3090.99791798334},"medianConfidenceInterval":{"lower":3008.282623,"upper":3271.098367},"skewness":-1.832883775895568}},{"name":"Recursive","namePath":["Fibonacci","Recursive"],"warmup":3,"plannedSamples":50,"samples":[{"index":0,"operations":1,"durationNs":1535553250,"rate":0.6512310790915261},{"index":1,"operations":1,"durationNs":1528769083,"rate":0.6541210252876366},{"index":2,"operations":1,"durationNs":1513413375,"rate":0.6607580034106676},{"index":3,"operations":1,"durationNs":1523433417,"rate":0.6564120156752477},{"index":4,"operations":1,"durationNs":1527173792,"rate":0.6548043223622843},{"index":5,"operations":1,"durationNs":1525701958,"rate":0.6554360075088794},{"index":6,"operations":1,"durationNs":1526536459,"rate":0.6550777048948295},{"index":7,"operations":1,"durationNs":1526229084,"rate":0.6552096343093932},{"index":8,"operations":1,"durationNs":1523524916,"rate":0.6563725932526856},{"index":9,"operations":1,"durationNs":1525400208,"rate":0.6555656638536397},{"index":10,"operations":1,"durationNs":1528637458,"rate":0.6541773490938491},{"index":11,"operations":1,"durationNs":1522936292,"rate":0.6566262851919744},{"index":12,"operations":1,"durationNs":1526299959,"rate":0.6551792091085289},{"index":13,"operations":1,"durationNs":1524636083,"rate":0.6558942236447122},{"index":14,"operations":1,"durationNs":1526014208,"rate":0.6553018934932485},{"index":15,"operations":1,"durationNs":1526364000,"rate":0.6551517200353257},{"index":16,"operations":1,"durationNs":1523224208,"rate":0.6565021713467936},{"index":17,"operations":1,"durationNs":1526039083,"rate":0.6552912118306475},{"index":18,"operations":1,"durationNs":1521867458,"rate":0.6570874452589813},{"index":19,"operations":1,"durationNs":1543772750,"rate":0.6477637333603666},{"index":20,"operations":1,"durationNs":1534291333,"rate":0.6517667006856513},{"index":21,"operations":1,"durationNs":1527900333,"rate":0.6544929524535943},{"index":22,"operations":1,"durationNs":1528932167,"rate":0.6540512532757773},{"index":23,"operations":1,"durationNs":1524918625,"rate":0.6557726973791799},{"index":24,"operations":1,"durationNs":1526775917,"rate":0.6549749631661239},{"index":25,"operations":1,"durationNs":1531875166,"rate":0.652794706902377},{"index":26,"operations":1,"durationNs":1523825750,"rate":0.6562430120373015},{"index":27,"operations":1,"durationNs":1528896083,"rate":0.6540666897633748},{"index":28,"operations":1,"durationNs":1524734167,"rate":0.6558520308937236},{"index":29,"operations":1,"durationNs":1526443666,"rate":0.6551175272785992},{"index":30,"operations":1,"durationNs":1525896792,"rate":0.6553523182189114},{"index":31,"operations":1,"durationNs":1510507375,"rate":0.6620292072390577},{"index":32,"operations":1,"durationNs":1516126542,"rate":0.6595755514449664},{"index":33,"operations":1,"durationNs":1512121666,"rate":0.6613224467878235},{"index":34,"operations":1,"durationNs":1508104959,"rate":0.6630838218734351},{"index":35,"operations":1,"durationNs":1510705917,"rate":0.6619422011570767},{"index":36,"operations":1,"durationNs":1506707042,"rate":0.6636990284936891},{"index":37,"operations":1,"durationNs":1536697417,"rate":0.6507461969658532},{"index":38,"operations":1,"durationNs":1503759167,"rate":0.6650001023734408},{"index":39,"operations":1,"durationNs":1504202458,"rate":0.6648041257222836},{"index":40,"operations":1,"durationNs":1507180916,"rate":0.6634903543324855},{"index":41,"operations":1,"durationNs":1511664041,"rate":0.6615226484705407},{"index":42,"operations":1,"durationNs":1510099041,"rate":0.662208221348046},{"index":43,"operations":1,"durationNs":1574576916,"rate":0.6350912361527342},{"index":44,"operations":1,"durationNs":1507990792,"rate":0.6631340226379844},{"index":45,"operations":1,"durationNs":1508227541,"rate":0.6630299293811928},{"index":46,"operations":1,"durationNs":1508331333,"rate":0.662984304656091},{"index":47,"operations":1,"durationNs":1507581209,"rate":0.6633141843571493},{"index":48,"operations":1,"durationNs":1506076292,"rate":0.6639769879599168},{"index":49,"operations":1,"durationNs":1512961500,"rate":0.6609553514745748}],"summary":{"mean":0.6571271613378835,"median":0.6558731272692179,"min":0.6350912361527342,"max":0.6650001023734408,"stddev":0.005227464706168908,"coefficientOfVariation":0.00795502760154672,"confidenceInterval":{"lower":0.6556263836877538,"upper":0.6586279389880134},"medianConfidenceInterval":{"lower":0.655211,"upper":0.659579},"skewness":-1.2508418562662653}}]}</script>
+<script type="application/json" id="bench-data">{"source":"benchmarks/report.json","runAt":"2026-10-06T19:12:03.662Z","generatedAt":"2026-10-06T19:12:03.731Z","commit":{"sha":"017b76f","dirty":true},"environment":{"node":"v26.10.0","os":"Darwin 27.0.0 (arm64)","cpu":"Apple M3 Pro"},"run":{"success":true,"counts":{"completed":2,"failed":0,"skipped":0,"total":2},"durationNs":80769822167},"benches":[{"name":"Iterative","namePath":["Fibonacci","Iterative"],"warmup":3,"plannedSamples":50,"samples":[{"index":0,"operations":1,"durationNs":320709,"rate":3118.091478567798},{"index":1,"operations":1,"durationNs":598250,"rate":1671.541997492687},{"index":2,"operations":1,"durationNs":329125,"rate":3038.359285985568},{"index":3,"operations":1,"durationNs":329667,"rate":3033.363970309433},{"index":4,"operations":1,"durationNs":334459,"rate":2989.9030972406185},{"index":5,"operations":1,"durationNs":353917,"rate":2825.521238030386},{"index":6,"operations":1,"durationNs":343750,"rate":2909.0909090909095},{"index":7,"operations":1,"durationNs":325459,"rate":3072.5836434082325},{"index":8,"operations":1,"durationNs":374000,"rate":2673.7967914438505},{"index":9,"operations":1,"durationNs":364125,"rate":2746.3096464126334},{"index":10,"operations":1,"durationNs":359292,"rate":2783.2515057390647},{"index":11,"operations":1,"durationNs":327083,"rate":3057.327956512567},{"index":12,"operations":1,"durationNs":321833,"rate":3107.2015610580643},{"index":13,"operations":1,"durationNs":328667,"rate":3042.593263089997},{"index":14,"operations":1,"durationNs":380416,"rate":2628.701211305518},{"index":15,"operations":1,"durationNs":323250,"rate":3093.580819798917},{"index":16,"operations":1,"durationNs":302583,"rate":3304.878330904248},{"index":17,"operations":1,"durationNs":318500,"rate":3139.717425431711},{"index":18,"operations":1,"durationNs":307666,"rate":3250.2778987603438},{"index":19,"operations":1,"durationNs":297583,"rate":3360.407012497354},{"index":20,"operations":1,"durationNs":288750,"rate":3463.2034632034633},{"index":21,"operations":1,"durationNs":309708,"rate":3228.8478179446447},{"index":22,"operations":1,"durationNs":303666,"rate":3293.0917521223973},{"index":23,"operations":1,"durationNs":294542,"rate":3395.101547487285},{"index":24,"operations":1,"durationNs":289542,"rate":3453.730374177149},{"index":25,"operations":1,"durationNs":389792,"rate":2565.470815204006},{"index":26,"operations":1,"durationNs":298708,"rate":3347.750980891037},{"index":27,"operations":1,"durationNs":301833,"rate":3313.09035128697},{"index":28,"operations":1,"durationNs":296000,"rate":3378.3783783783783},{"index":29,"operations":1,"durationNs":296667,"rate":3370.7827294576073},{"index":30,"operations":1,"durationNs":306000,"rate":3267.97385620915},{"index":31,"operations":1,"durationNs":294084,"rate":3400.389004502115},{"index":32,"operations":1,"durationNs":288250,"rate":3469.2107545533395},{"index":33,"operations":1,"durationNs":303500,"rate":3294.8929159802306},{"index":34,"operations":1,"durationNs":294500,"rate":3395.585738539898},{"index":35,"operations":1,"durationNs":294459,"rate":3396.0585344649},{"index":36,"operations":1,"durationNs":293709,"rate":3404.730532601997},{"index":37,"operations":1,"durationNs":289375,"rate":3455.723542116631},{"index":38,"operations":1,"durationNs":300625,"rate":3326.4033264033264},{"index":39,"operations":1,"durationNs":288459,"rate":3466.697173601794},{"index":40,"operations":1,"durationNs":295458,"rate":3384.575811113593},{"index":41,"operations":1,"durationNs":291208,"rate":3433.971594186973},{"index":42,"operations":1,"durationNs":288458,"rate":3466.7091916327504},{"index":43,"operations":1,"durationNs":293167,"rate":3411.0251153779245},{"index":44,"operations":1,"durationNs":289792,"rate":3450.7508833922266},{"index":45,"operations":1,"durationNs":298375,"rate":3351.4872224549645},{"index":46,"operations":1,"durationNs":296666,"rate":3370.794091672116},{"index":47,"operations":1,"durationNs":306333,"rate":3264.421397629377},{"index":48,"operations":1,"durationNs":292209,"rate":3422.208077095504},{"index":49,"operations":1,"durationNs":292584,"rate":3417.821890465644}],"summary":{"mean":3190.1475581445457,"median":3308.984341095609,"min":1671.541997492687,"max":3469.2107545533395,"stddev":324.50506551282353,"coefficientOfVariation":0.10172102061058337,"confidenceInterval":{"lower":3096.987924343128,"upper":3283.3071919459635},"medianConfidenceInterval":{"lower":3139.731455,"upper":3378.380799},"skewness":-2.357837452511215}},{"name":"Recursive","namePath":["Fibonacci","Recursive"],"warmup":3,"plannedSamples":50,"samples":[{"index":0,"operations":1,"durationNs":1484033166,"rate":0.6738393877647342},{"index":1,"operations":1,"durationNs":1502965750,"rate":0.665351156538331},{"index":2,"operations":1,"durationNs":1487347125,"rate":0.6723380058303471},{"index":3,"operations":1,"durationNs":1500684916,"rate":0.6663623984876517},{"index":4,"operations":1,"durationNs":1550254750,"rate":0.645055272367332},{"index":5,"operations":1,"durationNs":1521570750,"rate":0.657215578046568},{"index":6,"operations":1,"durationNs":1534533000,"rate":0.6516640567521194},{"index":7,"operations":1,"durationNs":1519886125,"rate":0.6579440285370064},{"index":8,"operations":1,"durationNs":1530479792,"rate":0.6533898750098623},{"index":9,"operations":1,"durationNs":1536886208,"rate":0.6506662593461181},{"index":10,"operations":1,"durationNs":1529400250,"rate":0.653851076590317},{"index":11,"operations":1,"durationNs":1522589792,"rate":0.656775715464668},{"index":12,"operations":1,"durationNs":1516505958,"rate":0.6594105316399951},{"index":13,"operations":1,"durationNs":1540939916,"rate":0.6489545696212596},{"index":14,"operations":1,"durationNs":1520770209,"rate":0.6575615395948357},{"index":15,"operations":1,"durationNs":1539279834,"rate":0.6496544539282257},{"index":16,"operations":1,"durationNs":1526214000,"rate":0.655216109929538},{"index":17,"operations":1,"durationNs":1527785875,"rate":0.6545419854729315},{"index":18,"operations":1,"durationNs":1623238041,"rate":0.6160525904037756},{"index":19,"operations":1,"durationNs":1521190334,"rate":0.6573799331017838},{"index":20,"operations":1,"durationNs":1507516167,"rate":0.6633428031422233},{"index":21,"operations":1,"durationNs":1507379500,"rate":0.6634029453100563},{"index":22,"operations":1,"durationNs":1507959625,"rate":0.6631477285076515},{"index":23,"operations":1,"durationNs":1510751625,"rate":0.6619221740039499},{"index":24,"operations":1,"durationNs":1508629125,"rate":0.662853436559499},{"index":25,"operations":1,"durationNs":1510427416,"rate":0.6620642537383604},{"index":26,"operations":1,"durationNs":1509920542,"rate":0.662286505934562},{"index":27,"operations":1,"durationNs":1521289583,"rate":0.6573370456057347},{"index":28,"operations":1,"durationNs":1512378167,"rate":0.6612102857737168},{"index":29,"operations":1,"durationNs":1514497375,"rate":0.6602850665224824},{"index":30,"operations":1,"durationNs":1514474750,"rate":0.6602949306351922},{"index":31,"operations":1,"durationNs":1510750333,"rate":0.66192274008256},{"index":32,"operations":1,"durationNs":1510739834,"rate":0.661927340164382},{"index":33,"operations":1,"durationNs":1513778584,"rate":0.6605985912137862},{"index":34,"operations":1,"durationNs":1519801292,"rate":0.6579807539734609},{"index":35,"operations":1,"durationNs":1503540500,"rate":0.6650968164808331},{"index":36,"operations":1,"durationNs":1512420334,"rate":0.6611918509156992},{"index":37,"operations":1,"durationNs":1506018083,"rate":0.6640026512882182},{"index":38,"operations":1,"durationNs":1515593792,"rate":0.6598074004251397},{"index":39,"operations":1,"durationNs":1513057417,"rate":0.6609134516406789},{"index":40,"operations":1,"durationNs":1525470791,"rate":0.6555353310596427},{"index":41,"operations":1,"durationNs":1510314583,"rate":0.6621137154179223},{"index":42,"operations":1,"durationNs":1506057000,"rate":0.6639854932449436},{"index":43,"operations":1,"durationNs":1506553500,"rate":0.663766670085065},{"index":44,"operations":1,"durationNs":1512883375,"rate":0.6609894830789584},{"index":45,"operations":1,"durationNs":1519008292,"rate":0.6583242535716191},{"index":46,"operations":1,"durationNs":1512048209,"rate":0.6613545745749433},{"index":47,"operations":1,"durationNs":1541884250,"rate":0.6485571144526575},{"index":48,"operations":1,"durationNs":1528834750,"rate":0.654092929271787},{"index":49,"operations":1,"durationNs":1621097125,"rate":0.6168661856087124}],"summary":{"mean":0.6576079809342368,"median":0.6602899985788373,"min":0.6160525904037756,"max":0.6738393877647342,"stddev":0.010042070055907995,"coefficientOfVariation":0.015270602466900778,"confidenceInterval":{"lower":0.654725123955688,"upper":0.6604908379127857},"medianConfidenceInterval":{"lower":0.657383,"upper":0.661923},"skewness":-2.6212776332005148}}]}</script>
 <script>
 (() => {
   const data = JSON.parse(document.getElementById('bench-data').textContent);
@@ -269,25 +137,27 @@
     if (text !== undefined) node.textContent = text;
     return node;
   };
-  const swatch = (color, cls = 'swatch') => {
+  const swatch = (color, cls = 'bench-swatch') => {
     const s = el('span', { class: cls });
     s.style.background = color;
     return s;
   };
 
   const tooltip = (container) => {
-    const tip = el('div', { class: 'tooltip', role: 'status' });
+    const tip = el('div', { class: 'bench-tooltip', role: 'status' });
     container.append(tip);
     return {
       show(x, y, value, lines) {
         tip.replaceChildren(el('strong', {}, value), ...lines.map((l) => el('div', {}, l)));
-        tip.classList.add('show');
+        tip.classList.add('is-visible');
         const w = tip.offsetWidth;
         const max = container.clientWidth - w;
         tip.style.left = `${Math.max(0, Math.min(max, x - w / 2))}px`;
-        tip.style.top = `${y - tip.offsetHeight - 12}px`;
+        // Open below the point when there is no room above it inside the chart.
+        const above = y - tip.offsetHeight - 12;
+        tip.style.top = `${above >= 0 ? above : y + 16}px`;
       },
-      hide() { tip.classList.remove('show'); },
+      hide() { tip.classList.remove('is-visible'); },
     };
   };
 
@@ -297,18 +167,18 @@
   document.getElementById('subtitle').textContent =
     `${suites.join(', ') || 'Benchmarks'} · ${benches.length} benchmark${benches.length === 1 ? '' : 's'}`;
   const addMeta = (label, value, icon, target = document.getElementById('meta')) => {
-    const item = el('span');
+    const item = el('li');
     if (icon) {
-      const dot = el('span', { class: 'status-icon' });
+      const dot = el('span', { class: 'bench-status-dot' });
       dot.style.background = icon;
       item.append(dot);
     }
-    item.append(`${label} `, el('b', {}, value));
+    item.append(el('span', { class: 'bench-meta-label' }, label), el('span', { class: 'bench-meta-value' }, value));
     target.append(item);
   };
   if (run) {
     const failed = run.counts.failed ?? 0;
-    addMeta('Status', run.success ? 'Passed' : `${failed} failed`, run.success ? 'var(--good)' : '#d03b3b');
+    addMeta('Status', run.success ? 'Passed' : `${failed} failed`, run.success ? 'var(--success)' : 'var(--danger)');
     addMeta('Completed', `${run.counts.completed} / ${run.counts.total}`);
     addMeta('Total time', fmtTime(run.durationNs));
   }
@@ -326,11 +196,6 @@
     addMeta('OS', data.environment.os, undefined, envRow);
     addMeta('CPU', data.environment.cpu, undefined, envRow);
   }
-  if (data.docsLink) {
-    const back = document.getElementById('docs-link');
-    back.href = data.docsLink;
-    back.hidden = false;
-  }
 
   // ---------- tiles ----------
   const tiles = document.getElementById('tiles');
@@ -338,23 +203,23 @@
   if (sorted.length >= 2) {
     const fastest = sorted[0];
     const slowest = sorted[sorted.length - 1];
-    const tile = el('div', { class: 'card tile hero' });
+    const tile = el('div', { class: 'bench-panel bench-tile bench-tile-hero' });
     tile.append(
-      el('div', { class: 'label' }, `${fastest.name} vs ${slowest.name}`),
-      el('div', { class: 'value' }, `${fmtRatio(slowest.medianNs / fastest.medianNs)} faster`),
-      el('div', { class: 'note' }, 'Ratio of median time per operation'),
+      el('div', { class: 'bench-tile-label' }, `${fastest.name} vs ${slowest.name}`),
+      el('div', { class: 'bench-tile-value' }, `${fmtRatio(slowest.medianNs / fastest.medianNs)} faster`),
+      el('div', { class: 'bench-tile-note' }, 'Ratio of median time per operation'),
     );
     tiles.append(tile);
   }
   for (const b of benches) {
-    const tile = el('div', { class: 'card tile' });
-    const label = el('div', { class: 'label' });
+    const tile = el('div', { class: 'bench-panel bench-tile' });
+    const label = el('div', { class: 'bench-tile-label' });
     label.append(swatch(b.color), b.name);
     const cv = b.summary.coefficientOfVariation;
     tile.append(
       label,
-      el('div', { class: 'value' }, fmtTime(b.medianNs)),
-      el('div', { class: 'note' }, `median per op · ${fmtRate(b.summary.median)} ops/s · CV ${(cv * 100).toFixed(1)}%`),
+      el('div', { class: 'bench-tile-value' }, fmtTime(b.medianNs)),
+      el('div', { class: 'bench-tile-note' }, `median per op · ${fmtRate(b.summary.median)} ops/s · CV ${(cv * 100).toFixed(1)}%`),
     );
     tiles.append(tile);
   }
@@ -375,7 +240,7 @@
     const x = (ns) => margin.left + ((Math.log10(ns) - lo) / Math.max(1, hi - lo)) * plotW;
 
     const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, height, role: 'img', 'aria-label': 'Median time per operation, log scale' });
-    const grid = svgEl('g', { class: 'grid' });
+    const grid = svgEl('g', { class: 'bench-grid' });
     const labelEvery = Math.ceil(64 / (plotW / Math.max(1, hi - lo)));
     for (let e = lo; e <= hi; e++) {
       const gx = x(10 ** e);
@@ -388,7 +253,7 @@
       const cy = margin.top + i * rowH + rowH / 2;
       const g = svgEl('g');
       g.append(
-        svgEl('text', { class: 'row-label', x: 0, y: cy + 4 }, b.name),
+        svgEl('text', { class: 'bench-row-label', x: 0, y: cy + 4 }, b.name),
         svgEl('line', { x1: x(b.minNs), x2: x(b.maxNs), y1: cy, y2: cy, stroke: 'var(--axis)', 'stroke-width': 2, 'stroke-linecap': 'round' }),
         svgEl('rect', { x: x(b.ciLowNs), y: cy - 6, width: Math.max(2, x(b.ciHighNs) - x(b.ciLowNs)), height: 12, rx: 3, fill: b.color, opacity: 0.3 }),
         svgEl('circle', { cx: x(b.medianNs), cy, r: 6, fill: b.color, stroke: 'var(--surface)', 'stroke-width': 2 }),
@@ -396,23 +261,23 @@
       const labelX = x(b.maxNs) + 10;
       const fitsRight = labelX + 70 < width;
       g.append(svgEl('text', {
-        class: 'value-label',
+        class: 'bench-value-label',
         x: fitsRight ? labelX : x(b.minNs) - 10,
         y: cy + 4,
         'text-anchor': fitsRight ? 'start' : 'end',
       }, fmtTime(b.medianNs)));
 
-      const hit = svgEl('rect', { class: 'hit', x: margin.left, y: cy - rowH / 2, width: plotW, height: rowH, tabindex: 0, 'aria-label': `${b.name}: median ${fmtTime(b.medianNs)} per op` });
-      const ring = svgEl('rect', { class: 'focus-ring', x: margin.left - 4, y: cy - rowH / 2 + 2, width: plotW + 8, height: rowH - 4, rx: 6 });
+      const hit = svgEl('rect', { class: 'bench-hit', x: margin.left, y: cy - rowH / 2, width: plotW, height: rowH, tabindex: 0, 'aria-label': `${b.name}: median ${fmtTime(b.medianNs)} per op` });
+      const ring = svgEl('rect', { class: 'bench-focus-ring', x: margin.left - 4, y: cy - rowH / 2 + 2, width: plotW + 8, height: rowH - 4, rx: 6 });
       const show = () => {
-        ring.classList.add('active');
+        ring.classList.add('is-active');
         tip.show(x(b.medianNs), cy - 6, `${fmtTime(b.medianNs)} median`, [
           b.name,
           `95% CI ${fmtTime(b.ciLowNs)} – ${fmtTime(b.ciHighNs)}`,
           `range ${fmtTime(b.minNs)} – ${fmtTime(b.maxNs)}`,
         ]);
       };
-      const hide = () => { ring.classList.remove('active'); tip.hide(); };
+      const hide = () => { ring.classList.remove('is-active'); tip.hide(); };
       hit.addEventListener('pointerenter', show);
       hit.addEventListener('pointerleave', hide);
       hit.addEventListener('focus', show);
@@ -420,18 +285,18 @@
       g.append(hit, ring);
       svg.append(g);
     });
-    svg.append(svgEl('line', { class: 'baseline', x1: margin.left, x2: width - margin.right, y1: height - margin.bottom, y2: height - margin.bottom }));
+    svg.append(svgEl('line', { class: 'bench-baseline', x1: margin.left, x2: width - margin.right, y1: height - margin.bottom, y2: height - margin.bottom }));
     container.append(svg);
   };
 
   const legend = document.getElementById('comparison-legend');
   const legendItem = (node, text) => { const s = el('span'); s.append(node, text); legend.append(s); };
   for (const b of benches) legendItem(swatch(b.color), b.name);
-  const dotKey = swatch('var(--text-muted)'); dotKey.style.borderRadius = '50%';
+  const dotKey = swatch('var(--muted)'); dotKey.style.borderRadius = '50%';
   legendItem(dotKey, 'Median');
-  const ciKey = swatch('var(--text-muted)'); ciKey.style.opacity = '0.4'; ciKey.style.width = '18px';
+  const ciKey = swatch('var(--muted)'); ciKey.style.opacity = '0.4'; ciKey.style.width = '1.1rem';
   legendItem(ciKey, '95% CI of median');
-  legendItem(swatch('var(--axis)', 'line-key'), 'Min – max');
+  legendItem(swatch('var(--axis)', 'bench-line-key'), 'Min – max');
 
   // Round tick values (1/2/5 × 10^k steps) inside [min, max].
   const niceTicks = (min, max, count) => {
@@ -448,13 +313,15 @@
     const root = document.getElementById('samples');
     root.replaceChildren();
     const cards = benches.map((b) => {
-      const card = el('div', { class: 'card' });
-      const title = el('h3');
-      title.append(swatch(b.color, 'line-key'), b.label);
+      const card = el('div', { class: 'bench-panel' });
+      const title = el('div', { class: 'bench-panel-title' });
+      title.append(swatch(b.color, 'bench-line-key'), b.label);
       const slowest = b.points.reduce((m, p) => (p.nsPerOp > m.nsPerOp ? p : m));
-      card.append(title, el('p', { class: 'sub' }, `${b.points.length} samples · median ${fmtTime(b.medianNs)} · slowest #${slowest.index} at ${fmtTime(slowest.nsPerOp)}`));
-      const chart = el('div', { class: 'chart' });
-      card.append(chart);
+      const body = el('div', { class: 'bench-panel-body' });
+      body.append(el('p', { class: 'bench-panel-note' }, `${b.points.length} samples · median ${fmtTime(b.medianNs)} · slowest #${slowest.index} at ${fmtTime(slowest.nsPerOp)}`));
+      const chart = el('div', { class: 'bench-chart' });
+      body.append(chart);
+      card.append(title, body);
       root.append(card);
       return { b, chart, slowest };
     });
@@ -474,7 +341,7 @@
       const y = (v) => m.top + (1 - (v - yMin) / (yMax - yMin)) * (height - m.top - m.bottom);
 
       const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, height, role: 'img', 'aria-label': `${b.label} samples` });
-      const grid = svgEl('g', { class: 'grid' });
+      const grid = svgEl('g', { class: 'bench-grid' });
       for (const v of niceTicks(yMin, yMax, 4)) {
         grid.append(svgEl('line', { x1: m.left, x2: width - m.right, y1: y(v), y2: y(v) }));
         svg.append(svgEl('text', { x: m.left - 8, y: y(v) + 4, 'text-anchor': 'end' }, fmtTime(v)));
@@ -493,7 +360,7 @@
 
       const cross = svgEl('line', { x1: 0, x2: 0, y1: m.top, y2: height - m.bottom, stroke: 'var(--axis)', 'stroke-width': 1, visibility: 'hidden' });
       const dot = svgEl('circle', { r: 5, fill: b.color, stroke: 'var(--surface)', 'stroke-width': 2, visibility: 'hidden' });
-      const hit = svgEl('rect', { class: 'hit', x: m.left, y: m.top, width: width - m.left - m.right, height: height - m.top - m.bottom, tabindex: 0, 'aria-label': `${b.label} samples; use arrow keys to step through` });
+      const hit = svgEl('rect', { class: 'bench-hit', x: m.left, y: m.top, width: width - m.left - m.right, height: height - m.top - m.bottom, tabindex: 0, 'aria-label': `${b.label} samples; use arrow keys to step through` });
       svg.append(cross, dot, hit);
       chart.append(svg);
 
@@ -545,11 +412,11 @@
     const s = b.summary;
     const row = el('tr');
     const nameCell = el('td');
-    const name = el('span', { class: 'name-cell' });
+    const name = el('span', { class: 'bench-name-cell' });
     name.append(swatch(b.color), b.name);
     nameCell.append(name);
     const cvCell = el('td', {}, `${(s.coefficientOfVariation * 100).toFixed(1)}%`);
-    if (s.coefficientOfVariation > NOISY_CV) cvCell.append(el('span', { class: 'flag' }, 'noisy'));
+    if (s.coefficientOfVariation > NOISY_CV) cvCell.append(el('span', { class: 'bench-flag' }, 'noisy'));
     row.append(
       nameCell,
       el('td', {}, String(b.points.length)),
@@ -583,11 +450,12 @@
   };
   const render = () => { renderComparison(); renderSamples(); renderUnits(); };
   render();
-  let lastWidth = document.querySelector('main').clientWidth;
+  const article = document.getElementById('root');
+  let lastWidth = article.clientWidth;
   new ResizeObserver(() => {
-    const w = document.querySelector('main').clientWidth;
+    const w = article.clientWidth;
     if (w !== lastWidth) { lastWidth = w; render(); }
-  }).observe(document.querySelector('main'));
+  }).observe(article);
 })();
 </script>
 </body>

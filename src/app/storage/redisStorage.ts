@@ -19,7 +19,7 @@ export class RedisStorage implements IStorage {
   private convertSetOptions(options?: IStorageSetOptions): RedisSetOptions {
     const setOptions: RedisSetOptions = {};
     if (options?.expirationMilliseconds) {
-      setOptions.expiration = { type: 'EX', value: options.expirationMilliseconds };
+      setOptions.expiration = { type: 'PX', value: options.expirationMilliseconds };
     }
     return setOptions;
   }

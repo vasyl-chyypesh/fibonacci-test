@@ -9,15 +9,18 @@ import { parseArgs } from 'node:util';
 const REPORT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const TEMPLATE_PATH = path.join(REPORT_DIR, 'template.html');
 const DATA_PLACEHOLDER = '"__BENCH_DATA__"';
+const SITE_ROOT_PLACEHOLDER = '__SITE_ROOT__';
 
-// Usage: render.ts [input.json] [output.html] [--docs-link <href>]
+// Usage: render.ts [input.json] [output.html] [--site-root <path>]
+// The page uses the docs site's stylesheet, scripts and header, so `--site-root` is the
+// path from the output file to docs/ (default fits docs/benchmarks/report.html).
 const { values: options, positionals } = parseArgs({
   allowPositionals: true,
-  options: { 'docs-link': { type: 'string' } },
+  options: { 'site-root': { type: 'string', default: '../' } },
 });
 const [
   inputPath = path.join(REPORT_DIR, '..', 'report.json'),
-  outputPath = path.join(REPORT_DIR, '..', 'report.html'),
+  outputPath = path.join(REPORT_DIR, '..', '..', 'docs', 'benchmarks', 'report.html'),
 ] = positionals;
 
 const git = (...args: string[]): string | null => {
@@ -123,7 +126,6 @@ const buildReportData = (events: BenchEvent[], runAt: Date) => {
     generatedAt: new Date().toISOString(),
     commit: getCommit(),
     environment: getEnvironment(),
-    docsLink: options['docs-link'] ?? null,
     run: runSummary && {
       success: runSummary.success as boolean,
       counts: runSummary.counts as Record<string, number>,
@@ -143,13 +145,21 @@ const reportData = buildReportData(parseEvents(content), inputStat.mtime);
 // Escape "<" so bench names can never close the surrounding <script> tag.
 const serialized = JSON.stringify(reportData).replaceAll('<', '\\u003c');
 
-if (!template.includes(DATA_PLACEHOLDER)) {
-  throw new Error(`Template ${TEMPLATE_PATH} is missing the ${DATA_PLACEHOLDER} placeholder`);
+for (const placeholder of [DATA_PLACEHOLDER, SITE_ROOT_PLACEHOLDER]) {
+  if (!template.includes(placeholder)) {
+    throw new Error(`Template ${TEMPLATE_PATH} is missing the ${placeholder} placeholder`);
+  }
+}
+
+// Used inside href/src/data-* attributes, so it must not break out of the quotes.
+const siteRoot = options['site-root'];
+if (/["<>&]/.test(siteRoot)) {
+  throw new Error(`--site-root must not contain ", <, > or &: ${siteRoot}`);
 }
 
 await mkdir(path.dirname(outputPath), { recursive: true });
 await writeFile(
   outputPath,
-  template.replace(DATA_PLACEHOLDER, () => serialized),
+  template.replaceAll(SITE_ROOT_PLACEHOLDER, siteRoot).replace(DATA_PLACEHOLDER, () => serialized),
 );
 process.stdout.write(`Benchmark report written to ${path.relative(process.cwd(), outputPath)}\n`);

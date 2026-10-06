@@ -1,19 +1,19 @@
 document.addEventListener('DOMContentLoaded', () => {
     const REPO_URL = 'https://github.com/vasyl-chyypesh/fibonacci-test';
 
-    // Internal pages. `match` is the filename that marks the link as active;
-    // items without `match` (external / generated) are never highlighted.
+    // Site pages, relative to the docs root. Items with `newTab` (generated
+    // reports outside this site's shell) are never highlighted.
     const NAV_ITEMS = [
-        { href: 'index.html', label: 'Docs', match: 'index.html' },
-        { href: 'fibonacci.html', label: 'Calculator', match: 'fibonacci.html' },
-        { href: 'api-docs.html', label: 'API docs', match: 'api-docs.html' },
+        { href: 'index.html', label: 'Docs' },
+        { href: 'fibonacci.html', label: 'Calculator' },
+        { href: 'api-docs.html', label: 'API docs' },
         { href: 'coverage/index.html', label: 'Coverage', newTab: true },
-        { href: 'benchmarks/report.html', label: 'Benchmarks', newTab: true }
+        { href: 'benchmarks/report.html', label: 'Benchmarks' }
     ];
 
-    function currentFile() {
-        const segment = location.pathname.substring(location.pathname.lastIndexOf('/') + 1);
-        return segment === '' ? 'index.html' : segment;
+    // Treats a directory URL ("/docs/") as its index.html.
+    function normalizePath(pathname) {
+        return pathname.endsWith('/') ? `${pathname}index.html` : pathname;
     }
 
     function openInNewTab(anchor) {
@@ -26,7 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
     }
 
-    const current = currentFile();
+    // Pages below the docs root set data-root (e.g. "../") so links resolve from there.
+    const siteRoot = header.dataset.root ?? '';
+    const current = normalizePath(location.pathname);
 
     const brandDot = document.createElement('span');
     brandDot.className = 'brand-dot';
@@ -36,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const brand = document.createElement('a');
     brand.className = 'brand';
-    brand.href = 'index.html';
+    brand.href = `${siteRoot}index.html`;
     brand.append(brandDot, ' ', brandName);
 
     const nav = document.createElement('nav');
@@ -45,10 +47,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     NAV_ITEMS.forEach((item) => {
         const link = document.createElement('a');
-        link.href = item.href;
+        link.href = siteRoot + item.href;
         link.textContent = item.label;
 
-        if (item.match === current) {
+        if (!item.newTab && normalizePath(link.pathname) === current) {
             link.className = 'is-active';
             link.setAttribute('aria-current', 'page');
         }
