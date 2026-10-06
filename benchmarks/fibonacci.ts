@@ -4,7 +4,7 @@ import { Fibonacci } from '../src/worker/fibonacci.js';
 const FIBONACCI_INDEX = 25;
 const BENCH_OPTS = {
   warmup: 3,
-  samples: 50
+  samples: 50,
 };
 
 suite('Fibonacci', () => {

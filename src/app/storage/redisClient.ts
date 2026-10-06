@@ -1,7 +1,8 @@
-import { createClient } from 'redis';
+import { createClient, SetOptions } from 'redis';
 import { Logger } from '../utils/logger.js';
 
 export type RedisClient = ReturnType<typeof createClient>;
+export type RedisSetOptions = SetOptions;
 
 const RECONNECT_MAX_RETRY = 10;
 const RECONNECT_DELAY = 100;

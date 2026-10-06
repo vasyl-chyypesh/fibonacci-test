@@ -30,6 +30,22 @@ describe('App Service Tests', () => {
       assert.strictEqual(response.status, 200);
       assert.ok(response.body.ticket);
     });
+
+    test('should return 200 status with ticket number for 2 same requests', async () => {
+      const response1 = await request(API_URL).post('/input').send({
+        number: 6,
+      });
+
+      assert.strictEqual(response1.status, 200);
+      assert.ok(response1.body.ticket);
+
+      const response2 = await request(API_URL).post('/input').send({
+        number: 6,
+      });
+
+      assert.strictEqual(response2.status, 200);
+      assert.strictEqual(response2.body.ticket, response1.body.ticket);
+    });
   });
 
   describe('GET /output', () => {
